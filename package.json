@@ -1,0 +1,1 @@
+{"name":"luma-social-studio","version":"2.0.0","private":true,"type":"commonjs","scripts":{"start":"node server.cjs","test":"node --test tests/core.test.cjs","check":"node --check dist/core.js && node --check dist/app.js && node --check dist/studio.js"},"engines":{"node":">=20"}}
