@@ -1,0 +1,1 @@
+const fs=require('node:fs'),path=require('node:path'),{execFileSync}=require('node:child_process');const root=path.resolve(__dirname,'..');for(const name of fs.readdirSync(path.join(root,'dist')).filter(n=>n.endsWith('.js'))){execFileSync(process.execPath,['--check',path.join(root,'dist',name)],{stdio:'inherit'})}console.log('JavaScript syntax checked.');
