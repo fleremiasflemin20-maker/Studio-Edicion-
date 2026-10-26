@@ -1321,7 +1321,7 @@
       id: crypto.randomUUID(),
       name: String(ver.name || 'Versión').slice(0, 80),
       at: +ver.at || Date.now(),
-      data: normalizeBase(ver.data || {}),
+      data: C.normalize({ ...(ver.data || {}), flowVersions: [] }),
     }));
     return x;
   };
@@ -1331,7 +1331,7 @@
       [
         ...refsBase(x),
         x.transcriptAsset,
-        ...(x.flowVersions || []).flatMap((v) => refsBase(v.data)),
+        ...(x.flowVersions || []).flatMap((v) => [...refsBase(v.data), v.data.transcriptAsset]),
       ].filter(Boolean),
     ),
   ];
