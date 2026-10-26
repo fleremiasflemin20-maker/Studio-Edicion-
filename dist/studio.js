@@ -1,4 +1,4 @@
-/* Luma Studio v2: rendering, portable backups and creator tools. */
+/* Fleremahias Studio v2: rendering, portable backups and creator tools. */
 const C = LumaCore,
   oldRender = render,
   oldGo = go;
@@ -812,7 +812,7 @@ async function backupAll() {
     b.code = localStorage.getItem('luma-code') || '';
     download(
       new Blob([JSON.stringify(b)], { type: 'application/json' }),
-      'Luma-respaldo-' + new Date().toISOString().slice(0, 10) + '.json',
+      'Fleremahias-respaldo-' + new Date().toISOString().slice(0, 10) + '.json',
     );
     toast('Respaldo descargado');
   } catch (e) {
@@ -862,7 +862,7 @@ function importBackup() {
       b.projects.length > 1000 ||
       b.media.length > 1000
     )
-      throw Error('Este archivo no es un respaldo de Luma Studio v2.');
+      throw Error('Este archivo no es un respaldo de Fleremahias Studio v2.');
     const normalized = b.projects.map(C.normalize),
       records = b.media.map(decodeMedia),
       ids = new Map(records.map((a) => [a.old, a.id]));
@@ -918,7 +918,7 @@ function exportICS() {
   const content = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Luma Studio//ES',
+    'PRODID:-//Fleremahias Studio//ES',
     'BEGIN:VEVENT',
     'UID:' + x.id + '@luma.local',
     'DTSTAMP:' + stamp(new Date()),
@@ -1049,7 +1049,7 @@ function renderCode() {
     Object.keys(labTemplates)
       .map((t) => '<option>' + t + '</option>')
       .join('') +
-    '</select><div class="actions"><button onclick="loadLabTemplate()">Cargar plantilla</button><button onclick="importLabCode()">↥ Importar .js</button><button onclick="download(new Blob([labCode],{type:\'text/javascript\'}),\'luma-creativo.js\')">↓ Código</button></div><p class="hint">Escribe instrucciones de Canvas 2D. Variables: <b>ctx</b> (dibujo), <b>w</b> (ancho), <b>h</b> (alto), <b>t</b> (segundos). El código se ejecuta en un worker aislado, sin acceso a los proyectos ni a la red.</p><textarea id="labCode" class="code-text lab-code" spellcheck="false" aria-label="Código JavaScript creativo">' +
+    '</select><div class="actions"><button onclick="loadLabTemplate()">Cargar plantilla</button><button onclick="importLabCode()">↥ Importar .js</button><button onclick="download(new Blob([labCode],{type:\'text/javascript\'}),\'fleremahias-creativo.js\')">↓ Código</button></div><p class="hint">Escribe instrucciones de Canvas 2D. Variables: <b>ctx</b> (dibujo), <b>w</b> (ancho), <b>h</b> (alto), <b>t</b> (segundos). El código se ejecuta en un worker aislado, sin acceso a los proyectos ni a la red.</p><textarea id="labCode" class="code-text lab-code" spellcheck="false" aria-label="Código JavaScript creativo">' +
     esc(labCode) +
     '</textarea><div class="actions"><select id="labFormat" aria-label="Formato del código"><option>9:16</option><option>1:1</option><option>16:9</option><option>4:5</option></select><button class="primary" onclick="runLab()">▶ Ejecutar código</button><button onclick="stopLab()">■ Detener</button></div><p id="labError" role="status" class="hint">Listo para ejecutar.</p></section><section class="panel"><h3>Vista previa</h3><iframe id="labFrame" sandbox="allow-scripts" title="Vista previa aislada del código" referrerpolicy="no-referrer"></iframe><div class="actions"><button onclick="labCommand(\'png\')">Capturar PNG</button><input id="labDuration" type="number" value="5" min="1" max="30" aria-label="Duración de animación en segundos" style="width:65px"><button onclick="labCommand(\'record\')">Grabar clip</button><button onclick="labCommand(\'cancel\')">Cancelar</button></div><p class="hint">El clip graba el lienzo durante 1–30 s, sin audio. Puedes usarlo como video de tu proyecto y añadir música en el editor.</p><div id="labOutput"></div></section></div>';
   $('#labCode').oninput = (e) => {
@@ -1175,7 +1175,7 @@ function labRuntime(cfg) {
     const cmd = e.data?.lumaCommand;
     if (cmd === 'png') {
       canvas.toBlob((blob) => {
-        if (blob) send('output', { blob, name: 'Luma-codigo.png' });
+        if (blob) send('output', { blob, name: 'Fleremahias-codigo.png' });
       });
       return;
     }
@@ -1206,7 +1206,7 @@ function labRuntime(cfg) {
         if (!cancelled)
           send('output', {
             blob: new Blob(chunks, { type }),
-            name: 'Luma-animacion.' + (type.includes('mp4') ? 'mp4' : 'webm'),
+            name: 'Fleremahias-animacion.' + (type.includes('mp4') ? 'mp4' : 'webm'),
             duration: Math.min(30, Math.max(1, Number(e.data.duration) || 5)),
           });
       };
@@ -1258,8 +1258,8 @@ addEventListener('message', async (e) => {
     b = await C.webmDuration(b, +e.data.duration || 5);
     labBlob = b;
     labName = b.type.startsWith('image')
-      ? 'Luma-codigo.png'
-      : 'Luma-animacion.' + (b.type.includes('mp4') ? 'mp4' : 'webm');
+      ? 'Fleremahias-codigo.png'
+      : 'Fleremahias-animacion.' + (b.type.includes('mp4') ? 'mp4' : 'webm');
     if (labURL) URL.revokeObjectURL(labURL);
     labURL = URL.createObjectURL(b);
     $('#labOutput').innerHTML =

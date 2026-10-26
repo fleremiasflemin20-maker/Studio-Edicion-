@@ -1,4 +1,4 @@
-# Luma Studio · Creator Workspace
+# Fleremahias Studio · Creator Workspace
 
 Estudio web en español para crear contenido social. El editor base funciona localmente. Las herramientas de reconocimiento descargan modelos públicos bajo demanda; el servicio complementario tiene sus propias dependencias y configuración.
 
@@ -43,7 +43,7 @@ La imagen del medio se filtra antes de dibujar las capas: los textos y stickers 
 
 ## Música y audio
 
-Ocho bases sintetizadas por Luma: Lo-fi café, Vlog luminoso, Focus ambiental, House suave, Pulso urbano, Cine inspirador, Día soleado y Minimal tech. Se generan como WAV PCM localmente, pueden escucharse antes de añadirlas y quedan en la biblioteca. No se descargan canciones ni catálogos de terceros.
+Ocho bases sintetizadas por Fleremahias: Lo-fi café, Vlog luminoso, Focus ambiental, House suave, Pulso urbano, Cine inspirador, Día soleado y Minimal tech. Se generan como WAV PCM localmente, pueden escucharse antes de añadirlas y quedan en la biblioteca. No se descargan canciones ni catálogos de terceros.
 
 Puedes importar tu propia música o voz. El montaje mezcla el audio de los videos y una pista adicional, con volúmenes independientes, bucle musical, atenuación musical según el nivel del audio original y compresión de picos.
 
@@ -65,7 +65,7 @@ La automatización disponible prepara el contenido; no simula publicaciones remo
 
 El laboratorio recibe JavaScript para Canvas 2D con las variables ctx, w, h y t. Ofrece plantillas, vista previa, importación/exportación .js, capturas PNG y clips de hasta 30 segundos que se pueden incorporar al editor.
 
-El código se ejecuta en un worker dentro de un iframe sandbox sin allow-same-origin. CSP bloquea red, recursos externos y formularios. Un watchdog termina un worker que no devuelve un cuadro en dos segundos. El laboratorio no modifica el código fuente de Luma ni accede a los proyectos.
+El código se ejecuta en un worker dentro de un iframe sandbox sin allow-same-origin. CSP bloquea red, recursos externos y formularios. Un watchdog termina un worker que no devuelve un cuadro en dos segundos. El laboratorio no modifica el código fuente de Fleremahias ni accede a los proyectos.
 
 También incluye teleprompter con velocidad, tamaño, espejo y pantalla completa; guiones por plantillas; notas; estimación de lectura; calendario y checklist.
 
@@ -102,7 +102,7 @@ Incluye transcripción local opcional en v5, videos superpuestos y audio adicion
 - scripts/check.cjs: comprobación de sintaxis de todos los módulos.
 - .github/workflows/check.yml: comprobaciones automáticas del repositorio.
 
-Los patrones de biblioteca/inspector, selección directa y modo Fácil/Pro se adaptaron a edición social tras estudiar Encaja Studio. La implementación es propia de Luma; no incorpora código o recursos del repositorio privado de Encaja.
+Los patrones de biblioteca/inspector, selección directa y modo Fácil/Pro se adaptaron a edición social tras estudiar Encaja Studio. La implementación es propia de Fleremahias; no incorpora código o recursos del repositorio privado de Encaja.
 
 ## Novedades de la versión 4
 
@@ -141,7 +141,7 @@ Crear mi contenido reúne diez paneles conectados al proyecto:
 
 [backend/README.md](backend/README.md) explica el servicio de un propietario: render de proyectos mediante el editor incluido, subida privada/pública a YouTube según elección y envío de borradores a TikTok. Tiene trabajos persistentes, fechas UTC, cifrado de tokens, autenticación, CORS, OAuth e idempotencia. El servicio Cloudflare está desplegado y el render remoto está probado; todavía no se han autorizado cuentas sociales.
 
-Los trabajos con Luma cerrado se ejecutan con Workers, R2 y Browser Run en Cloudflare. Para activar cuentas se necesitan las aplicaciones y permisos de cada plataforma. Instagram, Facebook, LinkedIn, analítica por cuenta, detección semántica de momentos, denoise neuronal y colaboración multiusuario siguen pendientes. La interfaz no presenta estas conexiones como activas.
+Los trabajos con Fleremahias cerrado se ejecutan con Workers, R2 y Browser Run en Cloudflare. Para activar cuentas se necesitan las aplicaciones y permisos de cada plataforma. Instagram, Facebook, LinkedIn, analítica por cuenta, detección semántica de momentos, denoise neuronal y colaboración multiusuario siguen pendientes. La interfaz no presenta estas conexiones como activas.
 
 Los modelos de voz y detección se descargan desde Hugging Face, jsDelivr y Google. El reconocimiento se realiza en el dispositivo; no se transmite la grabación a esos proveedores para inferencia. La primera carga depende de red y memoria disponible.
 
@@ -164,3 +164,7 @@ La interfaz pública funciona sin iniciar sesión. La exportación local pertene
 La interfaz ahora usa grafito, superficies oscuras y acentos violeta discretos, manteniendo los colores originales del lienzo y las muestras. El botón **Planes** presenta Gratis / Pro / Pro Plus como propuesta, con cobro desactivado. La edición y descarga local siguen abiertas. Consulta [MONETIZACION.md](MONETIZACION.md) para precios propuestos, cálculo de contribución, fuentes y requisitos multiusuario antes de vender.
 
 La base `cloudflare/billing.mjs` está probada pero no conectada al Worker; aún faltan identidad, aislamiento por cliente, checkout, almacenamiento de suscripciones, webhooks e imposición transaccional de cuotas. No se anuncian como servicios ya activos.
+
+## Identidad del estudio
+
+Marca pública: **Fleremahias Studio**, firma **by fleremiasflemin**. Incluye monograma FM propio, favicon y nombres de descarga actualizados. Las claves internas, identificadores de respaldo y direcciones existentes conservan compatibilidad para mantener proyectos guardados y enlaces funcionando.

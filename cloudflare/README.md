@@ -1,4 +1,4 @@
-# Luma en Cloudflare
+# Fleremahias en Cloudflare
 
 Estudio público: https://luma-studio-service.analista-datos-pro.workers.dev/
 
@@ -11,7 +11,7 @@ Cualquier visitante puede crear contenido y descargar sus videos, imágenes y re
 - Bucket R2 Standard privado `luma-studio-media`. R2 fue activado por el propietario de la cuenta; no se cambió su plan de Workers.
 - Browser Run para ejecutar el compositor en un navegador remoto y seguir exportando con la pestaña del usuario cerrada.
 
-Límites internos: 64 MB por archivo remoto y 512 MB de archivos indexados por Luma. La interfaz muestra el uso tras conectar y permite vaciar archivos temporales con confirmación, siempre que no haya trabajos pendientes. El render admite hasta 120 segundos, sujeto al tamaño del archivo y a las cuotas de la cuenta. Los videos grandes pueden exportarse localmente. Los archivos no se borran automáticamente.
+Límites internos: 64 MB por archivo remoto y 512 MB de archivos indexados por Fleremahias. La interfaz muestra el uso tras conectar y permite vaciar archivos temporales con confirmación, siempre que no haya trabajos pendientes. El render admite hasta 120 segundos, sujeto al tamaño del archivo y a las cuotas de la cuenta. Los videos grandes pueden exportarse localmente. Los archivos no se borran automáticamente.
 
 El adaptador DurableFiles permite despliegues alternativos sin R2 (8 MB por archivo, 64 MB total), pero la configuración actual utiliza R2Files. La carpeta incluye pruebas de ambos adaptadores.
 
@@ -42,6 +42,6 @@ La dependencia oficial @cloudflare/puppeteer arrastra avisos npm en herramientas
 
 ## Cuotas y costes
 
-Se mantienen las cuotas y condiciones de la cuenta del propietario. Browser Run Free incluye 10 minutos diarios; R2 Standard incluye 10 GB-mes y cuotas de operaciones, con cobro por exceso según la suscripción activada por el propietario. Los límites internos de Luma no sustituyen los de Cloudflare ni garantizan que toda la cuenta esté dentro de su cuota.
+Se mantienen las cuotas y condiciones de la cuenta del propietario. Browser Run Free incluye 10 minutos diarios; R2 Standard incluye 10 GB-mes y cuotas de operaciones, con cobro por exceso según la suscripción activada por el propietario. Los límites internos de Fleremahias no sustituyen los de Cloudflare ni garantizan que toda la cuenta esté dentro de su cuota.
 
 Fuentes consultadas el 26/10/2026: [Browser Run](https://developers.cloudflare.com/browser-run/pricing/), [R2](https://developers.cloudflare.com/r2/pricing/), [Durable Objects](https://developers.cloudflare.com/durable-objects/platform/pricing/), [alarmas](https://developers.cloudflare.com/durable-objects/api/alarms/).

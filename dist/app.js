@@ -641,7 +641,7 @@ function renderIdeas() {
       localStorage.getItem('luma-script') ||
         'Tu próxima historia está a una idea de distancia. Completa el tema para comenzar.',
     ) +
-    "</div><button style=\"margin-top:20px\" onclick=\"download(new Blob([document.querySelector('#script').textContent],{type:'text/plain'}),'guion-luma.txt')\">↓ Descargar guion</button></section></div>";
+    "</div><button style=\"margin-top:20px\" onclick=\"download(new Blob([document.querySelector('#script').textContent],{type:'text/plain'}),'guion-fleremahias.txt')\">↓ Descargar guion</button></section></div>";
   $('#notes').oninput = (e) => localStorage.setItem('luma-notes', e.target.value);
 }
 function generateScript() {

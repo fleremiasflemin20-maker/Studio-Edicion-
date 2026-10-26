@@ -1,4 +1,4 @@
-/* Luma Graphite: interface only; artwork and canvas retain their original colors. */
+/* Fleremahias Graphite: interface only; artwork and canvas retain their original colors. */
 :root {
   color-scheme: dark;
   --purple: #ae9bff;
@@ -420,5 +420,71 @@ footer {
   }
   .app > header small {
     display: none;
+  }
+}
+
+/* Original FM signature, sized for the compact editing workspace. */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  letter-spacing: 0;
+}
+.brand img {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 38px;
+}
+.brand-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.brand-copy strong {
+  font:
+    650 17px Manrope,
+    sans-serif;
+  letter-spacing: -0.65px;
+  line-height: 1.2;
+}
+.brand .brand-copy small {
+  display: block;
+  margin-top: 4px;
+  font:
+    600 8px 'DM Sans',
+    sans-serif;
+  letter-spacing: 3.5px;
+}
+.brand-copy em {
+  margin-top: 6px;
+  font:
+    400 8px 'DM Sans',
+    sans-serif;
+  color: #a7a0b6;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+}
+.creator-active .brand {
+  gap: 7px;
+}
+.creator-active .brand-copy strong {
+  font-size: 14px;
+}
+.creator-active .brand img {
+  width: 28px;
+  flex-basis: 28px;
+}
+.creator-active .brand-copy em {
+  font-size: 7px;
+}
+@media (max-width: 750px) {
+  .brand-copy strong,
+  .creator-active .brand-copy strong {
+    font-size: 19px;
+  }
+  .brand-copy em,
+  .creator-active .brand-copy em {
+    font-size: 9px;
   }
 }

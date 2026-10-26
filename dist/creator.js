@@ -1,4 +1,4 @@
-/* Luma Creator Studio: media-first workspace, built independently for social content. */
+/* Fleremahias Creator Studio: media-first workspace, built independently for social content. */
 const P = LumaCreatorCore;
 let selectedLayer = 'base',
   toolTab = 'media',
@@ -406,7 +406,7 @@ function renderTool() {
       '</div>';
   if (toolTab === 'music')
     html =
-      '<p class="hint">Pistas sintetizadas en Luma. Pulsa ▶ para escuchar y ＋ para usarlas. Puedes importar tu propia música.</p>' +
+      '<p class="hint">Pistas sintetizadas en Fleremahias. Pulsa ▶ para escuchar y ＋ para usarlas. Puedes importar tu propia música.</p>' +
       P.music
         .filter((m) => m.name.toLowerCase().includes(q))
         .map(
@@ -880,8 +880,8 @@ async function addMusic(id) {
   try {
     const m = P.music.find((m) => m.id === id);
     toast('Creando pista…');
-    const existing = assets.find((a) => a.name === 'Luma · ' + m.name + '.wav');
-    const a = existing || (await storeAsset(P.wav(id, 16), 'Luma · ' + m.name + '.wav'));
+    const existing = assets.find((a) => a.name === 'Fleremahias · ' + m.name + '.wav');
+    const a = existing || (await storeAsset(P.wav(id, 16), 'Fleremahias · ' + m.name + '.wav'));
     musicPreview?.pause();
     if (p()) {
       p().audio = a.id;

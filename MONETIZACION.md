@@ -1,4 +1,4 @@
-# Luma Pro: propuesta de lanzamiento · Ecuador / internacional
+# Fleremahias Pro: propuesta de lanzamiento · Ecuador / internacional
 
 Estado: PRELANZAMIENTO. El botón Planes muestra una propuesta; no existe checkout activo, no se cobra y no se otorgan permisos Pro. La edición y exportación local públicas siguen disponibles. Las funciones actuales del editor no se retiran para venderlas de nuevo.
 
@@ -67,4 +67,4 @@ Antes de activar ventas:
 - https://www.capcut.com/pricing
 - https://www.descript.com/pricing
 
-CapCut combina plantillas premium, almacenamiento y créditos; Descript limita procesamiento por plan. Luma debe diferenciarse por un flujo social rápido y asequible con herramientas locales, en lugar de competir por generación ilimitada.
+CapCut combina plantillas premium, almacenamiento y créditos; Descript limita procesamiento por plan. Fleremahias debe diferenciarse por un flujo social rápido y asequible con herramientas locales, en lugar de competir por generación ilimitada.

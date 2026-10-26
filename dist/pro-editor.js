@@ -201,7 +201,7 @@
         '</div><p class="hint">PNG sin fondo sólido conserva las capas y los medios. No elimina el fondo de una fotografía.</p>';
     if (activeTab === 'reel')
       html =
-        '<h3>Arma un Reel con tus medios.</h3><p>Selecciona archivos en el orden deseado. Luma asigna duraciones por BPM y añade movimiento a las fotos.</p><div class="pro-form-row"><label>BPM<input id="pro-bpm" type="number" min="40" max="220" value="100"></label><label>Pulsos por escena<select id="pro-beats"><option value="2">2 pulsos</option><option value="4" selected>4 pulsos</option><option value="8">8 pulsos</option></select></label></div><div class="pro-asset-list">' +
+        '<h3>Arma un Reel con tus medios.</h3><p>Selecciona archivos en el orden deseado. Fleremahias asigna duraciones por BPM y añade movimiento a las fotos.</p><div class="pro-form-row"><label>BPM<input id="pro-bpm" type="number" min="40" max="220" value="100"></label><label>Pulsos por escena<select id="pro-beats"><option value="2">2 pulsos</option><option value="4" selected>4 pulsos</option><option value="8">8 pulsos</option></select></label></div><div class="pro-asset-list">' +
         assets
           .filter((a) => /^(image|video)/.test(a.type))
           .map(

@@ -84,8 +84,8 @@
     tab = t;
     modal = document.createElement('dialog');
     modal.className = 'flow-dialog';
-    modal.setAttribute('aria-label', 'Centro de creación Luma');
-    modal.innerHTML = `<header><div><small>LUMA · DE TU IDEA A CADA RED</small><h2>Crear mi contenido.</h2></div>${b('Volver al estudio', 'close')}</header><nav class="flow-tabs">${Object.entries(
+    modal.setAttribute('aria-label', 'Centro de creación Fleremahias');
+    modal.innerHTML = `<header><div><small>FLEREMAHIAS · DE TU IDEA A CADA RED</small><h2>Crear mi contenido.</h2></div>${b('Volver al estudio', 'close')}</header><nav class="flow-tabs">${Object.entries(
       tabNames,
     )
       .map(([id, n]) => b(n, 'tab', id))
@@ -132,7 +132,7 @@
           .join('') || '<p>Importa imágenes o videos para empezar.</p>'
       }</div><small>Hasta 24 escenas y 120 segundos por montaje. Las grabaciones largas se dividen desde Voz y texto.</small>`;
     if (tab === 'record')
-      html = `<h3>Graba sin salir de Luma.</h3><p>El navegador solicitará acceso al dispositivo elegido. La toma se guarda en tu biblioteca.</p><div class="flow-grid">${field(
+      html = `<h3>Graba sin salir de Fleremahias.</h3><p>El navegador solicitará acceso al dispositivo elegido. La toma se guarda en tu biblioteca.</p><div class="flow-grid">${field(
         'Fuente',
         sel('source', [
           ['camera', 'Cámara y micrófono'],
@@ -172,7 +172,7 @@
     if (tab === 'review')
       html = `<h3>Revisa sin perder lo anterior.</h3><div class="flow-grid">${field('Nombre de versión', input('version', 'Versión ' + new Date().toLocaleTimeString('es')))}${field('Nota', input('note'))}${field('Segundo del montaje', input('time', 0, 'number'))}</div><div class="flow-actions">${b('Guardar versión', 'snapshot')}${b('Añadir nota', 'note')}${b('Comparar dos videos', 'compare')}</div><div class="flow-grid"><section><h4>Versiones locales</h4>${(x?.flowVersions || []).map((v) => `<article><strong>${esc(v.name)}</strong>${b('Abrir copia editable', 'restore', v.id)}</article>`).join('') || 'Sin versiones guardadas'}</section><section><h4>Notas con tiempo</h4>${(x?.flowNotes || []).map((n) => `<article>${b(n.time.toFixed(1) + ' s', 'seek', n.time)}${esc(n.text)}${b(n.done ? 'Reabrir' : 'Resolver', 'resolve', n.id)}</article>`).join('') || 'Sin notas'}</section></div><div id="flow-compare"></div>`;
     if (tab === 'jobs')
-      html = `<h3>Exportaciones recuperables.</h3><p>Esta cola funciona en el navegador. Mantén Luma visible. Puedes reintentar una tarea interrumpida. Para trabajos con la pestaña cerrada hace falta el servicio externo.</p><div class="flow-actions">${b('Añadir proyecto', 'enqueue')}${b('Procesar pendientes', 'run')}${b('Detener después de la actual', 'stop-queue')}${b('Enviar proyecto al servidor', 'remote-job')}${b('Actualizar trabajos remotos', 'remote-status')}<div id="flow-remote"></div></div>${state.jobs.map((j) => `<article><strong>${esc(j.name)}</strong><small>${esc(j.status)} ${esc(j.error || '')}</small>${j.asset ? b('Descargar', 'download-job', j.id) : b('Reintentar', 'retry', j.id)}</article>`).join('')}`;
+      html = `<h3>Exportaciones recuperables.</h3><p>Esta cola funciona en el navegador. Mantén Fleremahias visible. Puedes reintentar una tarea interrumpida. Para trabajos con la pestaña cerrada hace falta el servicio externo.</p><div class="flow-actions">${b('Añadir proyecto', 'enqueue')}${b('Procesar pendientes', 'run')}${b('Detener después de la actual', 'stop-queue')}${b('Enviar proyecto al servidor', 'remote-job')}${b('Actualizar trabajos remotos', 'remote-status')}<div id="flow-remote"></div></div>${state.jobs.map((j) => `<article><strong>${esc(j.name)}</strong><small>${esc(j.status)} ${esc(j.error || '')}</small>${j.asset ? b('Descargar', 'download-job', j.id) : b('Reintentar', 'retry', j.id)}</article>`).join('')}`;
     if (tab === 'publish')
       html = `<h3>Del montaje a la publicación.</h3><p>La preparación local ya funciona. La publicación programada necesita un servicio propio y cuentas autorizadas. GitHub Pages no ejecuta estos trabajos.</p><div class="flow-grid">${field('Servicio HTTPS o localhost', input('service', state.service || ''))}${field('Token del servicio · solo esta sesión', input('token', '', 'password'))}</div><div class="flow-actions">${b('Comprobar servicio', 'connect')}${b('Abrir preparación para redes', 'publish-local')}</div><div id="flow-accounts"></div><section id="flow-post" hidden>${field('Cuenta', sel('account', []))}${field('Video final', sel('final', media('video')))}${field('Descripción', '<textarea id="f-caption">' + esc(x?.caption || '') + '</textarea>')}${field(
         'Visibilidad de YouTube',
@@ -316,7 +316,7 @@
         headers: { Authorization: 'Bearer ' + root.LumaFlowToken },
       });
       if (!res.ok) throw Error('Archivo remoto no disponible');
-      download(await res.blob(), 'Luma-exportacion.webm');
+      download(await res.blob(), 'Fleremahias-exportacion.webm');
     },
     close: () => {
       busy = false;

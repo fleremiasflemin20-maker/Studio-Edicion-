@@ -140,7 +140,7 @@ function renderTemplates() {
           t.colors[0] +
           ';color:' +
           (t.colors[0].startsWith('#e') ? '#3d3a40' : '#ffffff') +
-          '"><small>LUMA · ' +
+          '"><small>FLEREMAHIAS · ' +
           t.format +
           '</small><strong>' +
           esc(t.titles[0]).replace(/\n/g, '<br>') +
@@ -155,7 +155,7 @@ function renderTemplates() {
           '</p></div></button>',
       )
       .join('') +
-    '</div><div class="notice">Las plantillas usan texto y gráficos originales de Luma. Añade tus fotos o videos desde la biblioteca; no contienen imágenes de muestra que debas reemplazar a ciegas.</div>';
+    '</div><div class="notice">Las plantillas usan texto y gráficos originales de Fleremahias. Añade tus fotos o videos desde la biblioteca; no contienen imágenes de muestra que debas reemplazar a ciegas.</div>';
 }
 function createFromTemplate(id) {
   const t = socialTemplates.find((t) => t.id === id),
@@ -282,14 +282,14 @@ function renderPublish() {
           '</small></span></label>',
       )
       .join('') +
-    '</div><label for="captionTemplate">Plantilla de descripción</label><textarea id="captionTemplate">{titulo}\n\n{cta}\n\n{hashtags}</textarea><p class="hint">Variables: {titulo}, {marca}, {cta}, {hashtags}. Se rellenan con tu proyecto y tu kit de marca.</p><label for="queueDate">Fecha planificada (opcional)</label><input id="queueDate" type="datetime-local"><div class="actions"><button class="primary" onclick="createQueueJobs()">＋ Crear versiones y tareas</button><button onclick="brandDialog()">✦ Kit de marca</button></div><div class="notice">Luma prepara archivos y textos en lote. El envío directo a redes necesita conectar tus cuentas y todavía no está disponible. Descarga el paquete o comparte los archivos para subirlos desde tu cuenta.</div></section><section class="panel"><div class="section"><div><h2>Tu cola de preparación</h2><p>' +
+    '</div><label for="captionTemplate">Plantilla de descripción</label><textarea id="captionTemplate">{titulo}\n\n{cta}\n\n{hashtags}</textarea><p class="hint">Variables: {titulo}, {marca}, {cta}, {hashtags}. Se rellenan con tu proyecto y tu kit de marca.</p><label for="queueDate">Fecha planificada (opcional)</label><input id="queueDate" type="datetime-local"><div class="actions"><button class="primary" onclick="createQueueJobs()">＋ Crear versiones y tareas</button><button onclick="brandDialog()">✦ Kit de marca</button></div><div class="notice">Fleremahias prepara archivos y textos en lote. El envío directo a redes necesita conectar tus cuentas y todavía no está disponible. Descarga el paquete o comparte los archivos para subirlos desde tu cuenta.</div></section><section class="panel"><div class="section"><div><h2>Tu cola de preparación</h2><p>' +
     publishQueue.filter((j) => j.status === 'Preparado').length +
     ' listas para subir · ' +
     publishQueue.length +
     ' tareas</p></div><button class="link" onclick="selectAllJobs()">Seleccionar todo</button></div><div class="actions"><button class="primary" onclick="prepareSelected()">⚡ Preparar seleccionadas</button><button onclick="downloadQueuePackage()">↓ Paquete ZIP</button><button onclick="downloadPlanCSV()">↓ Plan CSV</button><button onclick="queueCalendar()">↓ Calendario ICS</button></div><div id="queueRows">' +
     (publishQueue.length
       ? publishQueue.map(queueRow).join('')
-      : '<div class="empty">Elige un proyecto y las redes.<br>Luma creará versiones independientes y tareas de preparación.</div>') +
+      : '<div class="empty">Elige un proyecto y las redes.<br>Fleremahias creará versiones independientes y tareas de preparación.</div>') +
     '</div></section></div>';
 }
 function queueRow(j) {
@@ -525,7 +525,7 @@ async function downloadJob(id) {
       name: 'descripcion.txt',
       blob: new Blob([j.caption], { type: 'text/plain;charset=utf-8' }),
     });
-    download(await P.zip(files), 'Luma-' + j.target + '-' + id.slice(0, 8) + '.zip');
+    download(await P.zip(files), 'Fleremahias-' + j.target + '-' + id.slice(0, 8) + '.zip');
   } catch (e) {
     toast(e.message);
   }
@@ -568,7 +568,7 @@ async function downloadQueuePackage() {
     files.push({
       name: 'LEEME.txt',
       blob: new Blob([
-        'Archivos finales preparados en Luma Studio. Revisa cada pieza y súbela desde la cuenta de su red. Este paquete no publica automáticamente.',
+        'Archivos finales preparados en Fleremahias Studio. Revisa cada pieza y súbela desde la cuenta de su red. Este paquete no publica automáticamente.',
       ]),
     });
     const archive = await P.zip(files);
@@ -586,8 +586,8 @@ async function downloadQueuePackage() {
       i +
       ' tareas</strong><br><a href="' +
       window.packageURL +
-      '" download="Luma-publicaciones.zip">Descargar paquete listo</a>';
-    download(archive, 'Luma-publicaciones.zip');
+      '" download="Fleremahias-publicaciones.zip">Descargar paquete listo</a>';
+    download(archive, 'Fleremahias-publicaciones.zip');
   } catch (e) {
     toast(e.message);
   }
@@ -607,7 +607,7 @@ function planCSV(jobs) {
 function downloadPlanCSV() {
   download(
     new Blob(['\uFEFF' + planCSV(selectedJobs())], { type: 'text/csv;charset=utf-8' }),
-    'Luma-plan.csv',
+    'Fleremahias-plan.csv',
   );
 }
 function queueCalendar() {
@@ -658,14 +658,14 @@ function queueCalendar() {
         [
           'BEGIN:VCALENDAR',
           'VERSION:2.0',
-          'PRODID:-//Luma Studio//ES',
+          'PRODID:-//Fleremahias Studio//ES',
           ...events,
           'END:VCALENDAR',
         ].join('\r\n'),
       ],
       { type: 'text/calendar' },
     ),
-    'Luma-publicaciones.ics',
+    'Fleremahias-publicaciones.ics',
   );
 }
 go('home');

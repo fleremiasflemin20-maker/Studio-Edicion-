@@ -1,4 +1,4 @@
-# Servicio complementario de Luma
+# Servicio complementario de Fleremahias
 
 Servicio de un solo propietario para renderizar proyectos y programar envíos con el navegador cerrado. No está alojado en GitHub Pages ni activado por subir este repositorio. Requiere Node 22, un servidor con disco persistente, HTTPS y Chromium. No introduzcas secretos en el código ni en archivos que publiques.
 
@@ -21,11 +21,11 @@ Genera cada secreto con el generador criptográfico de tu plataforma. Un ejemplo
 
 YouTube: configura `YOUTUBE_CLIENT_ID` y `YOUTUBE_CLIENT_SECRET` de una aplicación web de Google con YouTube Data API habilitada. Registra exactamente `LUMA_PUBLIC_URL/oauth/youtube/callback` como redirección. Se solicita permiso de subida y lectura del canal. OAuth incluye estado de un solo uso, caducidad y PKCE. Los tokens se cifran y se renuevan al usarlos. Las subidas usan sesiones reanudables. La visibilidad predeterminada es privada; revisa la selección antes del envío.
 
-TikTok: configura `TIKTOK_CLIENT_ID` (client key) y `TIKTOK_CLIENT_SECRET`. Registra `LUMA_PUBLIC_URL/oauth/tiktok/callback`. Este conector solicita `video.upload` y envía un borrador de hasta 64 MB a la bandeja de TikTok. Debes abrir la notificación y completar la publicación en TikTok. No es publicación pública automática ni Direct Post auditado. Las descripciones se preparan en Luma; la API de borradores no las aplica. Revisa la aprobación de la aplicación y los permisos en el portal de TikTok.
+TikTok: configura `TIKTOK_CLIENT_ID` (client key) y `TIKTOK_CLIENT_SECRET`. Registra `LUMA_PUBLIC_URL/oauth/tiktok/callback`. Este conector solicita `video.upload` y envía un borrador de hasta 64 MB a la bandeja de TikTok. Debes abrir la notificación y completar la publicación en TikTok. No es publicación pública automática ni Direct Post auditado. Las descripciones se preparan en Fleremahias; la API de borradores no las aplica. Revisa la aprobación de la aplicación y los permisos en el portal de TikTok.
 
 Instagram, Facebook y LinkedIn siguen usando la preparación de paquetes local; no hay conectores OAuth de estas redes en este servicio. Se necesitan las aplicaciones y permisos correspondientes antes de implementar y verificar sus flujos. Las métricas y recomendaciones de horario por cuenta tampoco están conectadas.
 
-En Luma abre Crear mi contenido > Publicar, introduce la URL y tu token de servicio y pulsa Comprobar servicio. Conectar cuenta abre la pantalla oficial. Autoriza allí y vuelve a comprobar. No compartas tus contraseñas con Luma.
+En Fleremahias abre Crear mi contenido > Publicar, introduce la URL y tu token de servicio y pulsa Comprobar servicio. Conectar cuenta abre la pantalla oficial. Autoriza allí y vuelve a comprobar. No compartas tus contraseñas con Fleremahias.
 
 ## Trabajos y límites
 

@@ -1,4 +1,4 @@
-/* Luma Creator: original implementation of scene composition and creator workflows. */
+/* Fleremahias Creator: original implementation of scene composition and creator workflows. */
 (function (root) {
   const n = (v, a, b, d) => (Number.isFinite(Number(v)) ? Math.max(a, Math.min(b, Number(v))) : d);
   const str = (s, max = 10000) => String(s ?? '').slice(0, max),
