@@ -214,7 +214,12 @@
         const a = l.startAt || 0,
           b = l.endAt || total;
         if (b <= start || a >= end) return null;
-        return { ...l, startAt: Math.max(0, a - start), endAt: Math.min(end, b) - start };
+        return {
+          ...l,
+          sourceStart: (l.sourceStart || 0) + Math.max(0, start - a) * (l.speed || 1),
+          startAt: Math.max(0, a - start),
+          endAt: Math.min(end, b) - start,
+        };
       })
       .filter(Boolean);
   }
@@ -241,6 +246,21 @@
       subtitles: clipCaptions(scene.subtitles, at, total),
       layers: sliceLayers(scene.layers, at, total, total),
     });
+    for (const [copy, from, to] of [
+      [left, 0, at],
+      [right, at, total],
+    ]) {
+      copy.words = (scene.words || [])
+        .filter((w) => w.end > from && w.start < to)
+        .map((w) => ({
+          ...w,
+          start: Math.max(0, w.start - from),
+          end: Math.min(to - from, w.end - from),
+        }));
+      copy.facePath = (scene.facePath || [])
+        .filter((k) => k.t >= from && k.t <= to)
+        .map((k) => ({ ...k, t: k.t - from }));
+    }
     return [left, right];
   }
   function timedCaptions(text, duration, wordsPerBlock = 4) {

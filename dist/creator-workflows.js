@@ -675,6 +675,7 @@ function projectFingerprint(x) {
     format: x.format,
     scenes: x.scenes,
     audio: x.audio,
+    audioTracks: x.audioTracks,
     volume: x.volume,
     musicVolume: x.musicVolume,
     musicLoop: x.musicLoop,

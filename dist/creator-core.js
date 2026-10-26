@@ -88,6 +88,10 @@
     'filterStrength',
     'adjust',
     'background',
+    'subtitleY',
+    'facePath',
+    'safePlatform',
+    'words',
   ];
 
   const styleIds = [
@@ -121,7 +125,9 @@
   function layer(v = {}) {
     return {
       id: crypto.randomUUID(),
-      kind: ['text', 'sticker', 'shape', 'image', 'counter'].includes(v.kind) ? v.kind : 'text',
+      kind: ['text', 'sticker', 'shape', 'image', 'video', 'counter'].includes(v.kind)
+        ? v.kind
+        : 'text',
       text: str(v.text ?? 'Tu texto', 1000),
       x: n(v.x, 0, 100, 50),
       y: n(v.y, 0, 100, 50),
@@ -153,12 +159,27 @@
       startAt: n(v.startAt, 0, 120, 0),
       endAt: n(v.endAt, 0, 120, 0),
       shape: ['rect', 'circle', 'line', 'arrow', 'progress'].includes(v.shape) ? v.shape : 'rect',
+      sourceStart: n(v.sourceStart, 0, 86400, 0),
+      speed: n(v.speed, 0.25, 3, 1),
+      group: str(v.group, 80),
       progress: n(v.progress, 0, 100, 100),
     };
   }
   function scene(v = {}) {
     return {
       id: crypto.randomUUID(),
+      words: Array.isArray(v.words)
+        ? v.words.slice(0, 20000).map((q) => ({
+            text: str(q.text, 100),
+            start: n(q.start, 0, 120, 0),
+            end: n(q.end, 0, 120, 0),
+          }))
+        : [],
+      subtitleY: n(v.subtitleY, 10, 90, 80),
+      safePlatform: ['tiktok', 'reels'].includes(v.safePlatform) ? v.safePlatform : '',
+      facePath: Array.isArray(v.facePath)
+        ? v.facePath.slice(0, 600).map((k) => ({ t: n(k.t, 0, 120, 0), x: n(k.x, 0, 100, 50) }))
+        : [],
       name: str(v.name || 'Escena', 80),
       asset: typeof v.asset === 'string' ? v.asset : null,
       text: str(v.text ?? ''),
@@ -240,7 +261,7 @@
     return s;
   }
   function references(project) {
-    const ids = [project.asset, project.audio];
+    const ids = [project.asset, project.audio, ...(project.audioTracks || []).map((t) => t.asset)];
     for (const s of project.scenes || []) {
       ids.push(s.asset);
       for (const l of s.layers || []) ids.push(l.asset);
@@ -250,6 +271,7 @@
   function remap(project, ids) {
     project.asset = ids.get(project.asset) || null;
     project.audio = ids.get(project.audio) || null;
+    for (const t of project.audioTracks || []) t.asset = ids.get(t.asset) || null;
     for (const s of project.scenes || []) {
       s.asset = ids.get(s.asset) || null;
       for (const l of s.layers || []) l.asset = ids.get(l.asset) || null;

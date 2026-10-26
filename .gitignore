@@ -4,3 +4,11 @@ node_modules/
 .env
 .env.*
 .DS_Store
+
+backend/data/
+
+backend/.test-data-*/
+
+.wrangler/
+cloudflare/.dev.vars
+

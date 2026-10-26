@@ -54,7 +54,10 @@
       oh = swapped ? mw : mh;
     const progress = Math.max(0, Math.min(1, time / Math.max(0.1, duration)));
     let zoom = scene.zoom || 1,
-      cropX = scene.cropX ?? 50;
+      cropX =
+        root.LumaFlowCore?.interpolate(scene.facePath, time, scene.cropX ?? 50) ??
+        scene.cropX ??
+        50;
     if (scene.motion === 'zoom-in') zoom *= 1 + progress * 0.15;
     if (scene.motion === 'zoom-out') zoom *= 1.15 - progress * 0.15;
     if (scene.motion === 'pan-left') {
@@ -320,8 +323,8 @@
         local,
         Math.max(0.1, duration - (layer.startAt || 0)),
       );
-    else if (layer.kind === 'image') {
-      const image = images.get(layer.asset);
+    else if (layer.kind === 'image' || layer.kind === 'video') {
+      const image = images.get(layer.kind === 'video' ? layer.id : layer.asset);
       if (image) ctx.drawImage(image, -bounds.w / 2, -bounds.h / 2, bounds.w, bounds.h);
     } else {
       let text =
@@ -388,7 +391,7 @@
       );
     let index = 0;
     for (const [i, line] of lines.entries()) {
-      const y = h * 0.8 + i * size * 1.3,
+      const y = h * ((scene.subtitleY ?? 80) / 100) + i * size * 1.3,
         width = ctx.measureText(line).width;
       if (!['plain', 'outline'].includes(style)) {
         ctx.fillStyle =
@@ -415,7 +418,12 @@
         let x = (w - width) / 2;
         ctx.textAlign = 'left';
         for (const word of line.split(' ')) {
-          ctx.fillStyle = index === hot ? '#ffe46d' : '#ffffff';
+          const wordTime = scene.words?.find(
+            (q) => q.text.trim() === word.trim() && time >= q.start && time < q.end,
+          );
+          ctx.fillStyle = (scene.words?.length ? !!wordTime : index === hot)
+            ? '#ffe46d'
+            : '#ffffff';
           ctx.fillText(word, x, y);
           x += ctx.measureText(word + ' ').width;
           index++;

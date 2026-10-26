@@ -1,0 +1,16 @@
+{
+  "name": "luma-studio-service",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "../dist", "binding": "ASSETS", "run_worker_first": true },
+  "browser": { "binding": "BROWSER" },
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "luma-studio-media" }],
+  "durable_objects": { "bindings": [{ "name": "STATE", "class_name": "LumaState" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["LumaState"] }],
+  "vars": {
+    "LUMA_ORIGINS": "https://fleremiasflemin20-maker.github.io,https://luma-social-studio-251026.keenox19.chatgpt.site",
+    "MAX_UPLOAD_MB": "64",
+  },
+  "observability": { "enabled": false },
+}

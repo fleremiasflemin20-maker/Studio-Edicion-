@@ -16,6 +16,7 @@ draw = function () {
           ? previewSeconds
           : 1,
   );
+  globalThis.LumaFlow?.drawHandles(c);
   const b = hitBoxes.find((b) => b.id === selectedLayer);
   if (b) {
     const ctx = c.getContext('2d');
@@ -86,8 +87,8 @@ async function preloadSequence(project) {
     let media = null;
     const a = lookup.get(s.asset);
     if (s.asset && !a) throw Error('Falta el archivo de ' + s.name + '. Vuelve a importarlo.');
-    if (a?.type.startsWith('video')) {
-      media = document.createElement('video');
+    if (a && /^(video|audio)/.test(a.type)) {
+      media = document.createElement(a.type.startsWith('audio') ? 'audio' : 'video');
       media.playsInline = true;
       media.preload = 'auto';
       const loaded = waitMedia(media, 'loadeddata', 25000);
@@ -122,6 +123,7 @@ async function preloadSequence(project) {
       });
       assetImages.set(l.asset, img);
     }
+    await globalThis.LumaFlowMedia?.prepareScene(s);
     result.push(media);
   }
   return result;
@@ -190,7 +192,11 @@ async function runSequence(project, options = {}) {
     const audioAsset = assets.find((a) => a.id === snapshot.audio);
     if (snapshot.audio && !audioAsset)
       throw Error('Falta la pista musical. Vuelve a seleccionarla.');
-    if (audioAsset || resources.some((m) => m instanceof HTMLVideoElement)) {
+    if (
+      snapshot.audioTracks?.length ||
+      audioAsset ||
+      resources.some((m) => m instanceof HTMLMediaElement)
+    ) {
       ac = new AudioContext();
       await ac.resume();
       mix = ac.createGain();
@@ -205,7 +211,7 @@ async function runSequence(project, options = {}) {
       analyser.fftSize = 256;
       for (let i = 0; i < resources.length; i++) {
         const media = resources[i];
-        if (!(media instanceof HTMLVideoElement)) {
+        if (!(media instanceof HTMLMediaElement)) {
           audioGains[i] = null;
           continue;
         }
@@ -231,16 +237,17 @@ async function runSequence(project, options = {}) {
         music._gain = gain;
       }
     }
+    await globalThis.LumaFlowMedia?.prepareAudio(snapshot, ac, mix);
     function paint(t) {
       const i = P.locate(t, timing),
         scene = snapshot.scenes[i],
         local = Math.max(0, t - timing[i].start),
         media = resources[i];
       if (i !== currentIndex) {
-        if (currentIndex >= 0 && resources[currentIndex] instanceof HTMLVideoElement)
+        if (currentIndex >= 0 && resources[currentIndex] instanceof HTMLMediaElement)
           resources[currentIndex].pause();
         currentIndex = i;
-        if (media instanceof HTMLVideoElement) {
+        if (media instanceof HTMLMediaElement) {
           media.playbackRate = scene.speed || 1;
           media.preservesPitch = true;
           media.currentTime = scene.start;
@@ -249,6 +256,8 @@ async function runSequence(project, options = {}) {
           });
         }
       }
+      globalThis.LumaFlowMedia?.sync(scene, local, true);
+      globalThis.LumaFlowMedia?.syncAudio(snapshot, t, ac);
       paintScene(bCtx, scene, media, local);
       const transition = scene.transition;
       if (i > 0 && local < 0.35 && transition !== 'cut') {
@@ -284,7 +293,7 @@ async function runSequence(project, options = {}) {
     }
     await Promise.all(
       resources.map(async (media, i) => {
-        if (media instanceof HTMLVideoElement) {
+        if (media instanceof HTMLMediaElement) {
           await media.play();
           media.pause();
           await seekMedia(media, snapshot.scenes[i].start);
@@ -381,6 +390,7 @@ async function runSequence(project, options = {}) {
   } finally {
     cancelAnimationFrame(animation);
     if (recorder && recorder.state !== 'inactive') recorder.stop();
+    globalThis.LumaFlowMedia?.stop();
     resources.forEach((m) => {
       if (m instanceof HTMLMediaElement) {
         m.pause();

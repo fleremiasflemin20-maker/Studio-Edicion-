@@ -1,6 +1,6 @@
 # Luma Studio · Creator Workspace
 
-Estudio web en español para crear contenido social. Sin dependencias de producción ni claves API.
+Estudio web en español para crear contenido social. El editor base funciona localmente. Las herramientas de reconocimiento descargan modelos públicos bajo demanda; el servicio complementario tiene sus propias dependencias y configuración.
 
 ## Ejecutar y comprobar
 
@@ -33,9 +33,9 @@ Los modos Fácil/Pro cambian la cantidad de controles visibles y conservan el pr
 - Recorte por tiempo, encuadre, ajuste completo o con recorte, y zoom.
 - Entradas entre escenas: corte, fundido, deslizamiento y acercamiento.
 - Texto principal y capas de texto, formas, stickers e imagen.
-- Animaciones de capas: aparecer, subir, pop y flotar.
-- Doce filtros de imagen/video: Original, Cine, Cálido, Frío, Blanco y negro, Vintage, Vibrante, Suave, Nocturno, Atardecer, Mate y Noir.
-- SRT importable, editable, distribuible por frases y exportable; tres estilos visuales.
+- Animaciones de capas: aparecer, subir, pop, flotar, rebote, giro, pulso y escritura.
+- 24 filtros de imagen/video, incluyendo: Original, Cine, Cálido, Frío, Blanco y negro, Vintage, Vibrante, Suave, Nocturno, Atardecer, Mate y Noir.
+- SRT importable, editable, distribuible por frases y exportable; ocho estilos visuales.
 - Vista previa y exportación comparten el compositor de Canvas.
 - Deshacer/rehacer, duplicación y checklist.
 
@@ -87,7 +87,7 @@ El espacio disponible depende del navegador. El límite aproximado es de 180 MB 
 - Los tiempos SRT son relativos al inicio de cada escena.
 - Revisa el archivo terminado antes de subirlo a una red.
 
-No incluye transcripción automática, IA generativa, colaboración en la nube, títulos 3D, chroma key ni montaje con pistas visuales independientes solapadas en el tiempo. Las escenas son secuenciales; las capas pertenecen a cada escena.
+Incluye transcripción local opcional en v5, videos superpuestos y audio adicional. No incluye IA generativa de video, colaboración multiusuario en nube, títulos 3D ni chroma key. Las escenas principales son secuenciales; las pistas visuales adicionales pertenecen a cada escena.
 
 ## Estructura
 
@@ -108,7 +108,7 @@ Los patrones de biblioteca/inspector, selección directa y modo Fácil/Pro se ad
 
 El botón «Listo en un clic» reúne 16 estilos de texto, 12 composiciones editables, 24 filtros en total, ajustes de imagen, fondos, movimientos y exportación de imágenes. Puedes cortar escenas, cambiar la velocidad de videos, guardar elementos favoritos y montar un Reel con una duración por clip calculada a partir de un BPM que introduces tú.
 
-Los subtítulos pueden importarse como SRT o distribuirse a partir de un guion. No se transcribe la voz. La revisión previa señala archivos ausentes, tiempos inválidos, textos pendientes y problemas básicos de contraste. La publicación rápida prepara archivos y textos: no publica automáticamente en cuentas sociales sin sus respectivas integraciones autorizadas.
+Los subtítulos pueden importarse como SRT o distribuirse a partir de un guion. En v4 no se transcribía la voz; v5 incorpora un modelo local opcional. La revisión previa señala archivos ausentes, tiempos inválidos, textos pendientes y problemas básicos de contraste. La publicación rápida prepara archivos y textos: no publica automáticamente en cuentas sociales sin sus respectivas integraciones autorizadas.
 
 El compositor compartido se encuentra en `dist/compositor.js`; la lógica pura de las herramientas, en `dist/pro-core.js`, y su interfaz, en `dist/pro-editor.js`. Las pruebas cubren cortes, velocidad, tiempos, normalización, revisión y catálogos, además de las funciones existentes.
 
@@ -117,3 +117,36 @@ El compositor compartido se encuentra en `dist/compositor.js`; la lógica pura d
 La acción `.github/workflows/pages.yml` verifica el código y publica `dist/` cuando se actualiza la rama `codex/luma-studio`. El sitio usa rutas relativas para funcionar en `/Studio-Edicion-/`.
 
 Los proyectos y archivos se guardan localmente en el navegador por origen. El sitio anterior y GitHub Pages tienen almacenamientos separados: utiliza el respaldo para trasladar tus proyectos y medios.
+
+## Novedades de la versión 5
+
+Crear mi contenido reúne diez paneles conectados al proyecto:
+
+- Montaje por objetivo: tutorial, producto, podcast, vlog o anuncio; archivos elegidos en orden, formato y guion opcional. Las plantillas son reglas editables, no generación semántica por IA.
+- Grabación de cámara/micrófono, pantalla con el audio que permita el navegador o solo micrófono. Cuenta atrás y teleprompter; la toma se guarda en IndexedDB. Necesita HTTPS y permiso del dispositivo; no se han ejercitado los dispositivos personales durante las pruebas.
+- Transcripción local con Transformers.js 3.8.1 y Whisper tiny; descarga inicial y tiempos por palabra. Cancelación mediante worker. Importación alternativa de palabras JSON. Probada con voz sintética en inglés; nombres, español, acentos y condiciones acústicas requieren revisión.
+- Corrección por grupos de palabras, selección de frases para un montaje nuevo, candidatos de clips por duración/puntuación y resaltado de posibles muletillas. No se promete comprensión narrativa ni viralidad.
+- Detección de pausas por RMS y golpes musicales por picos de energía. Los cortes propuestos se revisan antes de aplicar. El seguimiento facial usa MediaPipe 0.10.21 y guarda encuadres muestreados; descarga de recursos verificada, pendiente de comprobar con grabaciones de personas.
+- Mejora de voz mediante filtros, compresión, atenuación de señal débil y normalización. No separa música ni elimina todo el ruido con IA.
+- Videos superpuestos temporizados, imágenes y hasta 12 pistas adicionales de audio con inicio, final, posición de origen y volumen. El montaje exportado mezcla estas pistas. La vista previa de montaje completo usa la mezcla; el botón de reproducción de una sola escena mantiene la reproducción básica.
+- Tiradores de tamaño y giro, selección con Shift, agrupación, movimiento conjunto y alineación de capas. Diseños de reacción y superposición en media pantalla.
+- Tres portadas PNG desde el fotograma actual, recetas visuales guardables, zonas seguras conservadoras y tres variantes editables. Las zonas deben revisarse porque las interfaces de las redes cambian.
+- Tabla CSV/TSV con vista previa y hasta 50 proyectos independientes. Los nombres de imágenes se resuelven contra la biblioteca; se validan todas las filas antes de crear proyectos.
+- Versiones locales (hasta ocho), notas con segundo del montaje, restauración en copia y comparación visual de los dos últimos videos de la biblioteca. No es colaboración remota en tiempo real.
+- Cola local persistente con reintento y comprobación de cambios, más interfaz para el servicio de render/publicación. El render local necesita la pestaña visible.
+
+`dist/flow-core.js` contiene operaciones puras; `dist/flow-media.js` administra audio, video y modelos; `dist/flow.js` contiene el controlador. `dist/asr-worker.js` aísla la transcripción. Se conserva el compositor compartido de la versión anterior.
+
+### Servicio opcional y funciones pendientes de activación
+
+[backend/README.md](backend/README.md) explica el servicio de un propietario: render de proyectos mediante el editor incluido, subida privada/pública a YouTube según elección y envío de borradores a TikTok. Tiene trabajos persistentes, fechas UTC, cifrado de tokens, autenticación, CORS, OAuth e idempotencia. El código y pruebas están incluidos, pero no se ha instalado un servidor ni autorizado cuentas de producción.
+
+Para activar trabajos con Luma cerrado se necesita un alojamiento persistente y Chromium. Para activar cuentas se necesitan las aplicaciones y permisos de cada plataforma. Instagram, Facebook, LinkedIn, analítica por cuenta, detección semántica de momentos, denoise neuronal y colaboración multiusuario siguen pendientes. La interfaz no presenta estas conexiones como activas.
+
+Los modelos de voz y detección se descargan desde Hugging Face, jsDelivr y Google. El reconocimiento se realiza en el dispositivo; no se transmite la grabación a esos proveedores para inferencia. La primera carga depende de red y memoria disponible.
+
+## Despliegue elegido: Cloudflare
+
+La carpeta cloudflare/ contiene la versión para Workers, R2, Durable Objects y Browser Run. Consulta [cloudflare/README.md](cloudflare/README.md). Compila con Wrangler y tiene pruebas propias. Esta opción no necesita un servidor Node encendido. El servicio de backend/ se conserva como alternativa autohospedada; no es el servicio que se desplegará en tu cuenta Cloudflare.
+
+La interfaz pública sigue en Pages y Sites. La cuenta Cloudflare debe autorizar el despliegue y tener los productos habilitados. No se ha contratado un plan ni activado facturación automáticamente.

@@ -134,7 +134,7 @@ renderEditor = function () {
   }
   if (!history.length) history.push(JSON.stringify(x));
   const a = assets.find((a) => a.id === x.asset);
-  const video = a?.type.startsWith('video');
+  const video = a && /^(video|audio)/.test(a.type);
   subs = [];
   try {
     subs = C.parseSRT(x.subtitles || '');
