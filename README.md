@@ -104,3 +104,16 @@ No incluye transcripción automática, IA generativa, colaboración en la nube, 
 
 Los patrones de biblioteca/inspector, selección directa y modo Fácil/Pro se adaptaron a edición social tras estudiar Encaja Studio. La implementación es propia de Luma; no incorpora código o recursos del repositorio privado de Encaja.
 
+## Novedades de la versión 4
+
+El botón «Listo en un clic» reúne 16 estilos de texto, 12 composiciones editables, 24 filtros en total, ajustes de imagen, fondos, movimientos y exportación de imágenes. Puedes cortar escenas, cambiar la velocidad de videos, guardar elementos favoritos y montar un Reel con una duración por clip calculada a partir de un BPM que introduces tú.
+
+Los subtítulos pueden importarse como SRT o distribuirse a partir de un guion. No se transcribe la voz. La revisión previa señala archivos ausentes, tiempos inválidos, textos pendientes y problemas básicos de contraste. La publicación rápida prepara archivos y textos: no publica automáticamente en cuentas sociales sin sus respectivas integraciones autorizadas.
+
+El compositor compartido se encuentra en `dist/compositor.js`; la lógica pura de las herramientas, en `dist/pro-core.js`, y su interfaz, en `dist/pro-editor.js`. Las pruebas cubren cortes, velocidad, tiempos, normalización, revisión y catálogos, además de las funciones existentes.
+
+## GitHub Pages
+
+La acción `.github/workflows/pages.yml` verifica el código y publica `dist/` cuando se actualiza la rama `codex/luma-studio`. El sitio usa rutas relativas para funcionar en `/Studio-Edicion-/`.
+
+Los proyectos y archivos se guardan localmente en el navegador por origen. El sitio anterior y GitHub Pages tienen almacenamientos separados: utiliza el respaldo para trasladar tus proyectos y medios.

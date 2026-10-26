@@ -1,16 +1,181 @@
-(function(root){
-const formats=['9:16','1:1','16:9','4:5'],platforms=['TikTok','Instagram','YouTube','Facebook','LinkedIn','Pinterest'];
-function numeric(v,min,max,fallback){const n=Number(v);return Number.isFinite(n)?Math.min(max,Math.max(min,n)):fallback}
-function normalize(v){if(!v||typeof v!=='object'||typeof v.name!=='string')throw Error('Proyecto no válido');const str=(x,n=10000)=>String(x??'').slice(0,n),color=(x,f)=>/^#[a-f0-9]{6}$/i.test(x)?x:f;return {id:crypto.randomUUID(),name:str(v.name,80)||'Sin título',format:formats.includes(v.format)?v.format:'9:16',platform:platforms.includes(v.platform)?v.platform:'Instagram',text:str(v.text),bg:color(v.bg,'#c6cbb9'),color:color(v.color,'#ffffff'),fontSize:numeric(v.fontSize,20,140,72),brightness:numeric(v.brightness,20,180,100),saturation:numeric(v.saturation,0,200,100),asset:null,audio:null,caption:str(v.caption),date:/^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(v.date)?v.date:'',status:v.status==='Listo'?'Listo':'Borrador',created:Date.now(),start:numeric(v.start,0,86400,0),end:numeric(v.end,0,86400,0),duration:numeric(v.duration,1,120,6),volume:numeric(v.volume,0,1,1),musicVolume:numeric(v.musicVolume,0,1,.35),textY:numeric(v.textY,10,90,50),subtitles:str(v.subtitles,100000),checklist:Array.isArray(v.checklist)?v.checklist.filter(x=>Number.isInteger(x)&&x>=0&&x<6):[]}}
-function stamp(s){const n=Math.round(Math.max(0,s)*1000);return String(Math.floor(n/3600000)).padStart(2,'0')+':'+String(Math.floor(n/60000)%60).padStart(2,'0')+':'+String(Math.floor(n/1000)%60).padStart(2,'0')+','+String(n%1000).padStart(3,'0')}
-function parseSRT(text){if(!text.trim())return [];return text.replace(/^\uFEFF/,'').replace(/\r/g,'').trim().split(/\n\s*\n/).map((block,i)=>{const rows=block.split('\n');if(/^\d+$/.test(rows[0].trim()))rows.shift();const m=rows.shift()?.match(/^(\d{1,2}):(\d\d):(\d\d)[,.](\d{3})\s*-->\s*(\d{1,2}):(\d\d):(\d\d)[,.](\d{3})$/);if(!m)throw Error('Tiempo SRT no válido en el bloque '+(i+1));const time=k=>+m[k]*3600 + +m[k+1]*60 + +m[k+2] + +m[k+3]/1000,start=time(1),end=time(5);if(end<=start||+m[2]>59||+m[3]>59||+m[6]>59||+m[7]>59)throw Error('Intervalo no válido en bloque '+(i+1));return {start,end,text:rows.join('\n').replace(/<[^>]*>/g,'')}}).sort((a,b)=>a.start-b.start)}
-function captions(text,duration){const lines=text.trim().split(/\n+/).map(s=>s.trim()).filter(Boolean);return lines.map((s,i)=>(i+1)+'\n'+stamp(i*duration/lines.length)+' --> '+stamp((i+1)*duration/lines.length)+'\n'+s).join('\n\n')}
-function dimensions(format,width=720){const [w,h]=format.split(':').map(Number);return [width,Math.round(width*h/w/2)*2]}
+(function (root) {
+  const formats = ['9:16', '1:1', '16:9', '4:5'],
+    platforms = ['TikTok', 'Instagram', 'YouTube', 'Facebook', 'LinkedIn', 'Pinterest'];
+  function numeric(v, min, max, fallback) {
+    const n = Number(v);
+    return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
+  }
+  function normalize(v) {
+    if (!v || typeof v !== 'object' || typeof v.name !== 'string')
+      throw Error('Proyecto no válido');
+    const str = (x, n = 10000) => String(x ?? '').slice(0, n),
+      color = (x, f) => (/^#[a-f0-9]{6}$/i.test(x) ? x : f);
+    return {
+      id: crypto.randomUUID(),
+      name: str(v.name, 80) || 'Sin título',
+      format: formats.includes(v.format) ? v.format : '9:16',
+      platform: platforms.includes(v.platform) ? v.platform : 'Instagram',
+      text: str(v.text),
+      bg: color(v.bg, '#c6cbb9'),
+      color: color(v.color, '#ffffff'),
+      fontSize: numeric(v.fontSize, 20, 140, 72),
+      brightness: numeric(v.brightness, 20, 180, 100),
+      saturation: numeric(v.saturation, 0, 200, 100),
+      asset: null,
+      audio: null,
+      caption: str(v.caption),
+      date: /^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(v.date) ? v.date : '',
+      status: v.status === 'Listo' ? 'Listo' : 'Borrador',
+      created: Date.now(),
+      start: numeric(v.start, 0, 86400, 0),
+      end: numeric(v.end, 0, 86400, 0),
+      duration: numeric(v.duration, 1, 120, 6),
+      volume: numeric(v.volume, 0, 1, 1),
+      musicVolume: numeric(v.musicVolume, 0, 1, 0.35),
+      textY: numeric(v.textY, 10, 90, 50),
+      subtitles: str(v.subtitles, 100000),
+      checklist: Array.isArray(v.checklist)
+        ? v.checklist.filter((x) => Number.isInteger(x) && x >= 0 && x < 6)
+        : [],
+    };
+  }
+  function stamp(s) {
+    const n = Math.round(Math.max(0, s) * 1000);
+    return (
+      String(Math.floor(n / 3600000)).padStart(2, '0') +
+      ':' +
+      String(Math.floor(n / 60000) % 60).padStart(2, '0') +
+      ':' +
+      String(Math.floor(n / 1000) % 60).padStart(2, '0') +
+      ',' +
+      String(n % 1000).padStart(3, '0')
+    );
+  }
+  function parseSRT(text) {
+    if (!text.trim()) return [];
+    return text
+      .replace(/^\uFEFF/, '')
+      .replace(/\r/g, '')
+      .trim()
+      .split(/\n\s*\n/)
+      .map((block, i) => {
+        const rows = block.split('\n');
+        if (/^\d+$/.test(rows[0].trim())) rows.shift();
+        const m = rows
+          .shift()
+          ?.match(
+            /^(\d{1,2}):(\d\d):(\d\d)[,.](\d{3})\s*-->\s*(\d{1,2}):(\d\d):(\d\d)[,.](\d{3})$/,
+          );
+        if (!m) throw Error('Tiempo SRT no válido en el bloque ' + (i + 1));
+        const time = (k) => +m[k] * 3600 + +m[k + 1] * 60 + +m[k + 2] + +m[k + 3] / 1000,
+          start = time(1),
+          end = time(5);
+        if (end <= start || +m[2] > 59 || +m[3] > 59 || +m[6] > 59 || +m[7] > 59)
+          throw Error('Intervalo no válido en bloque ' + (i + 1));
+        return { start, end, text: rows.join('\n').replace(/<[^>]*>/g, '') };
+      })
+      .sort((a, b) => a.start - b.start);
+  }
+  function captions(text, duration) {
+    const lines = text
+      .trim()
+      .split(/\n+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return lines
+      .map(
+        (s, i) =>
+          i +
+          1 +
+          '\n' +
+          stamp((i * duration) / lines.length) +
+          ' --> ' +
+          stamp(((i + 1) * duration) / lines.length) +
+          '\n' +
+          s,
+      )
+      .join('\n\n');
+  }
+  function dimensions(format, width = 720) {
+    const [w, h] = format.split(':').map(Number);
+    return [width, Math.round((width * h) / w / 2) * 2];
+  }
 
-/* Add the duration omitted by streaming MediaRecorder WebM headers. */
-async function webmDuration(blob,seconds){if(!blob.type.includes('webm'))return blob;try{const bytes=new Uint8Array(await blob.arrayBuffer());function vint(pos,id=false){let n=1,mask=128;while(n<=8&&!(bytes[pos]&mask)){n++;mask>>=1}if(n>8||pos+n>bytes.length)throw Error('Invalid EBML');let value=id?bytes[pos]:bytes[pos]&(mask-1);for(let j=1;j<n;j++)value=value*256+bytes[pos+j];return {n,value,unknown:!id&&value===Math.pow(2,7*n)-1}}function item(pos){const id=vint(pos,true),size=vint(pos+id.n);return {id:id.value,size,sizeAt:pos+id.n,data:pos+id.n+size.n,end:pos+id.n+size.n+size.value}}let segment,pos=0;while(pos<bytes.length){const e=item(pos);if(e.id===0x18538067){segment=e;break}pos=e.end}if(!segment||!segment.size.unknown)return blob;pos=segment.data;while(pos<bytes.length){const e=item(pos);if(e.id===0x1549a966){let q=e.data;while(q<e.end){const child=item(q);if(child.id===0x4489)return blob;q=child.end}const extra=new Uint8Array(11);extra.set([0x44,0x89,0x88]);new DataView(extra.buffer).setFloat64(3,seconds*1000,false);const newSize=e.size.value+11;if(newSize>=Math.pow(2,e.size.n*7)-1)return blob;const out=new Uint8Array(bytes.length+11);out.set(bytes.slice(0,e.end));out.set(extra,e.end);out.set(bytes.slice(e.end),e.end+11);let value=newSize;for(let j=e.size.n-1;j>=0;j--){out[e.sizeAt+j]=value%256;value=Math.floor(value/256)}out[e.sizeAt]|=1<<(8-e.size.n);return new Blob([out],{type:blob.type})}if(e.size.unknown)break;pos=e.end}return blob}catch{return blob}}
+  /* Add the duration omitted by streaming MediaRecorder WebM headers. */
+  async function webmDuration(blob, seconds) {
+    if (!blob.type.includes('webm')) return blob;
+    try {
+      const bytes = new Uint8Array(await blob.arrayBuffer());
+      function vint(pos, id = false) {
+        let n = 1,
+          mask = 128;
+        while (n <= 8 && !(bytes[pos] & mask)) {
+          n++;
+          mask >>= 1;
+        }
+        if (n > 8 || pos + n > bytes.length) throw Error('Invalid EBML');
+        let value = id ? bytes[pos] : bytes[pos] & (mask - 1);
+        for (let j = 1; j < n; j++) value = value * 256 + bytes[pos + j];
+        return { n, value, unknown: !id && value === Math.pow(2, 7 * n) - 1 };
+      }
+      function item(pos) {
+        const id = vint(pos, true),
+          size = vint(pos + id.n);
+        return {
+          id: id.value,
+          size,
+          sizeAt: pos + id.n,
+          data: pos + id.n + size.n,
+          end: pos + id.n + size.n + size.value,
+        };
+      }
+      let segment,
+        pos = 0;
+      while (pos < bytes.length) {
+        const e = item(pos);
+        if (e.id === 0x18538067) {
+          segment = e;
+          break;
+        }
+        pos = e.end;
+      }
+      if (!segment || !segment.size.unknown) return blob;
+      pos = segment.data;
+      while (pos < bytes.length) {
+        const e = item(pos);
+        if (e.id === 0x1549a966) {
+          let q = e.data;
+          while (q < e.end) {
+            const child = item(q);
+            if (child.id === 0x4489) return blob;
+            q = child.end;
+          }
+          const extra = new Uint8Array(11);
+          extra.set([0x44, 0x89, 0x88]);
+          new DataView(extra.buffer).setFloat64(3, seconds * 1000, false);
+          const newSize = e.size.value + 11;
+          if (newSize >= Math.pow(2, e.size.n * 7) - 1) return blob;
+          const out = new Uint8Array(bytes.length + 11);
+          out.set(bytes.slice(0, e.end));
+          out.set(extra, e.end);
+          out.set(bytes.slice(e.end), e.end + 11);
+          let value = newSize;
+          for (let j = e.size.n - 1; j >= 0; j--) {
+            out[e.sizeAt + j] = value % 256;
+            value = Math.floor(value / 256);
+          }
+          out[e.sizeAt] |= 1 << (8 - e.size.n);
+          return new Blob([out], { type: blob.type });
+        }
+        if (e.size.unknown) break;
+        pos = e.end;
+      }
+      return blob;
+    } catch {
+      return blob;
+    }
+  }
 
-root.LumaCore={normalize,parseSRT,stamp,captions,dimensions,numeric,webmDuration};
-if(typeof module!=='undefined')module.exports=root.LumaCore;
-})(typeof globalThis!=='undefined'?globalThis:this);
-
+  root.LumaCore = { normalize, parseSRT, stamp, captions, dimensions, numeric, webmDuration };
+  if (typeof module !== 'undefined') module.exports = root.LumaCore;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
