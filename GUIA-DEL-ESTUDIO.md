@@ -811,3 +811,61 @@ Abre un proyecto y cambia Modo Fácil a Modo Pro. Consulta la ayuda de la secci�
 ### Privacidad
 
 La edición normal es local. Enviar al servidor sube medios al servicio conectado; las redes solo reciben contenido al confirmar un envío autorizado. No compartas tokens ni contraseñas en proyectos o guiones.
+
+## Modo tablero y modo enfoque
+
+Un espacio visual para organizar campañas. Las tarjetas enlazan tus proyectos y medios locales; no son copias del video final. El modo avanzado del tablero no requiere una suscripción.
+
+1. Abre Modo tablero desde la barra superior. Añade recursos desde Herramientas, Proyectos o Medios con el botón + o arrastrando.
+2. Arrastra las tarjetas por su cabecera. Arrastra el fondo para desplazarte; usa los botones de zoom o Ctrl/⌘ + rueda.
+3. Selecciona el proyecto de destino. Suelta un filtro o un medio sobre su tarjeta para aplicarlo; también puedes usar el botón de la herramienta.
+4. Abre la pieza en Modo enfoque para editar escenas, textos, capas y audio. Vuelve al tablero para continuar la campaña.
+5. Guarda un respaldo completo para trasladar proyectos, medios y organización del tablero.
+
+### Modo enfoque
+
+Abre el proyecto de destino en un espacio de edición ampliado. Paneles normales recupera la navegación lateral.
+
+### Herramientas / Proyectos / Medios
+
+Cambia la biblioteca de tarjetas. Buscar filtra su lista; + añade una tarjeta al centro visible del tablero.
+
+### Filtro / Título editorial
+
+Soltar sobre una pieza aplica el filtro a todas las escenas o añade una capa de título a la escena activa. Puedes usar Deshacer del tablero.
+
+### Subtítulos / Mejorar voz / Portadas / Grabar / Capas / Exportar
+
+Abre el flujo correspondiente del proyecto de destino; no inicia grabación, exportación ni envío por sí solo.
+
+### Recurso sobre proyecto
+
+Añade imagen o video como escena; un audio se usa como música. Conserva los archivos originales.
+
+### Nota / Zona
+
+Añade una nota editable o una zona de campaña. Arrastra la cabecera de la zona para mover también las tarjetas completamente contenidas.
+
+### Tarjeta de proyecto
+
+Toca para seleccionarla como destino; Abrir o doble clic la lleva al editor. Una tarjeta ausente indica que el proyecto no está en este navegador.
+
+### Mover con teclado
+
+Enfoca una tarjeta con Tab y usa las flechas para moverla; Shift aumenta el paso. Enter abre una tarjeta de proyecto.
+
+### Ordenar / Ajustar
+
+Ordenar distribuye las tarjetas en cuadrícula. Ajustar encuadra su conjunto.
+
+### Retirar tarjeta
+
+Quita solo la tarjeta, no elimina el proyecto ni el medio original.
+
+### Deshacer del tablero
+
+Recupera hasta doce acciones de esta sesión, incluidos filtros o medios aplicados a una pieza. Al salir del tablero termina ese historial de acciones.
+
+### Respaldo
+
+Incluye la organización visual y sus medios en el respaldo del estudio. El tablero se conserva localmente entre visitas.

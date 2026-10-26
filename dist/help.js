@@ -39,6 +39,7 @@
     publish: 'social',
   };
   const viewChapter = {
+    board: 'board',
     home: 'home',
     projects: 'projects',
     editor: 'editor',
@@ -286,6 +287,8 @@
       .slice(0, 150);
   }
   function describe(el) {
+    if (el.dataset.helpDescription)
+      return { label: labelOf(el), chapter: 'board', text: el.dataset.helpDescription };
     const label = labelOf(el),
       fn = (el.getAttribute('onclick') || '').match(/\b([A-Za-z_$][\w$]*)\s*\(/)?.[1];
     let id = ids[el.id] || functionChapters[fn] || currentChapter(el);

@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server.cjs",
-    "test": "node --test tests/core.test.cjs tests/creator-core.test.cjs tests/pro-core.test.cjs tests/flow.test.cjs backend/service.test.cjs",
+    "test": "node --test tests/core.test.cjs tests/board.test.cjs tests/creator-core.test.cjs tests/pro-core.test.cjs tests/flow.test.cjs backend/service.test.cjs",
     "check": "node scripts/check.cjs",
     "format": "prettier --write \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\"",
     "format:check": "prettier --check \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\""
