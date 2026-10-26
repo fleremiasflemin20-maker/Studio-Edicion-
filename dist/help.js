@@ -266,6 +266,7 @@
     'favorite-remove': 'Quita este favorito de Mis elementos; revisa antes de confirmar.',
   };
   function currentChapter(el) {
+    if (el?.closest('.design-dialog')) return 'design-pro';
     if (el?.closest('.flow-dialog'))
       return flowChapters[document.querySelector('.flow-tabs .active')?.dataset.value] || 'create';
     if (el?.closest('.pro-dialog')) return 'quick';
@@ -288,7 +289,11 @@
   }
   function describe(el) {
     if (el.dataset.helpDescription)
-      return { label: labelOf(el), chapter: 'board', text: el.dataset.helpDescription };
+      return {
+        label: labelOf(el),
+        chapter: el.dataset.helpChapter || 'board',
+        text: el.dataset.helpDescription,
+      };
     const label = labelOf(el),
       fn = (el.getAttribute('onclick') || '').match(/\b([A-Za-z_$][\w$]*)\s*\(/)?.[1];
     let id = ids[el.id] || functionChapters[fn] || currentChapter(el);
@@ -629,7 +634,7 @@
       const candidates = modal
         ? [
             ...scope.querySelectorAll(
-              'header button,.pro-dialog-header button,.flow-tabs button,.pro-dialog-tabs button,#flow-body .flow-actions button,#pro-content button',
+              'header button,.pro-dialog-header button,.design-header button,.design-tabs button,.flow-tabs button,.pro-dialog-tabs button,#flow-body .flow-actions button,#pro-content button,#design-content button',
             ),
           ]
         : [

@@ -1,0 +1,251 @@
+.design-dialog {
+  width: min(1180px, 96vw);
+  max-width: none;
+  height: min(870px, 94vh);
+  max-height: 94vh;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #51415f;
+  border-radius: 18px;
+  background: #11141c;
+  color: #e5e6ef;
+}
+.design-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.design-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 22px 26px 16px;
+  border-bottom: 1px solid #2e2b39;
+}
+.design-header h2 {
+  font:
+    600 26px Manrope,
+    sans-serif;
+  margin: 8px 0;
+}
+.design-header p {
+  margin: 0;
+}
+.design-header small {
+  letter-spacing: 1.5px;
+  color: #bda4d8;
+  font-size: 8px;
+}
+.design-header > button {
+  font-size: 10px;
+}
+.design-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 12px 22px;
+  margin: 0;
+  border-bottom: 1px solid #2e2b39;
+}
+.design-tabs button {
+  font-size: 11px;
+}
+.design-tabs button.active {
+  background: #342541;
+  color: #dec1f2;
+  border-color: #6d5082;
+}
+.design-workspace {
+  display: grid;
+  grid-template-columns: 225px minmax(280px, 1fr) 260px;
+  flex: 1;
+  min-height: 0;
+}
+.design-selection {
+  padding: 20px 16px;
+  border-right: 1px solid #2b2935;
+  overflow: auto;
+}
+.design-selection h3 {
+  font-size: 13px;
+  margin: 0 0 9px;
+}
+.design-selection p {
+  font-size: 10px;
+}
+.design-selection > button {
+  font-size: 10px;
+}
+#design-layer-list {
+  margin-top: 16px;
+}
+#design-layer-list label {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid #2c2938;
+  font-size: 10px;
+}
+#design-layer-list span {
+  overflow-wrap: anywhere;
+  flex: 1;
+}
+#design-layer-list input {
+  accent-color: #c09bdc;
+}
+#design-count {
+  margin-top: 18px;
+  color: #bba2cf;
+}
+#design-content {
+  overflow: auto;
+  padding: 22px;
+}
+#design-content h3 {
+  font-size: 16px;
+  margin: 0 0 16px;
+}
+#design-content h3:not(:first-child) {
+  margin-top: 28px;
+}
+#design-content p {
+  font-size: 11px;
+}
+#design-content label {
+  display: block;
+  font-size: 10px;
+  color: #b3a6c2;
+}
+#design-content select,
+#design-content input:not([type='checkbox']) {
+  display: block;
+  width: 100%;
+  margin: 7px 0 14px;
+}
+.design-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.design-grid button {
+  font-size: 10px;
+  padding: 12px 8px;
+}
+.design-preview {
+  padding: 20px;
+  background: #0c0f15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  overflow: auto;
+  border-left: 1px solid #2b2935;
+}
+.design-preview canvas {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 360px;
+  border-radius: 8px;
+  border: 1px solid #342c41;
+}
+.design-preview small {
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  color: #ab9cbe;
+}
+.design-preview p {
+  font-size: 10px;
+  line-height: 1.7;
+  text-align: center;
+}
+.design-dialog footer {
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  padding: 14px 22px;
+  border-top: 1px solid #2e2b39;
+}
+.design-dialog footer span {
+  font-size: 11px;
+  color: #cfb6df;
+  letter-spacing: 0;
+}
+.design-dialog footer small {
+  font-size: 9px;
+  margin: 0;
+  letter-spacing: 0;
+}
+.design-blocks {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+.design-blocks article {
+  border: 1px solid #383041;
+  border-radius: 10px;
+  padding: 14px;
+  background: #1c1925;
+}
+.design-blocks article button {
+  font-size: 10px;
+  margin: 9px 6px 0 0;
+}
+.design-format-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0;
+}
+.design-format-options label {
+  border: 1px solid #43334e;
+  border-radius: 10px;
+  padding: 16px 12px;
+  background: #211a2b;
+}
+#design-open {
+  background: #292039;
+  color: #dfc2fa;
+  border-color: #5b4270;
+}
+@media (max-width: 1000px) {
+  .design-workspace {
+    grid-template-columns: 190px minmax(230px, 1fr);
+  }
+  .design-preview {
+    display: none;
+  }
+}
+@media (max-width: 750px) {
+  .design-workspace {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .design-selection {
+    max-height: 200px;
+    flex-shrink: 0;
+    border-right: 0;
+    border-bottom: 1px solid #2c2938;
+  }
+  #design-content {
+    overflow: visible;
+  }
+  .design-header {
+    padding: 18px;
+  }
+  .design-tabs {
+    padding: 10px;
+    gap: 4px;
+  }
+  .design-tabs button {
+    font-size: 9px;
+    padding: 9px;
+  }
+  .design-dialog footer {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+}

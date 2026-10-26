@@ -171,7 +171,7 @@ Marca pública: **Fleremahias Studio**, firma **by fleremiasflemin**. Incluye mo
 
 ## Guía viva para creadores
 
-En la primera visita se abre una bienvenida con manual y recorrido. El botón **Guía y ayuda** está siempre en la cabecera; los paneles de creación, estilos y formularios incluyen **Ayuda de esta sección**. El manual tiene 27 capítulos, buscador, instrucciones paso a paso y explicación de controles. El recorrido resalta los elementos reales y permite avanzar, volver y consultar su capítulo. **Explicar controles** intercepta el clic para explicar el control sin ejecutar su acción; Escape permite salir. Las animaciones respetan la preferencia de movimiento reducido.
+En la primera visita se abre una bienvenida con manual y recorrido. El botón **Guía y ayuda** está siempre en la cabecera; los paneles de creación, estilos y formularios incluyen **Ayuda de esta sección**. El manual tiene 29 capítulos, buscador, instrucciones paso a paso y explicación de controles. El recorrido resalta los elementos reales y permite avanzar, volver y consultar su capítulo. **Explicar controles** intercepta el clic para explicar el control sin ejecutar su acción; Escape permite salir. Las animaciones respetan la preferencia de movimiento reducido.
 
 La bienvenida se recuerda por navegador mediante una clave independiente de los proyectos. Borrar los datos del navegador o usar otro dispositivo vuelve a mostrarla. El recorrido no crea proyectos ni inicia grabaciones, exportaciones o publicaciones. La documentación distingue exportación local, acceso privado al servicio, OAuth y planes aún en preparación. Se mantiene en `dist/help-content.js`; el controlador está en `dist/help.js` y su diseño en `dist/help.css`.
 
@@ -181,4 +181,12 @@ La barra de modos abre un tablero local de hasta 120 tarjetas o la edición ampl
 
 Los archivos soltados desde el equipo o importados estando en el tablero se guardan como recursos, sin reemplazar la escena del proyecto abierto. Arrastrar un medio sobre una tarjeta de proyecto lo añade como escena o música. Las zonas mueven también las tarjetas completamente contenidas. Hay botones equivalentes al arrastre y movimiento de tarjetas con flechas. El respaldo completo incluye organización, proyectos y medios; restaurar remapea sus referencias y agrega las tarjetas al tablero actual.
 
-La guía incluye ahora 28 capítulos con las instrucciones del tablero. La implementación independiente y las referencias están documentadas en [TABLERO-ARQUITECTURA.md](TABLERO-ARQUITECTURA.md). Encaja se consultó únicamente como referencia; no se modificó ni se incorporó su código privado.
+La guía incluye ahora 29 capítulos con las instrucciones del tablero. La implementación independiente y las referencias están documentadas en [TABLERO-ARQUITECTURA.md](TABLERO-ARQUITECTURA.md). Encaja se consultó únicamente como referencia; no se modificó ni se incorporó su código privado.
+
+## Composición Pro
+
+El editor incorpora **Composición Pro**: alineación por bordes/centros con referencia a lienzo o selección, distribución de espacios, organización en fila/columna/cuadrícula, copiar y pegar formato visual, biblioteca de bloques personales multicapa, copias adaptadas a formatos sociales y numeración editable de carruseles. Se abre desde la barra del editor o Ctrl/⌘ + K fuera de campos de texto.
+
+Las operaciones trabajan sobre el modelo exportado y respetan capas bloqueadas u ocultas. Auto organizar es una acción puntual, sin reglas permanentes de Auto Layout. Los bloques son copias independientes, no componentes vinculados. La adaptación conserva el original y requiere revisar textos y recorte; no se anuncia como reencuadre semántico por IA. Los bloques y sus medios se incluyen en los respaldos completos. La guía incluye ahora 29 capítulos.
+
+La investigación y decisiones están en [COMPOSICION-PRO.md](COMPOSICION-PRO.md). La lógica pura está en `dist/design-core.js`; el controlador y la vista previa comparten el compositor existente. No se incluyen código, plantillas, iconos ni recursos descargados de Figma o Canva.

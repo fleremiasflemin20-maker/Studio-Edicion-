@@ -869,3 +869,57 @@ Recupera hasta doce acciones de esta sesión, incluidos filtros o medios aplicad
 ### Respaldo
 
 Incluye la organización visual y sus medios en el respaldo del estudio. El tablero se conserva localmente entre visitas.
+
+## Composición Pro · alineación, bloques y formatos
+
+Abre un proyecto y pulsa Composición Pro, o Ctrl/⌘ + K fuera de un campo de texto. Las operaciones modifican las capas reales; puedes deshacerlas.
+
+1. Marca las capas que quieras modificar en la lista. Las operaciones de composición respetan los bloqueos y la visibilidad.
+2. En Componer elige referencia al lienzo o a los extremos de la selección. Alinea o reparte espacios; para distribuir se necesitan tres capas.
+3. Auto organizar coloca una selección en fila, columna o cuadrícula, reduciendo elementos cuando hace falta. Revisa textos largos y capas giradas.
+4. En Estilos y bloques copia el formato de una capa y pégalo en otras. También puedes guardar varias capas como un bloque personal.
+5. En Adaptar formatos marca los tamaños sociales y crea copias editables. Revisa su recorte y tipografía antes de exportar.
+
+### Lista de capas / Seleccionar editables
+
+Marca capas de la escena actual. Las bloqueadas u ocultas no se mueven ni reciben estilos.
+
+### Alinear izquierda, centro, derecha, arriba, medio o abajo
+
+Alinea usando el marco del lienzo con margen 6% o los extremos de la selección. Usa las cajas de las capas; revisa las giradas.
+
+### Repartir horizontal / vertical
+
+Iguala espacios entre tres o más capas, conservando las exteriores. Si se solapan demasiado, sepáralas o usa Auto organizar.
+
+### Fila / Columna / Cuadrícula
+
+Distribuye y reduce elementos para encajarlos con el espacio y columnas elegidos. Es una acción puntual, no reglas permanentes de Auto Layout.
+
+### Copiar estilo / Pegar estilo
+
+Copia color, relleno, opacidad, tamaño de letra, estilo y animación desde una capa. Pega en las seleccionadas sin sustituir archivos, texto, posiciones ni tiempos.
+
+### Guardar selección como bloque
+
+Guarda un conjunto local de hasta 40 capas con nombre. Se admiten 12 bloques personales.
+
+### Insertar copia / Quitar de mi biblioteca
+
+Inserta capas nuevas agrupadas o retira el bloque guardado. Las copias no se sincronizan con el original. Los archivos deben estar disponibles.
+
+### Crear copias adaptadas
+
+Genera proyectos en 9:16, 1:1, 4:5 o 16:9. Ajusta márgenes y tamaño de textos, conserva los medios y audio y reinicia seguimiento facial para revisar el nuevo encuadre. No es reencuadre inteligente por IA.
+
+### Añadir números de página
+
+Añade a cada escena una capa editable con página y total. No añade páginas nuevas; revisa la posición antes de publicar.
+
+### Respaldo de bloques
+
+Los bloques y sus archivos se incluyen en el respaldo completo; al restaurar se remapean los medios disponibles.
+
+### Deshacer / Volver al editor
+
+Deshace cambios del proyecto o cierra el panel para revisar el montaje completo.
