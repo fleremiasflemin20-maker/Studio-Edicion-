@@ -158,3 +158,9 @@ La interfaz pública sigue en Pages y Sites. La cuenta fue autorizada por el pro
 - Sites: https://luma-social-studio-251026.keenox19.chatgpt.site
 
 La interfaz pública funciona sin iniciar sesión. La exportación local pertenece al visitante y se descarga en su equipo. No hay una galería pública de archivos privados ni publicación automática de todos los proyectos. El acceso a la API de render, R2 y cuentas sociales sigue protegido.
+
+## Diseño Graphite y propuesta Pro
+
+La interfaz ahora usa grafito, superficies oscuras y acentos violeta discretos, manteniendo los colores originales del lienzo y las muestras. El botón **Planes** presenta Gratis / Pro / Pro Plus como propuesta, con cobro desactivado. La edición y descarga local siguen abiertas. Consulta [MONETIZACION.md](MONETIZACION.md) para precios propuestos, cálculo de contribución, fuentes y requisitos multiusuario antes de vender.
+
+La base `cloudflare/billing.mjs` está probada pero no conectada al Worker; aún faltan identidad, aislamiento por cliente, checkout, almacenamiento de suscripciones, webhooks e imposición transaccional de cuotas. No se anuncian como servicios ya activos.

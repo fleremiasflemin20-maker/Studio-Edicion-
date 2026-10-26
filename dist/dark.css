@@ -1,0 +1,424 @@
+/* Luma Graphite: interface only; artwork and canvas retain their original colors. */
+:root {
+  color-scheme: dark;
+  --purple: #ae9bff;
+  --line: #292c36;
+  --muted: #a1a6b5;
+  --surface: #12141b;
+  --raised: #1a1d26;
+}
+body {
+  background: #0b0d12;
+  color: #edf0f7;
+}
+button {
+  background: var(--raised);
+  border-color: var(--line);
+  color: #d7dbe7;
+  transition:
+    background 0.16s,
+    border-color 0.16s;
+}
+button:hover {
+  background: #232631;
+  border-color: #746494;
+}
+button.primary,
+.flow-actions button:first-child {
+  background: #b4a2ff;
+  border-color: #b4a2ff;
+  color: #171225;
+  font-weight: 700;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #c0b1ff;
+  outline-offset: 3px;
+}
+aside {
+  background: #101218;
+}
+.brand {
+  color: #f2f1fa;
+}
+.brand small,
+.eyebrow {
+  color: #aca1c5;
+}
+.workspace {
+  background: #151820;
+}
+nav button {
+  color: #9da4b6;
+  background: transparent;
+}
+nav button.active,
+.chip.active,
+.tool-tabs button.active,
+.inspector-tabs button.active,
+.pro-dialog-tabs button.active {
+  background: #292339;
+  color: #d0c3ff;
+}
+.aside-bottom .tip {
+  display: none;
+}
+.app > header {
+  background: #101218;
+}
+header > span {
+  color: #a2a8b8;
+}
+header b {
+  color: #585e6e;
+}
+h1,
+h2,
+h3 {
+  color: #f0f1f7;
+}
+h1 {
+  font-weight: 700;
+}
+.hero {
+  background: radial-gradient(ellipse at 90% 20%, #29203e 0, transparent 55%), #151720;
+  border: 1px solid #34303f;
+  border-radius: 16px;
+}
+.hero h2 {
+  font-weight: 600;
+  letter-spacing: -1.2px;
+}
+.hero p {
+  color: #b0a9c2;
+}
+.hero-art {
+  transform: rotate(-22deg);
+  border: 1px solid #85759e;
+  border-radius: 50%;
+  width: 190px;
+  height: 150px;
+  background: radial-gradient(ellipse, #a68dc421, transparent 65%);
+}
+.hero-art::before,
+.hero-art::after {
+  content: '';
+  position: absolute;
+  inset: 18px -16px;
+  border: 1px solid #a58ecb66;
+  border-radius: 50%;
+  transform: rotate(60deg);
+}
+.hero-art::after {
+  inset: 36px -30px;
+  transform: rotate(-40deg);
+  border-color: #b7acd033;
+}
+.hero-art > * {
+  display: none;
+}
+.stat,
+.project,
+.format,
+.note,
+.panel,
+.track,
+.asset,
+dialog,
+.creator-toolbox,
+.creator-inspector,
+.creator-preview,
+.pro-dialog,
+.flow-dialog {
+  background: var(--surface);
+  border-color: var(--line);
+  color: #e3e6ef;
+}
+.stat i,
+.format .icon,
+.format:nth-child(n) .icon {
+  background: #242131;
+  color: #b5a5dc;
+}
+.stat strong {
+  font-weight: 600;
+}
+.creator-entry {
+  display: none;
+}
+.flow-entry {
+  background: #171520;
+  border: 1px solid #393048;
+  border-radius: 12px;
+}
+.flow-entry h2 {
+  color: #eeeaf7;
+}
+.flow-entry p,
+.flow-entry small {
+  color: #aea7bf;
+}
+input,
+select,
+textarea,
+.flow-dialog input,
+.flow-dialog select,
+.flow-dialog textarea {
+  background: #0e1118;
+  border-color: #343744;
+  color: #e3e6ef;
+}
+input::placeholder,
+textarea::placeholder {
+  color: #7c8395;
+}
+input[type='color'] {
+  padding: 3px;
+}
+.chip {
+  background: transparent;
+  color: #a5adbf;
+}
+.badge {
+  background: #161923e8;
+  color: #d8dce6;
+}
+.stage,
+.v2stage,
+.creator-preview .v2stage {
+  background: #080a0f;
+  background-image: radial-gradient(#ffffff12 0.7px, transparent 0.7px);
+  background-size: 18px 18px;
+}
+.tool-tabs,
+.inspector-tabs,
+.pro-dialog-tabs {
+  background: #101219;
+  border-color: var(--line);
+}
+.upload-tile,
+.element-tiles button,
+.layer-row,
+.scene-card,
+.audio-track,
+.feature-strip,
+.notice,
+.export-progress,
+.pro-open-tools,
+.pro-palette-shortcut {
+  background: #1d1b29;
+  border-color: #393344;
+  color: #c5b9df;
+}
+.pro-dialog-header,
+.flow-dialog header {
+  background: #151720;
+  border-color: var(--line);
+}
+.pro-dialog header,
+.pro-dialog footer,
+.flow-dialog footer {
+  background: #12141b;
+  border-color: var(--line);
+}
+.pro-dialog small,
+.flow-dialog small {
+  color: #a6a0b7;
+}
+.pro-dialog-tabs button {
+  color: #ada7bc;
+}
+.pro-dialog-layout,
+.pro-dialog-body,
+.pro-live {
+  background: #11131a;
+  color: #dce0eb;
+}
+.pro-style-grid article,
+.pro-block-grid article,
+.pro-add,
+.flow-dialog article,
+.flow-media-grid label,
+.flow-job {
+  background: #191c24;
+  border-color: #303440;
+  color: #dce0eb;
+}
+.flow-tabs {
+  border-color: var(--line);
+}
+.flow-tabs button.active {
+  background: #aaa0d8;
+  color: #161220;
+}
+.flow-media-grid span {
+  background: #242130;
+}
+.clip {
+  background: #302841;
+  color: #d6c5f8;
+}
+.check {
+  color: #afb5c4 !important;
+}
+.hint,
+.workflow {
+  color: #a5a0b6;
+}
+dialog {
+  box-shadow: 0 30px 100px #0009;
+}
+dialog::backdrop {
+  background: #05060bbd;
+  backdrop-filter: blur(8px);
+}
+#toast {
+  background: #292335;
+  color: #f0eaff;
+  border: 1px solid #645375;
+}
+footer {
+  border-color: var(--line);
+  color: #8a91a3;
+}
+.plan-trigger {
+  border-color: #554768;
+  color: #d3c5f2;
+}
+.plans-dialog {
+  width: min(1000px, 94vw);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 30px;
+  border-radius: 18px;
+}
+.plans-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+}
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+.plan-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #171a22;
+}
+.plan-card.featured {
+  border-color: #8c75b4;
+  background: #201b2b;
+}
+.plan-price {
+  font-size: 32px;
+  letter-spacing: -1px;
+  font-weight: 600;
+  margin: 18px 0;
+}
+.plan-price span {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.plan-card ul {
+  padding-left: 18px;
+  line-height: 1.9;
+  color: #b8becd;
+}
+.plan-status {
+  color: #c5b1e7;
+  font-size: 11px;
+}
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}
+@media (max-width: 750px) {
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+  .plans-dialog {
+    padding: 20px;
+  }
+  .hero-art {
+    opacity: 0.35;
+    right: 0;
+    pointer-events: none;
+  }
+  .hero > div:first-child {
+    position: relative;
+    z-index: 1;
+  }
+}
+.inspector-tabs button,
+.media-tiles img,
+.media-tiles video,
+.timeline-panel,
+.scene-add,
+.queue-card,
+.day,
+.pro-block-grid button,
+.pro-command-grid button,
+.pro-inline button,
+.pro-filter-grid button,
+.pro-caption-styles button,
+.pro-saved-grid article,
+.pro-score {
+  background: #191c25;
+  border-color: var(--line);
+  color: #c8bedc;
+}
+.inspector-tabs button.active,
+.layer-row.selected,
+.filter-tiles .selected,
+.queue-state,
+.event {
+  background: #2b243a;
+  color: #d3c4ed;
+}
+.queue-state.ready {
+  background: #1d332c;
+  color: #9ccbb8;
+}
+.pro-style-grid article,
+.pro-asset-list,
+.pro-asset-list label,
+.pro-live canvas,
+.pro-dialog-header,
+.pro-dialog-tabs {
+  border-color: var(--line);
+}
+#pro-content label,
+.panel label,
+.creator-inspector label {
+  color: #a7adbd;
+}
+.pro-style-grid .pro-add {
+  background: #24202e;
+  color: #c7b6df;
+}
+@media (max-width: 750px) {
+  .app > header {
+    padding: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+    height: auto;
+    min-height: 78px;
+  }
+  .app > header > div {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .app > header small {
+    display: none;
+  }
+}
