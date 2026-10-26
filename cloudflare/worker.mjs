@@ -1,4 +1,5 @@
 import puppeteer from '@cloudflare/puppeteer';
+import { DurableFiles, R2Files } from './files.mjs';
 import {
   createCipheriv,
   createDecipheriv,
@@ -35,6 +36,14 @@ export default {
       allowed = (env.LUMA_ORIGINS || '').split(',').map((v) => v.trim());
     if (origin && origin !== u.origin && !allowed.includes(origin))
       return json({ error: 'Origen no permitido' }, 403);
+    if (
+      !u.pathname.startsWith('/api/') &&
+      !u.pathname.startsWith('/oauth/') &&
+      !u.pathname.startsWith('/studio/')
+    ) {
+      if (u.pathname === '/') u.pathname = '/index.html';
+      return env.ASSETS.fetch(new Request(u, request));
+    }
     let response;
     if (request.method === 'OPTIONS') response = new Response(null, { status: 204 });
     else {
@@ -72,6 +81,7 @@ export class LumaState {
     this.ctx = ctx;
     this.env = env;
     this.store = ctx.storage;
+    this.media = env.MEDIA ? new R2Files(env.MEDIA, ctx.storage) : new DurableFiles(ctx.storage);
     this.busy = false;
   }
   async list(prefix) {
@@ -187,7 +197,7 @@ export class LumaState {
   }
   async post(job) {
     const account = await this.store.get('account:' + job.account),
-      media = await this.env.MEDIA.get('media/' + job.media);
+      media = await this.media.get('media/' + job.media);
     if (!account || !media) throw Error('Cuenta o archivo ausente');
     const tokens = await this.refresh(account),
       auth = { Authorization: 'Bearer ' + tokens.access_token },
@@ -277,12 +287,17 @@ export class LumaState {
     await this.save('post', job);
   }
   async render(job) {
-    const payloadObject = await this.env.MEDIA.get('project/' + job.id);
+    const payloadObject = await this.media.get('project/' + job.id);
     if (!payloadObject) throw Error('Falta el proyecto');
     const payload = await payloadObject.json(),
       browser = await puppeteer.launch(this.env.BROWSER, { keep_alive: 300000 });
     try {
       const page = await browser.newPage();
+      const loadErrors = [];
+      page.on('pageerror', (e) => loadErrors.push(String(e.message)));
+      page.on('response', (r) => {
+        if (r.status() >= 400) loadErrors.push(r.status() + ' ' + new URL(r.url()).pathname);
+      });
       await page.setRequestInterception(true);
       page.on('request', (request) => {
         if (new URL(request.url()).origin === job.origin)
@@ -295,7 +310,15 @@ export class LumaState {
         else request.abort();
       });
       await page.goto(job.origin + '/studio/index.html');
-      await page.waitForFunction(() => !!globalThis.LumaFlow);
+      try {
+        await page.waitForFunction(() => !!globalThis.LumaFlow);
+      } catch {
+        throw Error(
+          'Editor remoto: ' +
+            (loadErrors.slice(-4).join('; ') ||
+              'no se inició el editor en ' + new URL(page.url()).pathname),
+        );
+      }
       const result = await page.evaluate(
         async (data) => globalThis.LumaFlow.remoteRender({ ...data, uploadResult: true }),
         payload,
@@ -348,10 +371,11 @@ export class LumaState {
           await this.save('render', render);
           try {
             await this.render(render);
-          } catch {
+          } catch (error) {
             render.status = 'Error';
-            render.error =
-              'El render remoto no se completó. Revisa la cuota de Browser Run y vuelve a enviar el proyecto.';
+            render.error = ('Render no completado: ' + String(error.message))
+              .replaceAll(this.env.LUMA_SERVICE_TOKEN, '[redacted]')
+              .slice(0, 500);
             await this.save('render', render);
           }
         }
@@ -369,6 +393,7 @@ export class LumaState {
       if (callback && request.method === 'GET') return await this.callback(request, callback[1]);
       if (path === '/api/status' && request.method === 'GET')
         return json({
+          storage: this.media.usage ? await this.media.usage() : null,
           version: 'Luma Cloudflare 1.0',
           providers: this.providers(),
           accounts: (await this.list('account:')).map(({ id, name, platform }) => ({
@@ -379,6 +404,17 @@ export class LumaState {
           posts: (await this.list('post:')).map(({ upload, key, ...p }) => p),
           renders: await this.list('render:'),
         });
+      if (path === '/api/temporary/clear' && request.method === 'POST') {
+        const pending = [...(await this.list('post:')), ...(await this.list('render:'))].some((j) =>
+          ['Pendiente', 'Programado', 'Enviando', 'Procesando'].includes(j.status),
+        );
+        if (pending)
+          return json({ error: 'Termina los trabajos pendientes antes de vaciar archivos.' }, 409);
+        if (!this.media.clear)
+          return json({ error: 'La limpieza no está disponible para este almacén' }, 400);
+        await this.media.clear();
+        return json({ message: 'Archivos temporales eliminados; cuentas y estados conservados.' });
+      }
       if (path === '/api/media' && request.method === 'POST') {
         const type = request.headers.get('Content-Type') || '',
           size = +request.headers.get('Content-Length'),
@@ -387,7 +423,8 @@ export class LumaState {
           throw Error('Formato o tamaño no permitido');
         const id = uid(),
           name = decodeURIComponent(request.headers.get('X-Filename') || 'contenido').slice(0, 180);
-        await this.env.MEDIA.put('media/' + id, request.body, {
+        await this.media.put('media/' + id, request.body, {
+          size,
           httpMetadata: { contentType: type },
           customMetadata: { name },
         });
@@ -395,7 +432,7 @@ export class LumaState {
       }
       const media = path.match(/^\/api\/media\/([\w-]+)$/);
       if (media && request.method === 'GET') {
-        const item = await this.env.MEDIA.get('media/' + media[1]);
+        const item = await this.media.get('media/' + media[1]);
         if (!item) return json({ error: 'Archivo ausente' }, 404);
         return new Response(item.body, {
           headers: {
@@ -456,7 +493,7 @@ export class LumaState {
         )
           throw Error('Proyecto no válido');
         for (const item of data.media)
-          if (!(await this.env.MEDIA.head('media/' + item.remote))) throw Error('Falta un medio');
+          if (!(await this.media.head('media/' + item.remote))) throw Error('Falta un medio');
         const queue = await this.list('render:');
         if (queue.filter((r) => ['Pendiente', 'Procesando'].includes(r.status)).length >= 10)
           throw Error('Cola llena');
@@ -468,7 +505,7 @@ export class LumaState {
             status: 'Pendiente',
             created: Date.now(),
           };
-        await this.env.MEDIA.put('project/' + id, text, {
+        await this.media.put('project/' + id, text, {
           httpMetadata: { contentType: 'application/json' },
         });
         await this.save('render', job);
@@ -486,7 +523,7 @@ export class LumaState {
           return json({ id: prior.id, status: prior.status });
         }
         if (!(await this.store.get('account:' + data.account))) throw Error('Cuenta ausente');
-        const media = await this.env.MEDIA.head('media/' + data.media);
+        const media = await this.media.head('media/' + data.media);
         if (!media?.httpMetadata?.contentType?.startsWith('video')) throw Error('Video ausente');
         if (
           data.at &&

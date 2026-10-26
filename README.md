@@ -139,9 +139,9 @@ Crear mi contenido reúne diez paneles conectados al proyecto:
 
 ### Servicio opcional y funciones pendientes de activación
 
-[backend/README.md](backend/README.md) explica el servicio de un propietario: render de proyectos mediante el editor incluido, subida privada/pública a YouTube según elección y envío de borradores a TikTok. Tiene trabajos persistentes, fechas UTC, cifrado de tokens, autenticación, CORS, OAuth e idempotencia. El código y pruebas están incluidos, pero no se ha instalado un servidor ni autorizado cuentas de producción.
+[backend/README.md](backend/README.md) explica el servicio de un propietario: render de proyectos mediante el editor incluido, subida privada/pública a YouTube según elección y envío de borradores a TikTok. Tiene trabajos persistentes, fechas UTC, cifrado de tokens, autenticación, CORS, OAuth e idempotencia. El servicio Cloudflare está desplegado y el render remoto está probado; todavía no se han autorizado cuentas sociales.
 
-Para activar trabajos con Luma cerrado se necesita un alojamiento persistente y Chromium. Para activar cuentas se necesitan las aplicaciones y permisos de cada plataforma. Instagram, Facebook, LinkedIn, analítica por cuenta, detección semántica de momentos, denoise neuronal y colaboración multiusuario siguen pendientes. La interfaz no presenta estas conexiones como activas.
+Los trabajos con Luma cerrado se ejecutan con Workers, R2 y Browser Run en Cloudflare. Para activar cuentas se necesitan las aplicaciones y permisos de cada plataforma. Instagram, Facebook, LinkedIn, analítica por cuenta, detección semántica de momentos, denoise neuronal y colaboración multiusuario siguen pendientes. La interfaz no presenta estas conexiones como activas.
 
 Los modelos de voz y detección se descargan desde Hugging Face, jsDelivr y Google. El reconocimiento se realiza en el dispositivo; no se transmite la grabación a esos proveedores para inferencia. La primera carga depende de red y memoria disponible.
 
@@ -149,4 +149,12 @@ Los modelos de voz y detección se descargan desde Hugging Face, jsDelivr y Goog
 
 La carpeta cloudflare/ contiene la versión para Workers, R2, Durable Objects y Browser Run. Consulta [cloudflare/README.md](cloudflare/README.md). Compila con Wrangler y tiene pruebas propias. Esta opción no necesita un servidor Node encendido. El servicio de backend/ se conserva como alternativa autohospedada; no es el servicio que se desplegará en tu cuenta Cloudflare.
 
-La interfaz pública sigue en Pages y Sites. La cuenta Cloudflare debe autorizar el despliegue y tener los productos habilitados. No se ha contratado un plan ni activado facturación automáticamente.
+La interfaz pública sigue en Pages y Sites. La cuenta fue autorizada por el propietario, quien también activó R2. El estudio abre públicamente y permite descargar contenido local sin token. La API y los archivos del servidor requieren el token privado del servicio.
+
+## Enlaces y estado final
+
+- Estudio público Cloudflare: https://luma-studio-service.analista-datos-pro.workers.dev/
+- GitHub Pages: https://fleremiasflemin20-maker.github.io/Studio-Edicion-/
+- Sites: https://luma-social-studio-251026.keenox19.chatgpt.site
+
+La interfaz pública funciona sin iniciar sesión. La exportación local pertenece al visitante y se descarga en su equipo. No hay una galería pública de archivos privados ni publicación automática de todos los proyectos. El acceso a la API de render, R2 y cuentas sociales sigue protegido.

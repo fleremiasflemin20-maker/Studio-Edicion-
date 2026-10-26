@@ -82,3 +82,77 @@ test('Render jobs store project payload separately from durable metadata', async
   assert.equal(jobs[0].project, undefined);
   assert.ok(getAlarm());
 });
+
+test('Temporary files persist in bounded chunks without R2', async () => {
+  const { DurableFiles } = await import('./files.mjs');
+  const f = fixture(),
+    files = new DurableFiles(f.store),
+    bytes = new Uint8Array(180000);
+  bytes.fill(77);
+  await files.put('media/test', bytes, { httpMetadata: { contentType: 'video/webm' } });
+  const metadata = await files.head('media/test');
+  assert.equal(metadata.size, bytes.length);
+  assert.equal(metadata.count, 3);
+  const stored = await files.get('media/test');
+  const restored = new Uint8Array(await new Response(stored.body).arrayBuffer());
+  assert.deepEqual(restored, bytes);
+  assert.equal((await files.usage()).usedBytes, bytes.length);
+  await assert.rejects(() => files.put('large', new Uint8Array(8 * 1024 * 1024 + 1)), /8 MB/);
+  await files.clear();
+  assert.equal((await files.usage()).usedBytes, 0);
+});
+test('Service supports temporary uploads without any R2 binding', async () => {
+  const f = fixture();
+  delete f.env.MEDIA;
+  const state = new LumaState({ storage: f.store }, f.env),
+    request = new Request('https://service.test/api/media', {
+      method: 'POST',
+      headers: { 'Content-Type': 'video/webm', 'Content-Length': '50' },
+      body: new Uint8Array(50),
+    });
+  const result = await (await state.fetch(request)).json();
+  assert.ok(result.id);
+  const response = await state.fetch(new Request('https://service.test/api/media/' + result.id));
+  assert.equal((await response.arrayBuffer()).byteLength, 50);
+});
+
+test('Private R2 wrapper enforces per-file and total limits', async () => {
+  const { R2Files } = await import('./files.mjs'),
+    f = fixture(),
+    objects = new Map(),
+    bucket = {
+      put: async (k, v) => {
+        objects.set(k, v);
+        return { size: v.byteLength };
+      },
+      delete: async (k) => objects.delete(k),
+      head: async (k) => (objects.has(k) ? { size: objects.get(k).byteLength } : null),
+      get: async (k) => objects.get(k),
+    };
+  const files = new R2Files(bucket, f.store);
+  await files.put('media/one', new Uint8Array(100));
+  assert.equal((await files.usage()).usedBytes, 100);
+  await assert.rejects(
+    () => files.put('large', new Uint8Array(1), { size: 65 * 1024 * 1024 }),
+    /límite/,
+  );
+  await f.store.put('r2-meta:quota', { key: 'quota', size: 512 * 1024 * 1024 });
+  await assert.rejects(() => files.put('more', new Uint8Array(1)), /límite/);
+  await files.clear();
+  assert.equal((await files.usage()).usedBytes, 0);
+});
+
+test('Public studio opens without exposing the private API', async () => {
+  const { env } = fixture();
+  env.ASSETS = {
+    fetch: async () =>
+      new Response('<title>Luma Studio</title>', { headers: { 'Content-Type': 'text/html' } }),
+  };
+  const studio = await worker.fetch(new Request('https://service.test/'), env);
+  assert.equal(studio.status, 200);
+  assert.match(await studio.text(), /Luma Studio/);
+  const api = await worker.fetch(new Request('https://service.test/api/status'), env);
+  assert.equal(api.status, 401);
+  const renderer = await worker.fetch(new Request('https://service.test/studio/index.html'), env);
+  assert.equal(renderer.status, 401);
+});

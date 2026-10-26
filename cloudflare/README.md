@@ -1,35 +1,47 @@
 # Luma en Cloudflare
 
-Implementación del servicio para Workers, R2, Durable Objects con SQLite y Browser Run. La interfaz puede seguir en GitHub Pages y Sites; este Worker es el servicio privado de una sola persona. No se ha activado una cuenta ni contratado servicios por incluir estos archivos.
+Estudio público: https://luma-studio-service.analista-datos-pro.workers.dev/
 
-## Desplegar
+Cualquier visitante puede crear contenido y descargar sus videos, imágenes y respaldos sin autenticarse. Los proyectos del editor se guardan en su navegador y se separan por origen. Los archivos privados, cuentas y trabajos del servidor están protegidos por un token de servicio; no se muestran a otros visitantes.
 
-1. Desde cloudflare/ ejecuta `npm ci`.
-2. Autentica Wrangler con tu cuenta (`npx wrangler login`). No compartas tokens en el chat.
-3. Activa R2 desde tu cuenta si aún no está disponible. Si Cloudflare solicita un método de pago o cambio de plan, revísalo tú antes de aceptar.
-4. Crea el bucket privado `npx wrangler r2 bucket create luma-studio-media`. No lo hagas público.
-5. Define con `npx wrangler secret put LUMA_SERVICE_TOKEN` un secreto aleatorio de al menos 32 caracteres y con `npx wrangler secret put LUMA_ENCRYPTION_KEY` una clave aleatoria de 32 bytes en hexadecimal. Guárdalos en tu gestor de secretos, no en Git.
-6. Ejecuta `npm run check` para compilar sin desplegar; después `npm run deploy` para publicar el servicio.
-7. En Luma > Crear mi contenido > Publicar, introduce la URL workers.dev y el token del servicio. Las claves de las redes se definen como secretos del Worker y nunca se introducen en la interfaz estática.
+## Recursos desplegados
 
-Configura opcionalmente `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `TIKTOK_CLIENT_ID` y `TIKTOK_CLIENT_SECRET` con `wrangler secret put`. Registra las redirecciones exactas `https://TU-WORKER.workers.dev/oauth/youtube/callback` y `/oauth/tiktok/callback` en sus portales oficiales. Los permisos y límites de cada red son los descritos en backend/README.md. TikTok es envío de borrador, no publicación pública directa.
+- Worker `luma-studio-service` con los mismos archivos del editor público.
+- Durable Object SQLite `LumaState` para cuentas cifradas, OAuth, trabajos programados e idempotencia.
+- Bucket R2 Standard privado `luma-studio-media`. R2 fue activado por el propietario de la cuenta; no se cambió su plan de Workers.
+- Browser Run para ejecutar el compositor en un navegador remoto y seguir exportando con la pestaña del usuario cerrada.
 
-## Funcionamiento
+Límites internos: 64 MB por archivo remoto y 512 MB de archivos indexados por Luma. La interfaz muestra el uso tras conectar y permite vaciar archivos temporales con confirmación, siempre que no haya trabajos pendientes. El render admite hasta 120 segundos, sujeto al tamaño del archivo y a las cuotas de la cuenta. Los videos grandes pueden exportarse localmente. Los archivos no se borran automáticamente.
 
-- R2 mantiene recursos y snapshots privados. Máximo 64 MB por archivo en esta configuración para limitar consumo de memoria y tamaño de respuesta. No envía archivos públicos por URL.
-- Durable Objects almacena cuentas cifradas, OAuth de un solo uso, estados e idempotencia. Una alarma procesa la siguiente publicación o render pendiente incluso sin una pestaña abierta. Los estados inciertos no se reenvían automáticamente.
-- Browser Run abre el mismo editor distribuido, carga el proyecto y exporta en un navegador remoto. Solo se permiten solicitudes al propio servicio; la credencial de servicio no se envía a orígenes externos. La sesión se cierra en finally. El render sigue siendo en tiempo real y no supera 120 segundos.
-- El Worker sirve el editor bajo /studio únicamente para ese proceso autenticado. No reemplaza el sitio público.
-- No hay sincronización multiusuario, analítica social ni conectores de Meta o LinkedIn en este despliegue.
+El adaptador DurableFiles permite despliegues alternativos sin R2 (8 MB por archivo, 64 MB total), pero la configuración actual utiliza R2Files. La carpeta incluye pruebas de ambos adaptadores.
 
-## Costes y límites
+## Conectar el servicio privado
 
-Según documentación oficial consultada el 26/10/2026, Browser Run Free incluye 10 minutos al día. Workers Paid incluye 10 horas al mes y aplica cobro por exceso y concurrencia. R2 Standard incluye 10 GB-mes y cuotas de operaciones; el exceso es de pago. Revisa el panel de tu cuenta y configura alertas antes de ampliar uso. No se ha seleccionado ni contratado un plan.
+En Crear mi contenido > Publicar la dirección del servicio está preconfigurada. Introduce el token de servicio únicamente en tu propia sesión; se mantiene en sessionStorage de esa pestaña y no está incluido en el código público. La comprobación muestra cuentas y uso de almacenamiento. Desde Exportar puedes enviar proyectos al servidor y descargar trabajos terminados.
 
-Fuentes: [Browser Run precios](https://developers.cloudflare.com/browser-run/pricing/), [límites](https://developers.cloudflare.com/browser-run/limits/), [R2 precios](https://developers.cloudflare.com/r2/pricing/), [alarmas](https://developers.cloudflare.com/durable-objects/api/alarms/).
+Las credenciales se generaron localmente fuera del repositorio y se guardaron como secretos de Workers. Nunca publiques `LUMA_SERVICE_TOKEN`, `LUMA_ENCRYPTION_KEY` ni tokens OAuth. La clave de cifrado contiene 32 bytes en hexadecimal. Los tokens de cuentas sociales se cifran con AES-256-GCM.
+
+Para publicar en YouTube o enviar borradores a TikTok todavía debes registrar las aplicaciones y definir `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `TIKTOK_CLIENT_ID` y `TIKTOK_CLIENT_SECRET` con `wrangler secret put`. Registra estas redirecciones en los portales oficiales:
+
+- https://luma-studio-service.analista-datos-pro.workers.dev/oauth/youtube/callback
+- https://luma-studio-service.analista-datos-pro.workers.dev/oauth/tiktok/callback
+
+Hasta completar esos pasos no hay cuentas conectadas. No se publicó contenido de prueba en redes sociales. TikTok es envío de borrador que el usuario completa en su aplicación; no es Direct Post público. Meta, LinkedIn y analítica social siguen pendientes.
+
+## Desplegar cambios
+
+Desde cloudflare/ ejecuta `npm ci`, autentica Wrangler si hace falta, comprueba con `npm run check` y despliega con `npm run deploy`. `wrangler.jsonc` declara STATE, MEDIA, BROWSER y ASSETS. No crees otro bucket con el mismo nombre ni hagas público el existente.
+
+Las alarmas ejecutan el siguiente trabajo pendiente. Las solicitudes usan claves de idempotencia; un resultado incierto pasa a Revisar estado y no se reenvía automáticamente. El editor de render interno bajo /studio requiere autenticación. Las peticiones del navegador remoto se restringen al propio servicio y las sesiones se cierran siempre. Los videos resultantes se suben directamente al almacén para evitar transportar todo el video en JSON.
 
 ## Verificación
 
-Compilación Wrangler sin despliegue y cuatro pruebas de cifrado, acceso, orígenes, persistencia, idempotencia y programación con almacenamiento simulado. La exportación remota y OAuth con cuentas reales requieren un despliegue autorizado; no se presentan como verificados antes de hacerlo.
+Ocho pruebas específicas cubren cifrado, autenticación, orígenes, programación, idempotencia, archivos por bloques, límites R2 y separación entre estudio público y API privada. Wrangler compila y despliega. Una prueba real generó y descargó un video MP4 de dos segundos desde Cloudflare. La transcripción local y exportaciones con audio/capas también se probaron en el navegador.
 
-La dependencia oficial @cloudflare/puppeteer arrastra avisos npm en herramientas de descarga de navegadores (extract-zip/proxy/FTP). Esas herramientas no aparecen en el bundle de Worker generado y no se usan para abrir archivos del usuario ni para instalar navegadores. Mantén la dependencia fijada y revisa las actualizaciones del proveedor.
+La dependencia oficial @cloudflare/puppeteer arrastra avisos npm en herramientas de descarga de navegadores (extract-zip/proxy/FTP). Esas herramientas no aparecen en el bundle generado ni se usan con archivos del usuario. Mantén la dependencia fijada y revisa actualizaciones del proveedor.
+
+## Cuotas y costes
+
+Se mantienen las cuotas y condiciones de la cuenta del propietario. Browser Run Free incluye 10 minutos diarios; R2 Standard incluye 10 GB-mes y cuotas de operaciones, con cobro por exceso según la suscripción activada por el propietario. Los límites internos de Luma no sustituyen los de Cloudflare ni garantizan que toda la cuenta esté dentro de su cuota.
+
+Fuentes consultadas el 26/10/2026: [Browser Run](https://developers.cloudflare.com/browser-run/pricing/), [R2](https://developers.cloudflare.com/r2/pricing/), [Durable Objects](https://developers.cloudflare.com/durable-objects/platform/pricing/), [alarmas](https://developers.cloudflare.com/durable-objects/api/alarms/).

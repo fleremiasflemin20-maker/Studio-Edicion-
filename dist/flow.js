@@ -20,6 +20,10 @@
   } catch {
     state = {};
   }
+  state.service ||= 'https://luma-studio-service.analista-datos-pro.workers.dev';
+  try {
+    root.LumaFlowToken = sessionStorage.getItem('luma-service-token') || '';
+  } catch {}
   state.recipes ||= [];
   state.jobs ||= [];
   state.jobs.forEach((j) => {
@@ -897,6 +901,16 @@
         a = asset(j.asset);
       download(a.blob, a.name);
     },
+    'clear-remote': async () => {
+      if (
+        !confirm(
+          '¿Eliminar definitivamente los archivos temporales del servicio? Las cuentas y tus proyectos del navegador se conservan.',
+        )
+      )
+        return;
+      await request('/api/temporary/clear', { method: 'POST' });
+      status('Archivos temporales eliminados');
+    },
     connect,
     'publish-local': () => {
       busy = false;
@@ -1106,10 +1120,15 @@
   }
   async function request(path, options = {}) {
     if (!state.service) throw Error('Configura tu servicio');
-    const r = await fetch(state.service + path, {
-      ...options,
-      headers: { ...options.headers, Authorization: 'Bearer ' + root.LumaFlowToken },
-    });
+    const r = await fetch(
+      state.service +
+        path +
+        (!options.method ? (path.includes('?') ? '&' : '?') + '_luma=' + Date.now() : ''),
+      {
+        ...options,
+        headers: { ...options.headers, Authorization: 'Bearer ' + root.LumaFlowToken },
+      },
+    );
     const data = await r.json();
     if (!r.ok) throw Error(data.error || 'Solicitud rechazada');
     return data;
@@ -1122,7 +1141,10 @@
     )
       throw Error('Usa HTTPS o localhost');
     state.service = url.origin;
-    root.LumaFlowToken = value('token');
+    root.LumaFlowToken = value('token') || root.LumaFlowToken;
+    try {
+      sessionStorage.setItem('luma-service-token', root.LumaFlowToken);
+    } catch {}
     const data = await request('/api/status');
     persist();
     $('#flow-accounts').innerHTML =
@@ -1138,6 +1160,20 @@
     $('#f-account').innerHTML = (data.accounts || [])
       .map((a) => `<option value="${esc(a.id)}">${esc(a.name + ' · ' + a.platform)}</option>`)
       .join('');
+    if (data.storage)
+      $('#flow-accounts').insertAdjacentHTML(
+        'beforeend',
+        '<p>' +
+          esc(data.storage.type) +
+          ' · ' +
+          (data.storage.usedBytes / 1048576).toFixed(1) +
+          ' / ' +
+          data.storage.limitBytes / 1048576 +
+          ' MB · máximo ' +
+          data.storage.maxFileBytes / 1048576 +
+          ' MB por archivo</p>' +
+          b('Vaciar archivos temporales', 'clear-remote'),
+      );
     $('#flow-post').hidden = !(data.accounts || []).length;
     status('Conexión verificada. Los permisos se conceden en cada plataforma.');
   }
