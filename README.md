@@ -168,3 +168,9 @@ La base `cloudflare/billing.mjs` está probada pero no conectada al Worker; aún
 ## Identidad del estudio
 
 Marca pública: **Fleremahias Studio**, firma **by fleremiasflemin**. Incluye monograma FM propio, favicon y nombres de descarga actualizados. Las claves internas, identificadores de respaldo y direcciones existentes conservan compatibilidad para mantener proyectos guardados y enlaces funcionando.
+
+## Guía viva para creadores
+
+En la primera visita se abre una bienvenida con manual y recorrido. El botón **Guía y ayuda** está siempre en la cabecera; los paneles de creación, estilos y formularios incluyen **Ayuda de esta sección**. El manual tiene 27 capítulos, buscador, instrucciones paso a paso y explicación de controles. El recorrido resalta los elementos reales y permite avanzar, volver y consultar su capítulo. **Explicar controles** intercepta el clic para explicar el control sin ejecutar su acción; Escape permite salir. Las animaciones respetan la preferencia de movimiento reducido.
+
+La bienvenida se recuerda por navegador mediante una clave independiente de los proyectos. Borrar los datos del navegador o usar otro dispositivo vuelve a mostrarla. El recorrido no crea proyectos ni inicia grabaciones, exportaciones o publicaciones. La documentación distingue exportación local, acceso privado al servicio, OAuth y planes aún en preparación. Se mantiene en `dist/help-content.js`; el controlador está en `dist/help.js` y su diseño en `dist/help.css`.
