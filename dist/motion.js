@@ -42,6 +42,13 @@
     dialog.querySelectorAll('[data-field]').forEach((el) => (el.value = draft[el.dataset.field]));
   }
   function open() {
+    if (!dialog && !localStorage.getItem('fleremahias-motion-v1') && en())
+      draft = Core.normalize({
+        ...draft,
+        title: 'Create with your signature.',
+        subtitle: 'One idea. Endless possibilities.',
+        cta: 'Make it yours.',
+      });
     if (dialog) {
       dialog.showModal();
       return;
