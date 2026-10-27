@@ -30,51 +30,75 @@ draw = function () {
 };
 let singlePreviewRAF = 0,
   singleStarted = 0;
+function stopSinglePreview() {
+  cancelAnimationFrame(singlePreviewRAF);
+  singlePreviewRAF = 0;
+  previewMedia?.pause();
+  previewMusic?.pause();
+  globalThis.LumaFlowMedia?.stop();
+  if ($('#playBtn')) $('#playBtn').textContent = '▶ Reproducir';
+}
 togglePreview = async function () {
-  if (rendering) return;
-  const x = p();
+  if (rendering || !p()) return;
+  const x = p(),
+    sceneId = x.activeScene,
+    canvas = $('#canvas');
   try {
     if ((previewMedia && !previewMedia.paused) || singlePreviewRAF) {
-      previewMedia?.pause();
-      previewMusic?.pause();
-      cancelAnimationFrame(singlePreviewRAF);
-      singlePreviewRAF = 0;
-      $('#playBtn').textContent = '▶ Reproducir';
+      stopSinglePreview();
       return;
     }
+    const duration = P.length(x);
     if (previewMedia) {
-      const end = x.end || previewMedia.duration;
+      const end = Math.min(x.end || previewMedia.duration, previewMedia.duration);
+      if (!Number.isFinite(end) || end <= x.start)
+        throw Error('Revisa el inicio y el final del recorte.');
       if (previewMedia.currentTime < x.start || previewMedia.currentTime >= end)
         await seekMedia(previewMedia, x.start);
+      previewMedia.muted = !!x.muted;
       previewMedia.playbackRate = x.speed || 1;
       await previewMedia.play();
+      previewSeconds = (previewMedia.currentTime - x.start) / (x.speed || 1);
     } else {
-      previewSeconds = 0;
-      singleStarted = performance.now();
+      if (previewSeconds >= duration) previewSeconds = 0;
+      singleStarted = performance.now() - previewSeconds * 1000;
     }
     if (previewMusic) {
       previewMusic.loop = !!x.musicLoop;
-      previewMusic.currentTime = 0;
+      previewMusic.currentTime =
+        previewMusic.loop && Number.isFinite(previewMusic.duration)
+          ? previewSeconds % previewMusic.duration
+          : Math.min(previewSeconds, previewMusic.duration || previewSeconds);
       await previewMusic.play();
     }
     $('#playBtn').textContent = 'Ⅱ Pausar';
     function step() {
-      if (!$('#canvas') || rendering) return;
-      const t = previewMedia
-        ? (previewMedia.currentTime - x.start) / (x.speed || 1)
-        : (performance.now() - singleStarted) / 1000;
-      previewSeconds = t;
-      draw();
-      if ((previewMedia && previewMedia.paused) || (!previewMedia && t >= x.duration)) {
-        singlePreviewRAF = 0;
-        previewMusic?.pause();
-        $('#playBtn').textContent = '▶ Reproducir';
+      if ($('#canvas') !== canvas || p() !== x || x.activeScene !== sceneId || rendering) {
+        stopSinglePreview();
         return;
       }
-      singlePreviewRAF = requestAnimationFrame(step);
+      const end = previewMedia
+        ? Math.min(x.end || previewMedia.duration, previewMedia.duration)
+        : duration;
+      let t = previewMedia
+        ? (previewMedia.currentTime - x.start) / (x.speed || 1)
+        : (performance.now() - singleStarted) / 1000;
+      const ended = previewMedia
+        ? previewMedia.currentTime >= end || previewMedia.paused
+        : t >= duration;
+      t = Math.max(0, Math.min(duration, t));
+      previewSeconds = t;
+      const seek = $('#seek'),
+        time = $('#time');
+      if (seek) seek.value = previewMedia ? Math.min(end, previewMedia.currentTime) : t;
+      if (time) time.textContent = t.toFixed(1) + ' / ' + duration.toFixed(1) + ' s';
+      if (ended) stopSinglePreview();
+      draw();
+      if (!ended) singlePreviewRAF = requestAnimationFrame(step);
     }
     singlePreviewRAF = requestAnimationFrame(step);
   } catch (e) {
+    stopSinglePreview();
     toast(e.message);
   }
 };

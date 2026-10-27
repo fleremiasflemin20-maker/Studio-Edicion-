@@ -5,15 +5,33 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server.cjs",
-    "test": "node --test tests/core.test.cjs tests/board.test.cjs tests/design.test.cjs tests/i18n.test.cjs tests/creator-core.test.cjs tests/pro-core.test.cjs tests/flow.test.cjs backend/service.test.cjs",
+    "test": "node --test tests/core.test.cjs tests/board.test.cjs tests/design.test.cjs tests/i18n.test.cjs tests/creator-core.test.cjs tests/pro-core.test.cjs tests/flow.test.cjs backend/service.test.cjs tests/runtime.test.cjs tests/motion.test.cjs",
     "check": "node scripts/check.cjs",
     "format": "prettier --write \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\"",
-    "format:check": "prettier --check \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\""
+    "format:check": "prettier --check \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\"",
+    "build:motion": "node scripts/build-motion.cjs",
+    "build": "npm run build:motion"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
+    "esbuild": "0.28.2",
     "prettier": "3.9.10"
+  },
+  "dependencies": {
+    "@react-three/fiber": "9.8.2",
+    "@remotion/media": "4.0.539",
+    "@remotion/player": "4.0.539",
+    "@remotion/three": "4.0.539",
+    "@remotion/web-renderer": "4.0.539",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.539",
+    "sucrase": "3.35.1",
+    "three": "0.180.0"
+  },
+  "overrides": {
+    "zod": "4.6.6"
   }
 }

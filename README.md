@@ -198,3 +198,18 @@ Al entrar por primera vez aparece la elección **Español / English**. El botón
 La interfaz, los paneles, la guía completa de 29 capítulos, los recorridos, las instrucciones de controles y los mensajes disponen de inglés. La búsqueda de ayuda reconoce términos ingleses. Los nombres y textos del creador, los medios y las claves de CSV/código se conservan. Las plantillas nuevas y los guiones de estructura usan el idioma elegido; cambiar el idioma no reescribe proyectos existentes.
 
 La localización se resuelve localmente mediante `dist/i18n-catalog.js`, sin servicios de traducción ni dependencias nuevas. `dist/i18n-core.js` contiene traducción pura y formatos dinámicos; `dist/i18n.js` adapta los elementos de interfaz que generan los módulos existentes. Los valores de opciones, IDs, eventos y estados internos permanecen estables. Añade textos nuevos al catálogo y ejecuta `npm test`, que comprueba también la cobertura de todos los capítulos de ayuda.
+
+## Motion 2D y 3D (React + Remotion)
+
+Ejecuta `npm ci` y `npm run build` para reconstruir el motor desde `src/motion/`. El bundle se sirve localmente en `dist/motion/`; no necesita un servicio de render externo.
+
+- Seis composiciones propias: tres 2D y tres escenas 3D reales con Three.js.
+- Textos, colores, formato, duración, FPS y música sintetizada original editables.
+- Ejemplo React/TSX editable con importaciones limitadas; se ejecuta en un iframe de origen aislado, sin acceso al almacenamiento del estudio ni conexiones arbitrarias.
+- Vista previa, exportación PNG y vídeo MP4/WebM cuando el navegador admite sus códecs, cancelación, descarga, biblioteca y reutilización en un proyecto abierto.
+- Proyecto Motion JSON portable; el respaldo general conserva el borrador Motion actual.
+- Opciones 720/1080/2160 y 24/30/60 FPS. La disponibilidad y velocidad dependen de GPU, memoria, WebGL y WebCodecs. Se verificaron archivos cortos 720×1280/30 y 2160×3840/60; no es garantía universal de rendimiento.
+
+Remotion se configura con `free-license`: el propietario confirmó que trabaja solo. Su licencia comercial gratuita cubre empresas de hasta tres personas; revisar las condiciones al crecer. El SDK registra un evento técnico de render en remotion.pro; no se envían texto, código ni archivos del proyecto. Se incluyen la licencia y avisos de terceros en `dist/motion/`. Referencias: https://www.remotion.pro/license y https://www.remotion.dev/docs/client-side-rendering.
+
+Esta integración no incluye una cuenta de Claude ni generación de vídeo mediante una IA externa. El código React puede escribirse o pegarse en el panel y revisarse antes de ejecutarlo. El aislamiento protege los datos del estudio; código propio que consuma CPU excesiva puede bloquear su vista previa.

@@ -923,3 +923,25 @@ Los bloques y sus archivos se incluyen en el respaldo completo; al restaurar se 
 ### Deshacer / Volver al editor
 
 Deshace cambios del proyecto o cierra el panel para revisar el montaje completo.
+
+## Motion 2D/3D · animación por código
+
+Crea composiciones originales con React, Remotion y geometría Three.js. Previsualiza, exporta y reutiliza el resultado en tus montajes.
+
+1. Abre Motion 2D / 3D y elige una de las seis plantillas.
+2. Escribe el título, subtítulo y llamada a la acción; ajusta colores, formato, resolución, duración y FPS.
+3. Pulsa Aplicar y previsualizar después de editar. Usa reproducir y el control de fotograma para revisar.
+4. Exporta PNG, MP4 o WebM según la compatibilidad de tu navegador. Espera a que termine y descarga el resultado.
+5. Guarda el archivo en Medios o añádelo al proyecto abierto. Descarga el proyecto Motion para conservar su código editable.
+
+### Código React / TSX
+
+El ejemplo editable usa animación por fotogramas. No se admiten importaciones arbitrarias ni conexiones de red desde el código.
+
+### Cancelar exportación
+
+Detiene el render activo. Un archivo incompleto no reemplaza el último resultado terminado.
+
+### Calidad y licencia
+
+El 3D requiere WebGL. Las opciones 2160 y 60 FPS dependen del dispositivo y no garantizan tiempo real. La licencia de Remotion es gratuita para empresas de hasta tres personas; equipos mayores deben revisar sus condiciones.

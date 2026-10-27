@@ -266,6 +266,7 @@
     'favorite-remove': 'Quita este favorito de Mis elementos; revisa antes de confirmar.',
   };
   function currentChapter(el) {
+    if (el?.closest('.motion-lab')) return 'motion';
     if (el?.closest('.design-dialog')) return 'design-pro';
     if (el?.closest('.flow-dialog'))
       return flowChapters[document.querySelector('.flow-tabs .active')?.dataset.value] || 'create';
@@ -574,7 +575,8 @@
     )
       return toast('Espera a que termine la exportación antes de cambiar de sección.');
     manual.close();
-    if (c.flow) root.LumaFlow.open(c.flow);
+    if (c.id === 'motion') root.FleremahiasMotion.open();
+    else if (c.flow) root.LumaFlow.open(c.flow);
     else if (c.view) go(c.view);
   }
   function ensureCard() {

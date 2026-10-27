@@ -1020,74 +1020,140 @@
       '</tbody></table>';
   }
   async function record() {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined')
+      throw Error('Este navegador no permite grabar. Importa una toma desde tu dispositivo.');
     const source = value('source'),
-      script = value('prompter');
-    stream =
-      source === 'screen'
-        ? await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
-        : await navigator.mediaDevices.getUserMedia({ video: source === 'camera', audio: true });
-    $('#flow-record-video').srcObject = stream;
-    $('#flow-prompter').textContent = script;
-    for (let n = 3; n > 0; n--) {
-      status('Grabación en ' + n);
-      await new Promise((r) => setTimeout(r, 1000));
-      if (abort.signal.aborted) {
-        stream.getTracks().forEach((t) => t.stop());
+      script = value('prompter'),
+      signal = abort.signal;
+    let captured,
+      activeRecorder,
+      started = false,
+      cleaned = false,
+      captureError;
+    const cleanup = () => {
+      if (cleaned) return;
+      cleaned = true;
+      clearInterval(clock);
+      signal.removeEventListener('abort', cancelCapture);
+      captured?.getTracks().forEach((track) => track.stop());
+      if (stream === captured) stream = null;
+      if ($('#flow-record-video')) $('#flow-record-video').srcObject = null;
+    };
+    const cancelCapture = () => {
+      if (activeRecorder && activeRecorder.state !== 'inactive') activeRecorder.stop();
+      cleanup();
+    };
+    signal.addEventListener('abort', cancelCapture, { once: true });
+    try {
+      if (source === 'screen' && !navigator.mediaDevices.getDisplayMedia)
+        throw Error('Este navegador no permite compartir pantalla. Usa cámara o importa un video.');
+      captured =
+        source === 'screen'
+          ? await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
+          : await navigator.mediaDevices.getUserMedia({ video: source === 'camera', audio: true });
+      stream = captured;
+      // A permission prompt may resolve after Cancel was pressed.
+      if (signal.aborted) {
+        cleaned = false;
+        cleanup();
         throw Error('Grabación cancelada');
       }
-    }
-    const chunks = [],
-      mime =
-        source === 'audio'
-          ? ['audio/webm;codecs=opus', 'audio/mp4'].find((t) => MediaRecorder.isTypeSupported(t))
-          : recorderType();
-    recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
-    const currentRecorder = recorder,
-      started = Date.now();
-    recorder.ondataavailable = (e) => {
-      if (e.data.size) chunks.push(e.data);
-    };
-    recorder.onstop = async () => {
-      clearInterval(clock);
-      stream.getTracks().forEach((t) => t.stop());
-      stream = null;
-      recorder = null;
-      try {
-        const blob = new Blob(chunks, { type: currentRecorder.mimeType }),
-          a = await storeAsset(
+      $('#flow-record-video').srcObject = captured;
+      $('#flow-prompter').textContent = script;
+      for (let n = 3; n > 0; n--) {
+        if (signal.aborted) throw Error('Grabación cancelada');
+        status('Grabación en ' + n);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      if (signal.aborted) throw Error('Grabación cancelada');
+      const chunks = [],
+        mime =
+          source === 'audio'
+            ? ['audio/webm;codecs=opus', 'audio/mp4'].find((type) =>
+                MediaRecorder.isTypeSupported(type),
+              )
+            : recorderType();
+      activeRecorder = new MediaRecorder(captured, mime ? { mimeType: mime } : {});
+      recorder = activeRecorder;
+      const began = Date.now();
+      activeRecorder.ondataavailable = (event) => {
+        if (event.data.size) chunks.push(event.data);
+      };
+      activeRecorder.onerror = (event) => {
+        captureError = event.error || Error('No se pudo finalizar la grabación.');
+        if (activeRecorder.state !== 'inactive') activeRecorder.stop();
+        else {
+          cleanup();
+          recorder = null;
+          status(captureError.message);
+        }
+      };
+      activeRecorder.onstop = async () => {
+        cleanup();
+        if (recorder === activeRecorder) recorder = null;
+        if (captureError) {
+          status(captureError.message);
+          return;
+        }
+        if (signal.aborted) {
+          status('Grabación cancelada');
+          return;
+        }
+        if (!chunks.some((chunk) => chunk.size)) {
+          status('La grabación está vacía. Vuelve a intentarlo.');
+          return;
+        }
+        busy = true;
+        try {
+          const blob = new Blob(chunks, {
+            type:
+              activeRecorder.mimeType || mime || (source === 'audio' ? 'audio/webm' : 'video/webm'),
+          });
+          const asset = await storeAsset(
             blob,
             'Toma ' +
               new Date().toISOString().replace(/[:.]/g, '-') +
               (blob.type.includes('mp4') ? '.mp4' : '.webm'),
           );
-        if ($('#flow-record-video')) {
-          $('#flow-record-video').srcObject = null;
-          $('#flow-record-video').src = a.url;
-          $('#flow-record-video').controls = true;
+          if ($('#flow-record-video')) {
+            $('#flow-record-video').src = asset.url;
+            $('#flow-record-video').controls = true;
+          }
+          status('Toma guardada en la biblioteca. Abre Crear contenido para montarla.');
+        } catch (error) {
+          status(error.message);
+        } finally {
+          busy = false;
         }
-        status('Toma guardada en la biblioteca. Abre Crear contenido para montarla.');
-      } catch (e) {
-        status(e.message);
+      };
+      activeRecorder.start(1000);
+      started = true;
+      captured.getTracks().forEach((track) =>
+        track.addEventListener(
+          'ended',
+          () => {
+            if (activeRecorder.state !== 'inactive') activeRecorder.stop();
+          },
+          { once: true },
+        ),
+      );
+      let scroll = 0;
+      clock = setInterval(() => {
+        if ($('#flow-clock'))
+          $('#flow-clock').textContent = '● ' + Math.floor((Date.now() - began) / 1000) + ' s';
+        const prompter = $('#flow-prompter');
+        if (prompter && !prompter.dataset.paused) {
+          scroll++;
+          prompter.scrollTop = scroll;
+        }
+      }, 100);
+      status('Grabando. Termina con el botón o el control de compartir pantalla.');
+    } finally {
+      if (!started) {
+        cleanup();
+        if (recorder === activeRecorder) recorder = null;
       }
-    };
-    recorder.start(1000);
-    stream.getVideoTracks().forEach(
-      (t) =>
-        (t.onended = () => {
-          if (recorder?.state === 'recording') recorder.stop();
-        }),
-    );
-    let scroll = 0;
-    clock = setInterval(() => {
-      if ($('#flow-clock'))
-        $('#flow-clock').textContent = '● ' + Math.floor((Date.now() - started) / 1000) + ' s';
-      const el = $('#flow-prompter');
-      if (el && !el.dataset.paused) {
-        scroll += 1;
-        el.scrollTop = scroll;
-      }
-    }, 100);
-    status('Grabando. Termina con el botón o el control de compartir pantalla.');
+    }
   }
   async function runJobs() {
     if (queueRunning) throw Error('La cola ya está funcionando');
@@ -1130,6 +1196,11 @@
         (!options.method ? (path.includes('?') ? '&' : '?') + '_luma=' + Date.now() : ''),
       {
         ...options,
+        signal:
+          options.signal ||
+          (abort
+            ? AbortSignal.any([abort.signal, AbortSignal.timeout(30000)])
+            : AbortSignal.timeout(30000)),
         headers: { ...options.headers, Authorization: 'Bearer ' + root.LumaFlowToken },
       },
     );

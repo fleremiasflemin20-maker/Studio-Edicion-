@@ -1,0 +1,179 @@
+.motion-launch {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  z-index: 80;
+  border: 1px solid #69d9ba;
+  background: #11251f;
+  color: #c4ffe9;
+  border-radius: 24px;
+  padding: 12px 18px;
+  box-shadow: 0 4px 25px #0008;
+}
+.motion-lab {
+  width: min(1440px, 96vw);
+  max-width: 96vw;
+  height: 92vh;
+  max-height: 94vh;
+  background: #0c1015;
+  color: #e4eaf1;
+  border: 1px solid #35414b;
+  border-radius: 20px;
+  padding: 22px;
+}
+.motion-lab::backdrop {
+  background: #000b;
+}
+.motion-lab header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.motion-lab small {
+  display: block;
+  color: #9eb4be;
+  margin-top: 5px;
+}
+.motion-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(280px, 1fr) 300px;
+  gap: 22px;
+  height: calc(100% - 65px);
+}
+.motion-settings,
+.motion-code {
+  overflow: auto;
+}
+.motion-lab label {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: #a9becb;
+}
+.motion-lab input,
+.motion-lab select,
+.motion-lab textarea {
+  background: #171e27;
+  color: #eff8ff;
+  border: 1px solid #364553;
+  border-radius: 8px;
+  padding: 9px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.motion-lab input[type='color'] {
+  height: 38px;
+}
+.motion-lab button {
+  padding: 9px 13px;
+  border-radius: 9px;
+  border: 1px solid #384a54;
+  background: #1a2830;
+  color: #e6f8f6;
+  cursor: pointer;
+}
+.motion-lab button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.motion-settings button {
+  width: 100%;
+  background: #1b5146;
+}
+.motion-stage {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.motion-stage iframe {
+  width: 100%;
+  flex: 1;
+  min-height: 200px;
+  border: 1px solid #293c44;
+  border-radius: 12px;
+  background: #080c10;
+}
+.motion-transport {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+.motion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.motion-lab p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #adbecb;
+}
+.motion-code textarea {
+  height: 290px;
+  font: 12px/1.6 monospace;
+  resize: vertical;
+}
+.motion-code button {
+  margin: 5px 0;
+  width: 100%;
+}
+.motion-lab a {
+  color: #90e6d2;
+}
+@media (max-width: 950px) {
+  .motion-layout {
+    grid-template-columns: 180px 1fr;
+  }
+  .motion-code {
+    grid-column: 1/-1;
+  }
+  .motion-lab {
+    overflow: auto;
+  }
+  .motion-layout {
+    height: auto;
+  }
+  .motion-stage iframe {
+    height: 450px;
+  }
+}
+@media (max-width: 600px) {
+  .motion-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  .motion-stage iframe {
+    flex: auto;
+  }
+  .motion-launch {
+    bottom: 12px;
+    left: 12px;
+  }
+}
+.motion-lab header {
+  position: static;
+  background: transparent;
+  color: #eef8ff;
+  height: auto;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+.motion-lab header strong {
+  font-size: 17px;
+  color: #e6fff5;
+}
+.motion-lab header small {
+  font-size: 12px;
+}
+.motion-lab {
+  color-scheme: dark;
+}
+.motion-lab label {
+  flex: none;
+}
+.motion-lab .motion-transport button {
+  min-width: 65px;
+}

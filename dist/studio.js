@@ -42,6 +42,7 @@ go = function (v) {
     return;
   }
   cancelAnimationFrame(frameId);
+  if (typeof stopSinglePreview === 'function') stopSinglePreview();
   previewMedia?.pause();
   previewMusic?.pause();
   oldGo(v);
@@ -117,6 +118,7 @@ function field(id, label, value, type = 'text', attrs = '') {
 }
 renderEditor = function () {
   cancelAnimationFrame(frameId);
+  if (typeof stopSinglePreview === 'function') stopSinglePreview();
   previewMedia?.pause();
   previewMusic?.pause();
   previewMedia = null;

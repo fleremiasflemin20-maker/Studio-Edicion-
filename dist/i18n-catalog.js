@@ -1,4 +1,3 @@
-/* Professional English interface catalog. Content and identifiers are preserved. */
 window.FleremahiasEnglish = {
   'Empieza aquí · de principio a fin': 'Your complete creator workflow',
   'Fleremahias Studio by fleremiasflemin es un estudio de creación para redes. Puedes editar y descargar contenido localmente sin suscribirte.':
@@ -1101,7 +1100,7 @@ window.FleremahiasEnglish = {
   Guárdalo: 'Save this',
   'Tu kit de marca': 'Your brand kit',
   'Nombre de tu marca': 'Brand name',
-  'Color principal': 'Primary color',
+  'Color principal': 'Accent color',
   'Color secundario': 'Secondary color',
   'Hashtags habituales': 'Default hashtags',
   'Guardar kit': 'Save brand kit',
@@ -2278,4 +2277,83 @@ window.FleremahiasEnglish = {
     'From (scene time for video; sequence time for audio)',
   'Añade este elemento como una capa editable; luego puedes moverlo y ajustar su aspecto.':
     'Add this element as an editable layer, then move it and adjust its appearance.',
+  'Motion 2D/3D · animación por código': 'Motion 2D/3D · code-driven animation',
+  'Crea composiciones originales con React, Remotion y geometría Three.js. Previsualiza, exporta y reutiliza el resultado en tus montajes.':
+    'Create original compositions with React, Remotion and Three.js geometry. Preview, export and reuse the result in your sequences.',
+  'Abre Motion 2D / 3D y elige una de las seis plantillas.':
+    'Open Motion 2D / 3D and choose one of the six templates.',
+  'Escribe el título, subtítulo y llamada a la acción; ajusta colores, formato, resolución, duración y FPS.':
+    'Enter a title, subtitle and call to action; adjust colors, aspect ratio, resolution, duration and FPS.',
+  'Pulsa Aplicar y previsualizar después de editar. Usa reproducir y el control de fotograma para revisar.':
+    'Click Apply and preview after editing. Use playback and the frame slider to review.',
+  'Exporta PNG, MP4 o WebM según la compatibilidad de tu navegador. Espera a que termine y descarga el resultado.':
+    'Export PNG, MP4 or WebM depending on browser compatibility. Wait for completion, then download the result.',
+  'Guarda el archivo en Medios o añádelo al proyecto abierto. Descarga el proyecto Motion para conservar su código editable.':
+    'Save the file to Media or add it to your open project. Download the Motion project to preserve its editable code.',
+  'Código React / TSX': 'React / TSX code',
+  'El ejemplo editable usa animación por fotogramas. No se admiten importaciones arbitrarias ni conexiones de red desde el código.':
+    'The editable example uses frame-based animation. Arbitrary imports and network connections from code are not supported.',
+  'Cancelar exportación': 'Cancel export',
+  'Detiene el render activo. Un archivo incompleto no reemplaza el último resultado terminado.':
+    'Stops the active render. An incomplete file does not replace the last completed result.',
+  'Calidad y licencia': 'Quality and licensing',
+  'El 3D requiere WebGL. Las opciones 2160 y 60 FPS dependen del dispositivo y no garantizan tiempo real. La licencia de Remotion es gratuita para empresas de hasta tres personas; equipos mayores deben revisar sus condiciones.':
+    '3D requires WebGL. The 2160 and 60 FPS options depend on your device and do not guarantee real-time rendering. Remotion is free for companies of up to three people; larger teams must review its licensing terms.',
+  'Tipografía cinética': 'Kinetic typography',
+  'Lanzamiento de producto': 'Product launch',
+  'Historia en tres actos': 'Three-act story',
+  'Producto orbital': 'Orbital product',
+  'Escultura de marca': 'Brand sculpture',
+  'Datos en perspectiva': 'Data in perspective',
+  'Preparando composición…': 'Preparing composition…',
+  'Animación por código': 'Code-driven animation',
+  Cerrar: 'Close',
+  Resolución: 'Resolution',
+  'Duración (segundos)': 'Duration (seconds)',
+  'Música original': 'Original music',
+  'Sin música': 'No music',
+  'Aplicar y previsualizar': 'Apply and preview',
+  Fotograma: 'Frame',
+  'Cargando motor…': 'Loading engine…',
+  'Añadir al montaje abierto': 'Add to open sequence',
+  'Los archivos se renderizan en este dispositivo. 3D requiere WebGL; la exportación depende de los códecs y memoria disponibles.':
+    'Files render on this device. 3D requires WebGL; export depends on available codecs and memory.',
+  'Opcional. Deja vacío para usar la plantilla. Importaciones: react, remotion, three y @remotion/three. El código se ejecuta aislado, sin acceso a tus proyectos ni a la red.':
+    'Optional. Leave empty to use a template. Imports: react, remotion, three and @remotion/three. Code runs in isolation without access to your projects or the network.',
+  'Insertar ejemplo editable': 'Insert editable example',
+  'Descargar proyecto Motion': 'Download Motion project',
+  'Abrir proyecto Motion': 'Open Motion project',
+  'Remotion tiene condiciones de licencia comercial. Revisa la licencia antes de publicar vídeos para tu negocio.':
+    'Remotion has commercial licensing terms. Review the license before publishing videos for your business.',
+  'Cambios pendientes: pulsa Aplicar y previsualizar.': 'Changes pending: click Apply and preview.',
+  'Cancela la exportación antes de cerrar.': 'Cancel the export before closing.',
+  'Cancelando…': 'Canceling…',
+  'Aplica primero la composición y espera a que esté lista.':
+    'Apply the composition and wait until it is ready.',
+  'La exportación agotó el tiempo. Reduce la resolución o duración.':
+    'Export timed out. Reduce resolution or duration.',
+  'Renderizando…': 'Rendering…',
+  'Termina primero la exportación del editor.': 'Finish the editor export first.',
+  'Abre primero un proyecto en el editor. Tu resultado sigue disponible para descargar o guardar.':
+    'Open a project in the editor first. Your result remains available to download or save.',
+  'El proyecto ya tiene 24 escenas.': 'The project already has 24 scenes.',
+  'Resultado guardado en Medios.': 'Result saved to Media.',
+  'Archivo demasiado grande.': 'File too large.',
+  'El motor aún no está listo. Reabre el panel o revisa la compatibilidad del navegador.':
+    'The engine is not ready yet. Reopen the panel or check browser compatibility.',
+  'Composición lista.': 'Composition ready.',
+  Renderizando: 'Rendering',
+  'Render terminado. Ya puedes descargarlo.': 'Render complete. Your file is ready to download.',
+  '2D · Tipografía cinética': '2D · Kinetic typography',
+  '3D · Tipografía cinética': '3D · Kinetic typography',
+  '2D · Lanzamiento de producto': '2D · Product launch',
+  '3D · Lanzamiento de producto': '3D · Product launch',
+  '2D · Historia en tres actos': '2D · Three-act story',
+  '3D · Historia en tres actos': '3D · Three-act story',
+  '2D · Producto orbital': '2D · Orbital product',
+  '3D · Producto orbital': '3D · Orbital product',
+  '2D · Escultura de marca': '2D · Brand sculpture',
+  '3D · Escultura de marca': '3D · Brand sculpture',
+  '2D · Datos en perspectiva': '2D · Data in perspective',
+  '3D · Datos en perspectiva': '3D · Data in perspective',
 };
