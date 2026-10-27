@@ -18,6 +18,10 @@
     <link rel="stylesheet" href="board.css" />
     <link rel="stylesheet" href="design.css" />
     <link rel="stylesheet" href="spectrum.css" />
+    <link rel="stylesheet" href="i18n.css" />
+    <script src="i18n-catalog.js"></script>
+    <script src="i18n-core.js"></script>
+    <script src="i18n.js"></script>
     <meta name="theme-color" content="#080a0b" />
   </head>
   <body>
@@ -43,6 +47,9 @@
       <header>
         <span>Workspace <b>/</b> <span id="breadcrumb">Vista general</span></span>
         <div>
+          <button type="button" data-studio-language aria-label="Cambiar idioma: español o inglés">
+            ES / EN
+          </button>
           <button type="button" data-help-launch="start" aria-label="Guía y ayuda">
             ? Guía y ayuda</button
           ><button class="plan-trigger" onclick="LumaPlans.open()">✦ Planes</button

@@ -153,7 +153,7 @@ La interfaz pública sigue en Pages y Sites. La cuenta fue autorizada por el pro
 
 ## Enlaces y estado final
 
-- Estudio público Cloudflare: https://luma-studio-service.analista-datos-pro.workers.dev/
+- Estudio público Cloudflare: https://fleremahias-studio.analista-datos-pro.workers.dev/
 - GitHub Pages: https://fleremiasflemin20-maker.github.io/Studio-Edicion-/
 - Sites: https://luma-social-studio-251026.keenox19.chatgpt.site
 
@@ -161,7 +161,7 @@ La interfaz pública funciona sin iniciar sesión. La exportación local pertene
 
 ## Diseño Graphite y propuesta Pro
 
-La interfaz ahora usa grafito, superficies oscuras y acentos violeta discretos, manteniendo los colores originales del lienzo y las muestras. El botón **Planes** presenta Gratis / Pro / Pro Plus como propuesta, con cobro desactivado. La edición y descarga local siguen abiertas. Consulta [MONETIZACION.md](MONETIZACION.md) para precios propuestos, cálculo de contribución, fuentes y requisitos multiusuario antes de vender.
+La interfaz ahora usa grafito, superficies oscuras y acentos del arcoíris con pinceladas originales, manteniendo los colores originales del lienzo y las muestras. El botón **Planes** presenta Gratis / Pro / Pro Plus como propuesta, con cobro desactivado. La edición y descarga local siguen abiertas. Consulta [MONETIZACION.md](MONETIZACION.md) para precios propuestos, cálculo de contribución, fuentes y requisitos multiusuario antes de vender.
 
 La base `cloudflare/billing.mjs` está probada pero no conectada al Worker; aún faltan identidad, aislamiento por cliente, checkout, almacenamiento de suscripciones, webhooks e imposición transaccional de cuotas. No se anuncian como servicios ya activos.
 
@@ -190,3 +190,11 @@ El editor incorpora **Composición Pro**: alineación por bordes/centros con ref
 Las operaciones trabajan sobre el modelo exportado y respetan capas bloqueadas u ocultas. Auto organizar es una acción puntual, sin reglas permanentes de Auto Layout. Los bloques son copias independientes, no componentes vinculados. La adaptación conserva el original y requiere revisar textos y recorte; no se anuncia como reencuadre semántico por IA. Los bloques y sus medios se incluyen en los respaldos completos. La guía incluye ahora 29 capítulos.
 
 La investigación y decisiones están en [COMPOSICION-PRO.md](COMPOSICION-PRO.md). La lógica pura está en `dist/design-core.js`; el controlador y la vista previa comparten el compositor existente. No se incluyen código, plantillas, iconos ni recursos descargados de Figma o Canva.
+
+## Español e inglés
+
+Al entrar por primera vez aparece la elección **Español / English**. El botón permanente **ES / EN** permite cambiar de idioma. La elección se conserva en este navegador, sin necesidad de cuenta.
+
+La interfaz, los paneles, la guía completa de 29 capítulos, los recorridos, las instrucciones de controles y los mensajes disponen de inglés. La búsqueda de ayuda reconoce términos ingleses. Los nombres y textos del creador, los medios y las claves de CSV/código se conservan. Las plantillas nuevas y los guiones de estructura usan el idioma elegido; cambiar el idioma no reescribe proyectos existentes.
+
+La localización se resuelve localmente mediante `dist/i18n-catalog.js`, sin servicios de traducción ni dependencias nuevas. `dist/i18n-core.js` contiene traducción pura y formatos dinámicos; `dist/i18n.js` adapta los elementos de interfaz que generan los módulos existentes. Los valores de opciones, IDs, eventos y estados internos permanecen estables. Añade textos nuevos al catálogo y ejecuta `npm test`, que comprueba también la cobertura de todos los capítulos de ayuda.

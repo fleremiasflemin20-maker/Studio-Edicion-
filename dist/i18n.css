@@ -1,0 +1,71 @@
+.language-dialog {
+  width: min(560px, 92vw);
+  padding: 34px;
+  border: 1px solid #456253;
+  border-radius: 22px;
+  background: #101614;
+  color: #edf5f0;
+}
+.language-dialog > p:first-of-type {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #a8d8bb;
+}
+.language-dialog h2 {
+  font-size: clamp(24px, 4vw, 32px);
+  line-height: 1.25;
+  letter-spacing: -0.8px;
+}
+.language-dialog h2 span {
+  color: #abc1b3;
+  font-weight: 500;
+}
+.language-dialog > p {
+  line-height: 1.8;
+  color: #b8c9bf;
+}
+.language-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 26px 0;
+}
+.language-options button {
+  text-align: left;
+  padding: 22px 16px;
+  background: #1a2720;
+  border-color: #3f5b49;
+  border-radius: 12px;
+}
+.language-options button:hover {
+  border-color: #bcf1ce;
+  background: #263b2d;
+}
+.language-options strong {
+  display: block;
+  font-size: 21px;
+  margin-bottom: 12px;
+  color: #edfff2;
+}
+.language-options span {
+  font-size: 11px;
+  color: #bed4c5;
+}
+.language-dialog small {
+  line-height: 1.8;
+}
+[data-studio-language] {
+  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  border-color: #476355;
+  color: #c8edda;
+}
+@media (max-width: 430px) {
+  .language-dialog {
+    padding: 24px;
+  }
+  .language-options {
+    grid-template-columns: 1fr;
+  }
+}

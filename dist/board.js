@@ -118,7 +118,9 @@
       state.nodes.push(
         {
           ...node('note', '', { x: 20, y: 20 }),
-          text: 'Tu próxima campaña empieza aquí.\n\nArrastra proyectos, medios o herramientas al tablero. Suelta un filtro o un medio sobre un proyecto para aplicarlo.',
+          text: StudioI18n.t(
+            'Tu próxima campaña empieza aquí.\n\nArrastra proyectos, medios o herramientas al tablero. Suelta un filtro o un medio sobre un proyecto para aplicarlo.',
+          ),
         },
         node('tool', 'cinema', { x: 20, y: 280 }),
       );
@@ -177,7 +179,11 @@
         tone: 'mint',
         hint: 'Añade este recurso al tablero o suéltalo sobre un proyecto.',
       }));
-    items = items.filter((i) => i.name.toLowerCase().includes(search.toLowerCase())).slice(0, 80);
+    items = items
+      .filter((i) =>
+        (i.name + ' ' + StudioI18n.t(i.name)).toLowerCase().includes(search.toLowerCase()),
+      )
+      .slice(0, 80);
     host.innerHTML =
       items
         .map(

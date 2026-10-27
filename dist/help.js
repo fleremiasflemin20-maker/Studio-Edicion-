@@ -3,7 +3,7 @@
   const chapters = root.FleremahiasHelpContent.chapters,
     seenKey = 'fleremahias-guide-v1';
   const escape = (s) =>
-    String(s ?? '').replace(
+    String(root.StudioI18n?.t(s) ?? s ?? '').replace(
       /[&<>"']/g,
       (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
     );
@@ -349,7 +349,7 @@
     for (const entry of [c, ...chapters.filter((q) => q.id !== c.id)])
       for (const [name, description] of entry.controls) {
         for (const part of name.split(' / ')) {
-          const key = norm(part);
+          const key = norm(root.StudioI18n?.t(part) ?? part);
           if (!key) continue;
           const words = key.split(' ').filter((w) => w.length > 2),
             common = words.filter((w) => text.split(' ').includes(w)).length;
@@ -368,6 +368,54 @@
         }
       }
     if (best) return best;
+    if (root.StudioI18n?.locale() === 'en') {
+      const title = root.StudioI18n.t(c.title);
+      if (el.matches('input[type="checkbox"]'))
+        return {
+          label,
+          chapter: c.id,
+          text:
+            'Check or uncheck “' +
+            label +
+            '” in ' +
+            title +
+            '. Help mode does not change the selection.',
+        };
+      if (el.matches('select'))
+        return {
+          label,
+          chapter: c.id,
+          text:
+            'Choose a value for “' +
+            label +
+            '”. Available options: ' +
+            [...el.options]
+              .slice(0, 12)
+              .map((option) => option.text)
+              .join(', ') +
+            '. See the chapter for workflow instructions.',
+        };
+      if (el.matches('input,textarea'))
+        return {
+          label,
+          chapter: c.id,
+          text:
+            'Edit “' +
+            label +
+            '” in ' +
+            title +
+            '. ' +
+            (el.type === 'range' || el.type === 'number'
+              ? 'Adjust the numeric value' +
+                (el.min ? ' from ' + el.min : '') +
+                (el.max ? ' to ' + el.max : '') +
+                '. '
+              : el.type === 'password'
+                ? 'Enter only the private token for your authorized service. Do not share it. '
+                : '') +
+            root.StudioI18n.t(c.intro || c.controls[0][1]),
+        };
+    }
     if (el.matches('input[type="checkbox"]'))
       return {
         label,
@@ -478,7 +526,11 @@
     const terms = norm(query).split(' ').filter(Boolean),
       matches = chapters.filter((c) =>
         terms.every((t) =>
-          norm([c.title, c.intro, ...(c.steps || []), ...c.controls.flat()].join(' ')).includes(t),
+          norm(
+            [c.title, c.intro, ...(c.steps || []), ...c.controls.flat()]
+              .map((text) => root.StudioI18n?.t(text) ?? text)
+              .join(' '),
+          ).includes(t),
         ),
       );
     if (matches.length && !matches.some((c) => c.id === selected)) selected = matches[0].id;
@@ -819,6 +871,14 @@
   new MutationObserver(launchers).observe(document.body, { childList: true, subtree: true });
   launchers();
   root.FleremahiasHelp = { open, startTour, startInspect, stop, describe };
+  document.addEventListener('studio:languagechange', () => {
+    if (manual?.open) {
+      query = '';
+      manual.querySelector('#help-search').value = '';
+      renderManual();
+    }
+    if (mode) stop();
+  });
   document.addEventListener('close', () => setTimeout(firstVisit, 150), true);
   function firstVisit() {
     if (!seen() && !document.querySelector('dialog[open]')) open('start', true);

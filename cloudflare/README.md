@@ -1,12 +1,13 @@
 # Fleremahias en Cloudflare
 
-Estudio público: https://luma-studio-service.analista-datos-pro.workers.dev/
+Estudio público: https://fleremahias-studio.analista-datos-pro.workers.dev/
 
 Cualquier visitante puede crear contenido y descargar sus videos, imágenes y respaldos sin autenticarse. Los proyectos del editor se guardan en su navegador y se separan por origen. Los archivos privados, cuentas y trabajos del servidor están protegidos por un token de servicio; no se muestran a otros visitantes.
 
 ## Recursos desplegados
 
-- Worker `luma-studio-service` con los mismos archivos del editor público.
+- Worker público `fleremahias-studio` con el editor y el selector Español / English.
+- Servicio interno de compatibilidad `luma-studio-service`: conserva el estado privado existente. Se accede desde el Worker público mediante un Service Binding, sin copiar secretos al cliente.
 - Durable Object SQLite `LumaState` para cuentas cifradas, OAuth, trabajos programados e idempotencia.
 - Bucket R2 Standard privado `luma-studio-media`. R2 fue activado por el propietario de la cuenta; no se cambió su plan de Workers.
 - Browser Run para ejecutar el compositor en un navegador remoto y seguir exportando con la pestaña del usuario cerrada.
@@ -23,14 +24,14 @@ Las credenciales se generaron localmente fuera del repositorio y se guardaron co
 
 Para publicar en YouTube o enviar borradores a TikTok todavía debes registrar las aplicaciones y definir `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `TIKTOK_CLIENT_ID` y `TIKTOK_CLIENT_SECRET` con `wrangler secret put`. Registra estas redirecciones en los portales oficiales:
 
-- https://luma-studio-service.analista-datos-pro.workers.dev/oauth/youtube/callback
-- https://luma-studio-service.analista-datos-pro.workers.dev/oauth/tiktok/callback
+- https://fleremahias-studio.analista-datos-pro.workers.dev/oauth/youtube/callback
+- https://fleremahias-studio.analista-datos-pro.workers.dev/oauth/tiktok/callback
 
 Hasta completar esos pasos no hay cuentas conectadas. No se publicó contenido de prueba en redes sociales. TikTok es envío de borrador que el usuario completa en su aplicación; no es Direct Post público. Meta, LinkedIn y analítica social siguen pendientes.
 
 ## Desplegar cambios
 
-Desde cloudflare/ ejecuta `npm ci`, autentica Wrangler si hace falta, comprueba con `npm run check` y despliega con `npm run deploy`. `wrangler.jsonc` declara STATE, MEDIA, BROWSER y ASSETS. No crees otro bucket con el mismo nombre ni hagas público el existente.
+Desde cloudflare/ ejecuta `npm ci`, autentica Wrangler si hace falta, comprueba con `npm run check` y despliega con `npm run deploy`. El comando actualiza primero el servicio interno con `wrangler.backend.jsonc` (STATE, MEDIA, BROWSER y ASSETS), y después el acceso público con `wrangler.jsonc` (ASSETS y PRIVATE_SERVICE). No crees otro bucket con el mismo nombre ni hagas público el existente.
 
 Las alarmas ejecutan el siguiente trabajo pendiente. Las solicitudes usan claves de idempotencia; un resultado incierto pasa a Revisar estado y no se reenvía automáticamente. El editor de render interno bajo /studio requiere autenticación. Las peticiones del navegador remoto se restringen al propio servicio y las sesiones se cierran siempre. Los videos resultantes se suben directamente al almacén para evitar transportar todo el video en JSON.
 

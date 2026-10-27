@@ -67,7 +67,11 @@ function intro(title, sub) {
     '</h1><p>' +
     sub +
     '</p></div><span class="date">' +
-    new Date().toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' }) +
+    new Date().toLocaleDateString(StudioI18n.locale(), {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }) +
     '</span></div>'
   );
 }
@@ -106,7 +110,7 @@ $('#create').onsubmit = (e) => {
     name: $('#name').value.trim(),
     format: $('#format').value,
     platform: $('#platform').value,
-    text: 'Tu próxima\ngran historia.',
+    text: StudioI18n.t('Tu próxima\ngran historia.'),
     bg: '#c6cbb9',
     color: '#ffffff',
     fontSize: 72,
@@ -159,7 +163,7 @@ function cards(list) {
               '</strong><p>' +
               esc(x.status) +
               ' · ' +
-              new Date(x.created).toLocaleDateString('es') +
+              new Date(x.created).toLocaleDateString(StudioI18n.locale()) +
               ' &nbsp; ↗</p></div></button>',
           )
           .join('') +
@@ -597,7 +601,7 @@ function renderCalendar() {
       'Organiza fechas de preparación para tus publicaciones.',
     ) +
     '<div class="section"><button onclick="moveMonth(-1)">←</button><h2>' +
-    d.toLocaleDateString('es', { month: 'long', year: 'numeric' }) +
+    d.toLocaleDateString(StudioI18n.locale(), { month: 'long', year: 'numeric' }) +
     '</h2><button onclick="moveMonth(1)">→</button></div><div class="notice">Calendario local. Las publicaciones no se envían a las redes sociales.</div><div class="calendar">' +
     ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM']
       .map((x) => '<div class="day head">' + x + '</div>')
@@ -647,16 +651,37 @@ function renderIdeas() {
 function generateScript() {
   const t = $('#topic').value.trim();
   if (!t) return toast('Escribe un tema para tu guion.');
-  const s =
-    'TEMA: ' +
-    t +
-    '\nOBJETIVO: ' +
-    $('#goal').value +
-    '\n\n01 · GANCHO (0–3 s)\n“Esto es lo que me hubiera gustado saber sobre ' +
-    t.toLowerCase() +
-    '.”\n\n02 · CONTEXTO (3–8 s)\nPresenta el problema con una situación concreta de tu experiencia.\n\n03 · DESARROLLO (8–35 s)\n• Comparte tu primer consejo y muestra un ejemplo.\n• Explica el paso más importante con un plano detalle.\n• Añade un resultado real o una lección aprendida.\n\n04 · CIERRE (35–45 s)\nResume la idea en una frase y pregunta a tu audiencia qué le gustaría ver después.\n\nLISTA DE TOMAS\nPlano a cámara · Recurso del proceso · Detalle del resultado';
+  const english = StudioI18n.locale() === 'en';
+  const s = english
+    ? 'TOPIC: ' +
+      t +
+      '\nOBJECTIVE: ' +
+      StudioI18n.t($('#goal').value) +
+      '\n\n01 · HOOK (0–3 s)\n“Here is what I wish I had known about ' +
+      t +
+      '.”\n\n02 · CONTEXT (3–8 s)\nIntroduce the problem with a specific example from your experience.\n\n03 · MAIN CONTENT (8–35 s)\n• Share your first tip with a clear example.\n• Explain the key step with a close-up shot.\n• Show a real result or a lesson learned.\n\n04 · CLOSING (35–45 s)\nSum up the idea in one sentence and ask your audience what they would like to see next.\n\nSHOT LIST\nTalking head · Process footage · Result close-up'
+    : 'TEMA: ' +
+      t +
+      '\nOBJETIVO: ' +
+      $('#goal').value +
+      '\n\n01 · GANCHO (0–3 s)\n“Esto es lo que me hubiera gustado saber sobre ' +
+      t.toLowerCase() +
+      '.”\n\n02 · CONTEXTO (3–8 s)\nPresenta el problema con una situación concreta de tu experiencia.\n\n03 · DESARROLLO (8–35 s)\n• Comparte tu primer consejo y muestra un ejemplo.\n• Explica el paso más importante con un plano detalle.\n• Añade un resultado real o una lección aprendida.\n\n04 · CIERRE (35–45 s)\nResume la idea en una frase y pregunta a tu audiencia qué le gustaría ver después.\n\nLISTA DE TOMAS\nPlano a cámara · Recurso del proceso · Detalle del resultado';
   $('#script').textContent = s;
   localStorage.setItem('luma-script', s);
 }
 go('home');
 ready.then(() => render()).catch(() => toast('Biblioteca no disponible en este navegador.'));
+
+// Locale changes update presentation without rebuilding an active editing session.
+document.addEventListener('studio:languagechange', () => {
+  if (['home', 'projects', 'calendar'].includes(view)) render();
+  else
+    document.querySelectorAll('.date').forEach((el) => {
+      el.textContent = new Date().toLocaleDateString(StudioI18n.locale(), {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    });
+});

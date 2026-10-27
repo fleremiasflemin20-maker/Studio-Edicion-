@@ -143,7 +143,7 @@ function renderTemplates() {
           '"><small>FLEREMAHIAS · ' +
           t.format +
           '</small><strong>' +
-          esc(t.titles[0]).replace(/\n/g, '<br>') +
+          esc(StudioI18n.t(t.titles[0])).replace(/\n/g, '<br>') +
           '</strong><span>' +
           t.titles.length +
           ' escena' +
@@ -162,7 +162,7 @@ function createFromTemplate(id) {
     b = brand();
   if (!t) return;
   const x = C.normalize({
-    name: t.name,
+    name: StudioI18n.t(t.name),
     format: t.format,
     platform: t.id === 'youtube' ? 'YouTube' : 'Instagram',
     text: '',
@@ -176,7 +176,7 @@ function createFromTemplate(id) {
   x.scenes = t.titles.map((text, i) =>
     P.scene({
       name: ['Gancho', 'Desarrollo', 'Cierre', 'Extra'][i] || 'Escena ' + (i + 1),
-      text,
+      text: StudioI18n.t(text),
       bg: t.colors[i % t.colors.length],
       color: ['tips', 'quote'].includes(t.id) ? '#35373b' : '#ffffff',
       fontSize: t.id === 'youtube' ? 98 : 82,

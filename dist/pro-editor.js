@@ -396,7 +396,7 @@
     if (p().layers.length >= 40) throw Error('Máximo 40 capas por escena.');
     const style = Core.textStyles.find((s) => s.id === id) || Core.textStyles[0];
     const layer = P.layer({
-      text: 'Tu texto aquí',
+      text: StudioI18n.t('Tu texto aquí'),
       style: style.id,
       color: style.color,
       fill: style.fill,
@@ -430,6 +430,7 @@
       const style = Core.textStyles.find((s) => s.id === v.style);
       return P.layer({
         ...v,
+        ...(v.text ? { text: StudioI18n.t(v.text) } : {}),
         color: style?.color || '#fff',
         fill: v.fill || style?.fill || brand().primary,
       });

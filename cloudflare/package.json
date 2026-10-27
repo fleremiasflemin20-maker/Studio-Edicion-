@@ -1,12 +1,12 @@
 {
-  "name": "luma-cloudflare",
+  "name": "fleremahias-cloudflare",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "check": "wrangler deploy --dry-run",
-    "deploy": "wrangler deploy"
+    "check": "node deploy.mjs --dry-run",
+    "deploy": "node deploy.mjs"
   },
   "dependencies": {
     "@cloudflare/puppeteer": "1.4.0"

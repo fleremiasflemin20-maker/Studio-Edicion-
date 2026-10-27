@@ -20,7 +20,11 @@
   } catch {
     state = {};
   }
-  state.service ||= 'https://luma-studio-service.analista-datos-pro.workers.dev';
+  if (
+    !state.service ||
+    state.service === 'https://luma-studio-service.analista-datos-pro.workers.dev'
+  )
+    state.service = 'https://fleremahias-studio.analista-datos-pro.workers.dev';
   try {
     root.LumaFlowToken = sessionStorage.getItem('luma-service-token') || '';
   } catch {}
@@ -108,7 +112,7 @@
       .querySelectorAll('[data-flow="tab"]')
       .forEach((el) => el.classList.toggle('active', el.dataset.value === tab));
     if (tab === 'create')
-      html = `<h3>Tu material. Una propuesta editable.</h3><p>Elige un objetivo, selecciona tus archivos en orden y crea un montaje que puedes ajustar después.</p><div class="flow-grid">${field('Nombre', input('name', x?.name || 'Mi próxima historia'))}${field(
+      html = `<h3>Tu material. Una propuesta editable.</h3><p>Elige un objetivo, selecciona tus archivos en orden y crea un montaje que puedes ajustar después.</p><div class="flow-grid">${field('Nombre', input('name', x?.name || StudioI18n.t('Mi próxima historia')))}${field(
         'Objetivo',
         sel(
           'goal',
@@ -122,7 +126,7 @@
           ['16:9', 'Horizontal'],
           ['4:5', 'Post vertical'],
         ]),
-      )}${field('Título o gancho', input('hook', 'Una idea para compartir'))}${field('Segundos por archivo', input('duration', 4, 'number'))}${field('Guion opcional · se distribuye, no se transcribe', '<textarea id="f-script"></textarea>')}</div><div class="flow-actions">${b('Importar material', 'import')}${b('Crear montaje editable', 'assemble')}</div><div class="flow-media-grid">${
+      )}${field('Título o gancho', input('hook', StudioI18n.t('Una idea para compartir')))}${field('Segundos por archivo', input('duration', 4, 'number'))}${field('Guion opcional · se distribuye, no se transcribe', '<textarea id="f-script"></textarea>')}</div><div class="flow-actions">${b('Importar material', 'import')}${b('Crear montaje editable', 'assemble')}</div><div class="flow-media-grid">${
         assets
           .filter((a) => /^(image|video)/.test(a.type))
           .map(
@@ -154,13 +158,13 @@
     if (tab === 'tracks')
       html = `<h3>Más de una imagen, una historia.</h3><p>Los videos superpuestos se añaden sin audio. Añade su archivo también como pista si lo necesitas.</p><div class="flow-grid">${field('Archivo', sel('track', media()))}${field('Desde (escena para video; montaje para audio)', input('from', 0, 'number'))}${field('Hasta (0 = final)', input('to', 0, 'number'))}${field('Inicio en el archivo original', input('source-start', 0, 'number'))}</div><div class="flow-actions">${b('Añadir video / imagen', 'visual')}${b('Añadir audio', 'add-audio')}${b('Diseño reacción', 'layout', 'reaction')}${b('Pantalla dividida', 'layout', 'split')}${b('Seguir rostro', 'face')}${b('Quitar seguimiento', 'unface')}</div><div class="flow-tracks">${(x?.layers || []).map((l) => `<article>${b((selected.has(l.id) ? '✓ ' : '') + esc(l.kind) + ' · ' + esc(l.text || 'Capa'), 'select', l.id)}<span>${l.startAt || 0}–${l.endAt || P.length(x)} s</span>${b(l.hidden ? 'Mostrar' : 'Ocultar', 'hide', l.id)}</article>`).join('')}<h4>Audio del montaje</h4>${(x?.audioTracks || []).map((t) => `<article>${esc(assets.find((a) => a.id === t.asset)?.name || 'Archivo ausente')} · ${t.at}–${t.end || 'fin'} s<label>Volumen<input type="number" min="0" max="2" step=".1" data-track-volume="${t.id}" value="${t.volume}"></label>${b('Quitar', 'remove-audio', t.id)}</article>`).join('')}</div><div class="flow-actions">${b('Seleccionar todas las capas', 'select-all')}${b('Agrupar', 'group')}${b('Desagrupar', 'ungroup')}${b('Centrar selección', 'align')}</div><p>Shift + clic selecciona varias capas. Usa el tirador inferior para tamaño y el superior para giro. Arrastrar una capa agrupada mueve el conjunto.</p>`;
     if (tab === 'design')
-      html = `<h3>Tu estilo, repetible.</h3><div class="flow-grid">${field('Título de portada', input('title', x?.name || 'Tu próxima idea'))}${field(
+      html = `<h3>Tu estilo, repetible.</h3><div class="flow-grid">${field('Título de portada', input('title', x?.name || StudioI18n.t('Tu próxima idea')))}${field(
         'Receta completa',
         sel(
           'recipe',
           [...F.recipes, ...state.recipes].map((r) => [r.id, r.name]),
         ),
-      )}${field('Nombre de tu receta', input('recipe-name', 'Mi estilo'))}${field(
+      )}${field('Nombre de tu receta', input('recipe-name', StudioI18n.t('Mi estilo')))}${field(
         'Zona segura',
         sel('safe', [
           ['reels', 'Reels'],
@@ -168,9 +172,9 @@
         ]),
       )}</div><div class="flow-actions">${b('Crear tres portadas', 'covers')}${b('Aplicar receta a todo', 'recipe')}${b('Guardar mi receta', 'save-recipe')}${b('Ajustar zonas seguras', 'safe')}${b('Crear tres versiones', 'variants')}${b('Preparar campaña', 'campaign')}</div><div id="flow-covers" class="flow-covers"></div>`;
     if (tab === 'bulk')
-      html = `<h3>Una tabla. Muchas piezas.</h3><p>Usa {{titulo}}, {{precio}}, {{cta}} en los textos del proyecto. La columna imagen debe coincidir con el nombre de un archivo de la biblioteca.</p><textarea id="f-csv" rows="7">titulo,precio,cta,imagen\nMi producto,19.90,Descúbrelo hoy,\nOtra idea,29.90,Guárdalo para después,</textarea><div class="flow-actions">${b('Importar CSV', 'csv-file')}${b('Ver vista previa', 'csv-preview')}${b('Generar proyectos', 'csv-generate')}</div><div id="flow-table"></div><small>Máximo 50 filas. Sin variables en el título, usamos el valor de la columna titulo.</small>`;
+      html = `<h3>Una tabla. Muchas piezas.</h3><p>Usa {{titulo}}, {{precio}}, {{cta}} en los textos del proyecto. La columna imagen debe coincidir con el nombre de un archivo de la biblioteca.</p><textarea id="f-csv" rows="7">${StudioI18n.locale() === 'en' ? 'titulo,precio,cta,imagen\nMy product,19.90,Discover it today,\nAnother idea,29.90,Save it for later,' : 'titulo,precio,cta,imagen\nMi producto,19.90,Descúbrelo hoy,\nOtra idea,29.90,Guárdalo para después,'}</textarea><div class="flow-actions">${b('Importar CSV', 'csv-file')}${b('Ver vista previa', 'csv-preview')}${b('Generar proyectos', 'csv-generate')}</div><div id="flow-table"></div><small>Máximo 50 filas. Sin variables en el título, usamos el valor de la columna titulo.</small>`;
     if (tab === 'review')
-      html = `<h3>Revisa sin perder lo anterior.</h3><div class="flow-grid">${field('Nombre de versión', input('version', 'Versión ' + new Date().toLocaleTimeString('es')))}${field('Nota', input('note'))}${field('Segundo del montaje', input('time', 0, 'number'))}</div><div class="flow-actions">${b('Guardar versión', 'snapshot')}${b('Añadir nota', 'note')}${b('Comparar dos videos', 'compare')}</div><div class="flow-grid"><section><h4>Versiones locales</h4>${(x?.flowVersions || []).map((v) => `<article><strong>${esc(v.name)}</strong>${b('Abrir copia editable', 'restore', v.id)}</article>`).join('') || 'Sin versiones guardadas'}</section><section><h4>Notas con tiempo</h4>${(x?.flowNotes || []).map((n) => `<article>${b(n.time.toFixed(1) + ' s', 'seek', n.time)}${esc(n.text)}${b(n.done ? 'Reabrir' : 'Resolver', 'resolve', n.id)}</article>`).join('') || 'Sin notas'}</section></div><div id="flow-compare"></div>`;
+      html = `<h3>Revisa sin perder lo anterior.</h3><div class="flow-grid">${field('Nombre de versión', input('version', StudioI18n.t('Versión') + ' ' + new Date().toLocaleTimeString(StudioI18n.locale())))}${field('Nota', input('note'))}${field('Segundo del montaje', input('time', 0, 'number'))}</div><div class="flow-actions">${b('Guardar versión', 'snapshot')}${b('Añadir nota', 'note')}${b('Comparar dos videos', 'compare')}</div><div class="flow-grid"><section><h4>Versiones locales</h4>${(x?.flowVersions || []).map((v) => `<article><strong translate="no">${esc(v.name)}</strong>${b('Abrir copia editable', 'restore', v.id)}</article>`).join('') || 'Sin versiones guardadas'}</section><section><h4>Notas con tiempo</h4>${(x?.flowNotes || []).map((n) => `<article>${b(n.time.toFixed(1) + ' s', 'seek', n.time)}<span translate="no">${esc(n.text)}</span>${b(n.done ? 'Reabrir' : 'Resolver', 'resolve', n.id)}</article>`).join('') || 'Sin notas'}</section></div><div id="flow-compare"></div>`;
     if (tab === 'jobs')
       html = `<h3>Exportaciones recuperables.</h3><p>Esta cola funciona en el navegador. Mantén Fleremahias visible. Puedes reintentar una tarea interrumpida. Para trabajos con la pestaña cerrada hace falta el servicio externo.</p><div class="flow-actions">${b('Añadir proyecto', 'enqueue')}${b('Procesar pendientes', 'run')}${b('Detener después de la actual', 'stop-queue')}${b('Enviar proyecto al servidor', 'remote-job')}${b('Actualizar trabajos remotos', 'remote-status')}<div id="flow-remote"></div></div>${state.jobs.map((j) => `<article><strong>${esc(j.name)}</strong><small>${esc(j.status)} ${esc(j.error || '')}</small>${j.asset ? b('Descargar', 'download-job', j.id) : b('Reintentar', 'retry', j.id)}</article>`).join('')}`;
     if (tab === 'publish')
@@ -1201,7 +1205,7 @@
     if (!pendingPost.account || !pendingPost.asset)
       throw Error('Selecciona cuenta y archivo final');
     $('#flow-send').innerHTML =
-      `<article><h4>Revisa antes de enviar</h4><p>YouTube: ${esc(pendingPost.privacy)} · TikTok: borrador que completarás en su app.</p><p>${esc(asset(pendingPost.asset).name)}</p><p>${esc(pendingPost.caption)}</p><p>${date ? esc(new Date(pendingPost.at).toLocaleString('es')) : 'Publicar ahora'}</p>${b('Confirmar envío a mi cuenta', 'send-post')}</article>`;
+      `<article><h4>Revisa antes de enviar</h4><p>YouTube: ${esc(pendingPost.privacy)} · TikTok: borrador que completarás en su app.</p><p>${esc(asset(pendingPost.asset).name)}</p><p translate="no">${esc(pendingPost.caption)}</p><p>${date ? esc(new Date(pendingPost.at).toLocaleString(StudioI18n.locale())) : 'Publicar ahora'}</p>${b('Confirmar envío a mi cuenta', 'send-post')}</article>`;
   }
   async function sendPost() {
     if (!pendingPost) throw Error('Revisa el envío primero');

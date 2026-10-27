@@ -408,7 +408,7 @@ function renderTool() {
     html =
       '<p class="hint">Pistas sintetizadas en Fleremahias. Pulsa ▶ para escuchar y ＋ para usarlas. Puedes importar tu propia música.</p>' +
       P.music
-        .filter((m) => m.name.toLowerCase().includes(q))
+        .filter((m) => (m.name + ' ' + StudioI18n.t(m.name)).toLowerCase().includes(q))
         .map(
           (m) =>
             '<div class="music-item"><button aria-label="Escuchar ' +
@@ -540,12 +540,12 @@ function addElement(kind, value = '', pos = null) {
     text:
       value ||
       (kind === 'cta'
-        ? 'Guárdalo para después ↗'
+        ? StudioI18n.t('Guárdalo para después ↗')
         : kind === 'tag'
-          ? 'NUEVO'
+          ? StudioI18n.t('NUEVO')
           : kind === 'sticker'
             ? '✨'
-            : 'Tu texto aquí'),
+            : StudioI18n.t('Tu texto aquí')),
     fill: brand().primary,
     size: kind === 'sticker' ? 130 : kind === 'tag' ? 42 : 64,
     y: kind === 'cta' ? 84 : kind === 'tag' ? 20 : 50,
@@ -814,19 +814,19 @@ document.addEventListener('drop', async (e) => {
 function brand() {
   try {
     return {
-      name: 'Mi marca',
+      name: StudioI18n.t('Mi marca'),
       primary: '#7658df',
       secondary: '#f0c6a8',
-      cta: 'Guárdalo y compártelo',
+      cta: StudioI18n.t('Guárdalo y compártelo'),
       hashtags: '#creadores #contenido',
       ...JSON.parse(localStorage.getItem('luma-brand') || '{}'),
     };
   } catch {
     return {
-      name: 'Mi marca',
+      name: StudioI18n.t('Mi marca'),
       primary: '#7658df',
       secondary: '#f0c6a8',
-      cta: 'Guárdalo',
+      cta: StudioI18n.t('Guárdalo'),
       hashtags: '#contenido',
     };
   }
