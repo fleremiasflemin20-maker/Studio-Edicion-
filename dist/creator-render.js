@@ -284,7 +284,16 @@ async function runSequence(project, options = {}) {
       globalThis.LumaFlowMedia?.syncAudio(snapshot, t, ac);
       paintScene(bCtx, scene, media, local);
       const transition = scene.transition;
-      if (i > 0 && local < 0.35 && transition !== 'cut') {
+      if (i > 0 && scene.transitionPreset && local < (scene.transitionDuration || 0.35)) {
+        paintScene(aCtx, snapshot.scenes[i - 1], resources[i - 1], timing[i - 1].duration - 0.001);
+        FleremahiasTransition(
+          ctx,
+          aCanvas,
+          bCanvas,
+          local / (scene.transitionDuration || 0.35),
+          scene.transitionPreset,
+        );
+      } else if (i > 0 && local < 0.35 && transition !== 'cut') {
         paintScene(aCtx, snapshot.scenes[i - 1], resources[i - 1], timing[i - 1].duration - 0.001);
         const amount = Math.min(1, local / 0.35);
         ctx.drawImage(aCanvas, 0, 0);

@@ -6,6 +6,18 @@
   'use strict';
   const presets = [
     {
+      id: 'photo-motion',
+      name: 'Foto en movimiento',
+      kind: '2D',
+      note: 'Anima una imagen de tu biblioteca con encuadre y título.',
+    },
+    {
+      id: 'audiogram',
+      name: 'Audio visual',
+      kind: '2D',
+      note: 'Tu audio real con forma de onda sincronizada.',
+    },
+    {
       id: 'kinetic',
       name: 'Tipografía cinética',
       kind: '2D',
@@ -60,7 +72,123 @@
       background: /^#[a-f0-9]{6}$/i.test(value.background) ? value.background : '#0b1310',
       sound: ['off', 'pulse', 'ambient'].includes(value.sound) ? value.sound : 'off',
       code: text(value.code, '', 100000),
+      imageAsset: typeof value.imageAsset === 'string' ? value.imageAsset.slice(0, 100) : '',
+      audioAsset: typeof value.audioAsset === 'string' ? value.audioAsset.slice(0, 100) : '',
+      audioStart: clamp(value.audioStart, 0, 86400, 0),
+      values: normalizeValues(value.values),
     };
+  }
+  function normalizeValues(value) {
+    const incoming = Array.isArray(value)
+      ? value
+      : typeof value === 'string'
+        ? value.split(/[,;\s]+/)
+        : [];
+    const numbers = incoming
+      .filter((x) => x !== '' && Number.isFinite(Number(x)))
+      .slice(0, 8)
+      .map((x) => clamp(x, 0, 1000000000, 0));
+    return numbers.length ? numbers : [12, 24, 18, 32];
+  }
+  function waveform(samples, bins = 180) {
+    const count = Math.max(1, Math.min(4096, Math.floor(bins) || 180)),
+      out = [];
+    for (let b = 0; b < count; b++) {
+      const start = Math.floor((b * samples.length) / count),
+        end = Math.max(start + 1, Math.floor(((b + 1) * samples.length) / count));
+      let power = 0,
+        n = 0;
+      for (let i = start; i < Math.min(end, samples.length); i++) {
+        const v = Number.isFinite(samples[i]) ? samples[i] : 0;
+        power += v * v;
+        n++;
+      }
+      out.push(n ? Math.sqrt(power / n) : 0);
+    }
+    const peak = Math.max(0.0001, ...out);
+    return out.map((v) => Math.max(0, Math.min(1, v / peak)));
+  }
+  function pcmWav(samples, rate = 16000) {
+    if (
+      !samples ||
+      samples.length > 30 * 48000 ||
+      ![8000, 16000, 24000, 44100, 48000].includes(rate)
+    )
+      throw Error('Audio must be mono PCM and at most 30 seconds.');
+    if (samples.length / rate > 30.001) throw Error('Audio must be at most 30 seconds.');
+    const data = new ArrayBuffer(44 + samples.length * 2),
+      v = new DataView(data);
+    const put = (p, s) => [...s].forEach((c, i) => v.setUint8(p + i, c.charCodeAt(0)));
+    put(0, 'RIFF');
+    v.setUint32(4, 36 + samples.length * 2, true);
+    put(8, 'WAVEfmt ');
+    v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true);
+    v.setUint16(22, 1, true);
+    v.setUint32(24, rate, true);
+    v.setUint32(28, rate * 2, true);
+    v.setUint16(32, 2, true);
+    v.setUint16(34, 16, true);
+    put(36, 'data');
+    v.setUint32(40, samples.length * 2, true);
+    samples.forEach((n, i) =>
+      v.setInt16(
+        44 + i * 2,
+        Math.round(Math.max(-1, Math.min(1, Number.isFinite(n) ? n : 0)) * 32767),
+        true,
+      ),
+    );
+    return data;
+  }
+  function clipAudio(samples, rate, start = 0, duration = 6) {
+    if (!samples || !Number.isFinite(rate) || rate < 8000 || rate > 48000)
+      throw Error('Invalid decoded audio.');
+    const begin = Math.floor(clamp(start, 0, 86400, 0) * rate),
+      end = Math.min(samples.length, begin + Math.floor(clamp(duration, 1, 30, 6) * rate));
+    if (end <= begin) throw Error('Audio start is beyond the file duration.');
+    const selected = samples.slice(begin, end),
+      actualDuration = selected.length / rate;
+    return {
+      wav: pcmWav(selected, rate),
+      duration: actualDuration,
+      waveform: waveform(selected, Math.ceil(actualDuration * 60)),
+    };
+  }
+  function validateMedia(value = {}) {
+    const checked = { imageData: '', audioData: '', waveform: [], audioDuration: 0 };
+    for (const [key, pattern] of [
+      ['imageData', /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/],
+      ['audioData', /^data:audio\/wav;base64,[A-Za-z0-9+/]+={0,2}$/],
+    ]) {
+      if (value[key]) {
+        if (
+          typeof value[key] !== 'string' ||
+          value[key].length > 40 * 1024 * 1024 ||
+          !pattern.test(value[key])
+        )
+          throw Error('Motion media must be a bounded image or PCM WAV data URL.');
+        checked[key] = value[key];
+      }
+    }
+    if (Array.isArray(value.waveform)) {
+      if (
+        value.waveform.length > 4096 ||
+        !value.waveform.every((n) => Number.isFinite(n) && n >= 0 && n <= 1)
+      )
+        throw Error('Invalid waveform data.');
+      checked.waveform = value.waveform.slice();
+    }
+    checked.audioDuration = clamp(value.audioDuration, 0, 30, 0);
+    return checked;
+  }
+  function references(value) {
+    const d = normalize(value);
+    return [...new Set([d.imageAsset, d.audioAsset].filter(Boolean))];
+  }
+  function remap(value, mapping) {
+    const d = normalize(value);
+    for (const key of ['imageAsset', 'audioAsset']) if (d[key]) d[key] = mapping.get(d[key]) || '';
+    return d;
   }
   function config(value) {
     const v = normalize(value),
@@ -137,5 +265,19 @@
     }
     return data;
   }
-  return { presets, normalize, config, serialize, parse, score };
+  return {
+    presets,
+    normalize,
+    config,
+    serialize,
+    parse,
+    score,
+    normalizeValues,
+    waveform,
+    pcmWav,
+    clipAudio,
+    validateMedia,
+    references,
+    remap,
+  };
 });

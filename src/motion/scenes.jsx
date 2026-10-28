@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Img, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 import { ThreeCanvas } from '@remotion/three';
 import { Audio } from '@remotion/media';
 const colors = ['#ff7c8f', '#ffbc72', '#eadb82', '#8de49f', '#7adbd8', '#87b9f5', '#c79dec'];
@@ -219,24 +219,31 @@ function Stories(props) {
     </AbsoluteFill>
   );
 }
-function Objects({ type, accent }) {
+function Objects({ type, accent, values = [12, 24, 18, 32] }) {
   const f = useCurrentFrame(),
     { fps } = useVideoConfig();
   const t = f / fps;
-  if (type === 'data3d')
+  if (type === 'data3d') {
+    const max = Math.max(1, ...values),
+      step = 2.6 / values.length;
     return (
-      <group rotation={[0.12, -0.5, 0]} position={[-1.4, -0.6, 0]}>
-        {[0.7, 1.3, 1.8, 1.1].map((h, i) => {
-          const height = h * ramp(f, i * 5, 30 + i * 5) + 0.03;
+      <group rotation={[0.12, -0.3, 0]} position={[0, -0.95, 0]}>
+        {values.map((value, i) => {
+          const height = (value / max) * 2 * ramp(f, i * 3, 28 + i * 3) + 0.015;
           return (
-            <mesh key={i} position={[i * 0.9, height / 2, 0]}>
-              <boxGeometry args={[0.57, height, 0.57]} />
-              <meshStandardMaterial color={colors[i + 2]} metalness={0.3} roughness={0.25} />
+            <mesh key={i} position={[(i - (values.length - 1) / 2) * step, height / 2, 0]}>
+              <boxGeometry args={[step * 0.68, height, 0.45]} />
+              <meshStandardMaterial
+                color={colors[i % colors.length]}
+                metalness={0.3}
+                roughness={0.25}
+              />
             </mesh>
           );
         })}
       </group>
     );
+  }
   if (type === 'orbit3d')
     return (
       <group rotation={[t * 0.3, t * 0.55, t * 0.14]}>
@@ -296,14 +303,148 @@ function ThreeScene(props) {
         <ambientLight intensity={1.2} />
         <directionalLight position={[3, 4, 5]} intensity={3} />
         <pointLight position={[-3, 0, 3]} color="#8cbcff" intensity={12} />
-        <Objects type={props.preset} accent={props.accent} />
+        <Objects type={props.preset} accent={props.accent} values={props.values} />
       </ThreeCanvas>
       <Mark {...props} />
-      <TextPanel {...props} style={{ top: '65%' }} />
+      {props.preset === 'data3d' ? (
+        <div
+          style={{
+            position: 'absolute',
+            top: '54%',
+            left: '9%',
+            right: '9%',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: width * 0.018,
+          }}
+        >
+          {props.values.map((value, i) => (
+            <div
+              key={i}
+              style={{ color: colors[i % colors.length], fontSize: width * 0.026, fontWeight: 700 }}
+            >
+              {i + 1}: {value.toLocaleString('en-US')}
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <TextPanel {...props} style={{ top: props.preset === 'data3d' ? '68%' : '65%' }} />
+    </AbsoluteFill>
+  );
+}
+function PhotoMotion(props) {
+  const frame = useCurrentFrame(),
+    { width, height, durationInFrames } = useVideoConfig(),
+    p = frame / Math.max(1, durationInFrames - 1);
+  return (
+    <AbsoluteFill
+      style={{ backgroundColor: props.background, fontFamily: 'Arial', overflow: 'hidden' }}
+    >
+      <Img
+        src={props.imageData}
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          transform: 'scale(' + (1.08 + p * 0.08) + ') translateX(' + (-2 + p * 4) + '%)',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: '59%',
+          bottom: 0,
+          backgroundColor: props.background + 'e6',
+        }}
+      />
+      <Mark {...props} />
+      <TextPanel {...props} style={{ top: '66%' }} />
+    </AbsoluteFill>
+  );
+}
+function Audiogram(props) {
+  const frame = useCurrentFrame(),
+    { width, height, fps, durationInFrames } = useVideoConfig(),
+    time = frame / fps;
+  const source = props.waveform || [],
+    center = Math.floor((time / Math.max(0.001, props.audioDuration)) * source.length),
+    count = 34,
+    barWidth = (width * 0.8) / count;
+  return (
+    <AbsoluteFill
+      style={{ backgroundColor: props.background, fontFamily: 'Arial', overflow: 'hidden' }}
+    >
+      <Mark {...props} />
+      {props.imageData ? (
+        <Img
+          src={props.imageData}
+          style={{
+            position: 'absolute',
+            top: '14%',
+            left: '38%',
+            width: '24%',
+            height: width * 0.24,
+            objectFit: 'cover',
+            borderRadius: '50%',
+            border: '4px solid ' + props.accent,
+          }}
+        />
+      ) : null}
+      <div
+        style={{
+          position: 'absolute',
+          top: props.imageData ? '36%' : '24%',
+          left: '10%',
+          right: '10%',
+          height: height * 0.2,
+          display: 'flex',
+          alignItems: 'center',
+          gap: barWidth * 0.24,
+        }}
+      >
+        {Array.from({ length: count }, (_, i) => {
+          const bin = center + i - Math.floor(count / 2),
+            value = time < props.audioDuration && bin >= 0 && bin < source.length ? source[bin] : 0;
+          return (
+            <div
+              key={i}
+              style={{
+                width: barWidth * 0.76,
+                height: Math.max(3, value * height * 0.18),
+                backgroundColor: i % 3 === 0 ? '#f3f7f3' : props.accent,
+                borderRadius: barWidth * 0.2,
+              }}
+            />
+          );
+        })}
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: '10%',
+          right: '10%',
+          top: props.imageData ? '60%' : '48%',
+          height: 4,
+          backgroundColor: '#ffffff22',
+        }}
+      >
+        <div
+          style={{
+            height: '100%',
+            width: (frame / Math.max(1, durationInFrames - 1)) * 100 + '%',
+            backgroundColor: props.accent,
+          }}
+        />
+      </div>
+      <TextPanel {...props} style={{ top: props.imageData ? '68%' : '57%' }} />
     </AbsoluteFill>
   );
 }
 export const components = {
+  'photo-motion': PhotoMotion,
+  audiogram: Audiogram,
   kinetic: Kinetic,
   product: Product,
   stories: Stories,

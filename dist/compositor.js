@@ -154,6 +154,282 @@
     }
   }
 
+  const filterCache = new WeakMap();
+  const fitCache = new Map();
+  let gradingSurface, fallbackSurface;
+  function gradingEngine() {
+    if (gradingSurface !== undefined) return gradingSurface;
+    gradingSurface = null;
+    try {
+      const canvas = document.createElement('canvas'),
+        gl = canvas.getContext('webgl2', {
+          alpha: true,
+          premultipliedAlpha: false,
+          preserveDrawingBuffer: true,
+          antialias: false,
+        });
+      if (!gl) return null;
+      const shader = (type, source) => {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, source);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw Error('Color shader unavailable');
+        return s;
+      };
+      const program = gl.createProgram();
+      gl.attachShader(
+        program,
+        shader(
+          gl.VERTEX_SHADER,
+          `#version 300 es
+        in vec2 position; out vec2 uv; void main(){uv=vec2(position.x,1.0-position.y);gl_Position=vec4(position*2.0-1.0,0,1);}`,
+        ),
+      );
+      gl.attachShader(
+        program,
+        shader(
+          gl.FRAGMENT_SHADER,
+          `#version 300 es
+        precision highp float; precision highp sampler3D;
+        in vec2 uv; out vec4 result; uniform sampler2D sourceImage; uniform sampler3D colorLut;
+        uniform vec4 controls; uniform vec4 lighting; uniform float intensity; uniform float useLut;
+        uniform vec3 domainMin; uniform vec3 domainMax; uniform float lutSize;
+        void main(){vec4 original=texture(sourceImage,uv);vec3 c=max(vec3(0),original.rgb*exp2(controls.x));
+        c=(c-.5)*controls.y+.5;float l=dot(c,vec3(.2126,.7152,.0722));c=mix(vec3(l),c,controls.z);c+=vec3(controls.w,0,-controls.w);
+        c=clamp(c,0.0,1.0);c=clamp(pow(c,vec3(1.0/lighting.x))+lighting.y*.25*pow(vec3(1)-c,vec3(2))+lighting.z*.25*pow(c,vec3(2)),0.0,1.0);
+        if(useLut>.5){vec3 q=clamp((c-domainMin)/(domainMax-domainMin),0.0,1.0);q=(q*(lutSize-1.0)+.5)/lutSize;c=texture(colorLut,q).rgb;}
+        result=vec4(mix(original.rgb,c,intensity),original.a);}`,
+        ),
+      );
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw Error('Color shader unavailable');
+      gl.useProgram(program);
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]),
+        gl.STATIC_DRAW,
+      );
+      const position = gl.getAttribLocation(program, 'position');
+      gl.enableVertexAttribArray(position);
+      gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+      const source = gl.createTexture(),
+        lut = gl.createTexture();
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, source);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.uniform1i(gl.getUniformLocation(program, 'sourceImage'), 0);
+      gl.uniform1i(gl.getUniformLocation(program, 'colorLut'), 1);
+      const uniforms = Object.fromEntries(
+        ['controls', 'lighting', 'intensity', 'useLut', 'domainMin', 'domainMax', 'lutSize'].map(
+          (name) => [name, gl.getUniformLocation(program, name)],
+        ),
+      );
+      gradingSurface = { canvas, gl, program, source, lut, uniforms, lutRef: null };
+      canvas.addEventListener('webglcontextlost', (e) => {
+        e.preventDefault();
+        gradingSurface = null;
+      });
+    } catch {
+      gradingSurface = null;
+    }
+    return gradingSurface;
+  }
+  function customGrade(ctx, value, time) {
+    const kit = root.FleremahiasEditorKit;
+    if (!value || !kit) return;
+    let record = filterCache.get(value);
+    const signature = [
+      value.timeOffset,
+      value.exposure,
+      value.contrast,
+      value.saturation,
+      value.temperature,
+      value.gamma,
+      value.shadows,
+      value.highlights,
+      value.intensity,
+      value.texture,
+      value.textureStrength,
+      value.paintColor,
+      value.seed,
+      value.motion,
+    ].join('|');
+    if (!record || record.signature !== signature || record.lutRef !== value.lut) {
+      record = { filter: kit.normalizeFilter(value), signature, lutRef: value.lut };
+      filterCache.set(value, record);
+    }
+    time += record.filter.timeOffset;
+    const f = record.filter,
+      w = ctx.canvas.width,
+      h = ctx.canvas.height;
+    const identity =
+      f.exposure === 0 &&
+      f.contrast === 100 &&
+      f.saturation === 100 &&
+      f.temperature === 0 &&
+      f.gamma === 1 &&
+      f.shadows === 0 &&
+      f.highlights === 0 &&
+      !f.lut;
+    if (!identity && f.intensity > 0) {
+      const engine = gradingEngine();
+      let graded = false;
+      if (engine) {
+        try {
+          const { canvas, gl, program, source, lut, uniforms: u } = engine;
+          if (canvas.width !== w || canvas.height !== h) {
+            canvas.width = w;
+            canvas.height = h;
+          }
+          gl.viewport(0, 0, w, h);
+          gl.useProgram(program);
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, source);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ctx.canvas);
+          gl.uniform4f(
+            u.controls,
+            f.exposure,
+            f.contrast / 100,
+            f.saturation / 100,
+            f.temperature * 0.0008,
+          );
+          gl.uniform4f(u.lighting, f.gamma, f.shadows / 100, f.highlights / 100, 0);
+          gl.uniform1f(u.intensity, f.intensity);
+          gl.activeTexture(gl.TEXTURE1);
+          gl.bindTexture(gl.TEXTURE_3D, lut);
+          if (engine.lutRef !== record.filter.lut) {
+            const color = record.filter.lut,
+              size = color?.size || 2,
+              data = new Uint8Array(size ** 3 * 4);
+            for (let i = 0; i < size ** 3; i++) {
+              for (let k = 0; k < 3; k++)
+                data[i * 4 + k] = Math.round((color ? color.values[i * 3 + k] : 1) * 255);
+              data[i * 4 + 3] = 255;
+            }
+            gl.texImage3D(
+              gl.TEXTURE_3D,
+              0,
+              gl.RGBA8,
+              size,
+              size,
+              size,
+              0,
+              gl.RGBA,
+              gl.UNSIGNED_BYTE,
+              data,
+            );
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            for (const axis of [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T, gl.TEXTURE_WRAP_R])
+              gl.texParameteri(gl.TEXTURE_3D, axis, gl.CLAMP_TO_EDGE);
+            engine.lutRef = color;
+          }
+          // A complete identity 3D texture is needed even when no LUT is selected.
+          if (!engine.initialized && !f.lut) {
+            const white = new Uint8Array(32).fill(255);
+            gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, 2, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, white);
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            for (const axis of [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T, gl.TEXTURE_WRAP_R])
+              gl.texParameteri(gl.TEXTURE_3D, axis, gl.CLAMP_TO_EDGE);
+          }
+          engine.initialized = true;
+          gl.uniform1f(u.useLut, f.lut ? 1 : 0);
+          gl.uniform1f(u.lutSize, f.lut?.size || 2);
+          gl.uniform3fv(u.domainMin, f.lut?.domainMin || [0, 0, 0]);
+          gl.uniform3fv(u.domainMax, f.lut?.domainMax || [1, 1, 1]);
+          gl.drawArrays(gl.TRIANGLES, 0, 6);
+          if (gl.getError() !== gl.NO_ERROR) throw Error('Color pass failed');
+          ctx.save();
+          ctx.globalCompositeOperation = 'copy';
+          ctx.drawImage(canvas, 0, 0, w, h);
+          ctx.restore();
+          graded = true;
+        } catch {
+          gradingSurface = null;
+        }
+      }
+      if (!graded) {
+        // Memory-bounded fallback for devices without WebGL2. The same color transform is used.
+        fallbackSurface ||= document.createElement('canvas');
+        const scale = Math.min(1, 1280 / Math.max(w, h));
+        fallbackSurface.width = Math.max(1, Math.round(w * scale));
+        fallbackSurface.height = Math.max(1, Math.round(h * scale));
+        const fc = fallbackSurface.getContext('2d', { willReadFrequently: true });
+        fc.drawImage(ctx.canvas, 0, 0, fallbackSurface.width, fallbackSurface.height);
+        const pixels = fc.getImageData(0, 0, fallbackSurface.width, fallbackSurface.height);
+        kit.gradePixels(pixels.data, f);
+        fc.putImageData(pixels, 0, 0);
+        ctx.save();
+        ctx.globalCompositeOperation = 'copy';
+        ctx.drawImage(fallbackSurface, 0, 0, w, h);
+        ctx.restore();
+      }
+    }
+    if (f.texture === 'none' || !f.textureStrength || !f.intensity) return;
+    let seed = f.seed >>> 0;
+    const random = () => {
+      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+    const pulse = f.motion === 'pulse' ? 0.7 + 0.3 * Math.sin(time * 3) : 1,
+      offset = f.motion === 'drift' ? Math.sin(time * 0.7) * w * 0.04 : 0;
+    ctx.save();
+    ctx.globalAlpha = f.textureStrength * f.intensity * pulse;
+    ctx.fillStyle = f.paintColor;
+    if (f.texture === 'grain' || f.texture === 'paper') {
+      if (!record.tile) {
+        const tile = document.createElement('canvas');
+        tile.width = tile.height = 96;
+        const c = tile.getContext('2d'),
+          pixels = c.createImageData(96, 96);
+        for (let i = 0; i < pixels.data.length; i += 4) {
+          const shade =
+            f.texture === 'paper' ? 160 + Math.round(random() * 80) : Math.round(random() * 255);
+          pixels.data.set([shade, shade, shade, 75], i);
+        }
+        c.putImageData(pixels, 0, 0);
+        record.tile = tile;
+      }
+      ctx.globalCompositeOperation = f.texture === 'paper' ? 'multiply' : 'soft-light';
+      ctx.translate(offset, 0);
+      ctx.fillStyle = ctx.createPattern(record.tile, 'repeat');
+      ctx.fillRect(-w, 0, w * 3, h);
+    } else if (f.texture === 'glow') {
+      for (let i = 0; i < 4; i++) {
+        const x = random() * w + offset,
+          y = random() * h,
+          r = w * (0.12 + random() * 0.3),
+          gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
+        gradient.addColorStop(0, f.paintColor);
+        gradient.addColorStop(1, f.paintColor + '00');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, w, h);
+      }
+    } else {
+      const count = f.texture === 'ink' ? 34 : 24;
+      for (let i = 0; i < count; i++) {
+        const x = random() * w + offset,
+          baseY = random() * h,
+          fall = f.motion === 'paint-fall' ? ((time * (0.07 + random() * 0.06)) % 1) * h : 0,
+          y = (baseY + fall) % h,
+          r = w * (0.003 + random() * 0.035);
+        ctx.beginPath();
+        ctx.ellipse(x, y, r, r * (0.7 + random() * 1.5), random() * Math.PI, 0, Math.PI * 2);
+        ctx.fill();
+        if (i % 4 === 0) {
+          ctx.fillRect(x - r * 0.12, y, r * 0.24, h * 0.08 * random());
+        }
+      }
+    }
+    ctx.restore();
+  }
+
   function textBlock(ctx, options) {
     const {
       text,
@@ -280,13 +556,53 @@
   function drawLayer(ctx, scene, layer, time, duration, images) {
     if (layer.hidden || time < (layer.startAt || 0) || (layer.endAt > 0 && time >= layer.endAt))
       return null;
+    const keyed = root.FleremahiasEditorKit?.interpolateKeyframes(
+      layer.keyframes,
+      time - (layer.startAt || 0),
+      layer,
+    );
+    if (keyed) layer = { ...layer, ...keyed };
     const w = ctx.canvas.width,
-      h = ctx.canvas.height,
-      size = (layer.size * w) / 1080;
+      h = ctx.canvas.height;
+    let size = (layer.size * w) / 1080;
+    if (layer.autoFit && ['text', 'counter'].includes(layer.kind) && root.FleremahiasEditorKit) {
+      const cacheKey = JSON.stringify([
+        layer.text,
+        layer.size,
+        layer.width,
+        layer.height,
+        scene.font,
+        w,
+        h,
+      ]);
+      if (!fitCache.has(cacheKey)) {
+        fitCache.set(
+          cacheKey,
+          root.FleremahiasEditorKit.fitText(
+            layer.text,
+            (w * layer.width) / 100,
+            (h * layer.height) / 100,
+            {
+              fontSize: size,
+              minSize: Math.min(size, (w * 16) / 1080),
+              measure: (line, fontSize) => {
+                ctx.save();
+                ctx.font = '800 ' + fontSize + 'px ' + scene.font;
+                const width = ctx.measureText(line).width;
+                ctx.restore();
+                return width;
+              },
+            },
+          ),
+        );
+        if (fitCache.size > 250) fitCache.delete(fitCache.keys().next().value);
+      }
+      size = fitCache.get(cacheKey).size;
+    }
     const local = Math.max(0, time - (layer.startAt || 0)),
       progress = Math.min(1, local / (layer.animationDuration || 0.55)),
       ease = 1 - Math.pow(1 - progress, 3);
-    let scale = 1,
+    let scale = keyed?.scale ?? 1,
       dy = 0,
       rotation = layer.rotation,
       alpha = layer.opacity;
@@ -296,7 +612,7 @@
       alpha *= ease;
     }
     if (layer.animation === 'pop') {
-      scale = 0.65 + 0.35 * ease;
+      scale *= 0.65 + 0.35 * ease;
       alpha *= ease;
     }
     if (layer.animation === 'float') dy = Math.sin(local * 2) * h * 0.008;
@@ -307,7 +623,7 @@
       rotation += (1 - ease) * -35;
       alpha *= ease;
     }
-    if (layer.animation === 'pulse') scale = 1 + Math.sin(local * 3) * 0.04;
+    if (layer.animation === 'pulse') scale *= 1 + Math.sin(local * 3) * 0.04;
     ctx.save();
     ctx.translate((w * layer.x) / 100, (h * layer.y) / 100 + dy);
     ctx.rotate((rotation * Math.PI) / 180);
@@ -351,12 +667,12 @@
     }
     ctx.restore();
     const angle = (rotation * Math.PI) / 180,
-      rw = Math.abs(bounds.w * Math.cos(angle)) + Math.abs(bounds.h * Math.sin(angle)),
-      rh = Math.abs(bounds.w * Math.sin(angle)) + Math.abs(bounds.h * Math.cos(angle));
+      rw = scale * (Math.abs(bounds.w * Math.cos(angle)) + Math.abs(bounds.h * Math.sin(angle))),
+      rh = scale * (Math.abs(bounds.w * Math.sin(angle)) + Math.abs(bounds.h * Math.cos(angle)));
     return {
       id: layer.id,
       x: (w * layer.x) / 100 - rw / 2,
-      y: (h * layer.y) / 100 - rh / 2,
+      y: (h * layer.y) / 100 + dy - rh / 2,
       w: rw,
       h: rh,
     };
@@ -451,6 +767,7 @@
     ctx.clearRect(0, 0, w, h);
     background(ctx, scene, options.transparent);
     mediaFrame(ctx, scene, media, time, duration);
+    customGrade(ctx, scene.customFilter, time);
     if (scene.text) {
       ctx.save();
       ctx.translate((w * (scene.textX ?? 50)) / 100, (h * (scene.textY ?? 50)) / 100);

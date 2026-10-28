@@ -213,3 +213,15 @@ Ejecuta `npm ci` y `npm run build` para reconstruir el motor desde `src/motion/`
 Remotion se configura con `free-license`: el propietario confirmó que trabaja solo. Su licencia comercial gratuita cubre empresas de hasta tres personas; revisar las condiciones al crecer. El SDK registra un evento técnico de render en remotion.pro; no se envían texto, código ni archivos del proyecto. Se incluyen la licencia y avisos de terceros en `dist/motion/`. Referencias: https://www.remotion.pro/license y https://www.remotion.dev/docs/client-side-rendering.
 
 Esta integración no incluye una cuenta de Claude ni generación de vídeo mediante una IA externa. El código React puede escribirse o pegarse en el panel y revisarse antes de ejecutarlo. El aislamiento protege los datos del estudio; código propio que consuma CPU excesiva puede bloquear su vista previa.
+
+## Biblioteca original y herramientas conectadas · 28 octubre 2026
+
+La navegación ofrece **Biblioteca original**, y el editor incorpora **Biblioteca y recetas**. Incluye 248 recursos originales: 60 fondos, 80 elementos, 24 estilos, 20 títulos, 12 transiciones con sonido, 40 SFX y 12 recetas. Los gráficos y sonidos se generan por código y llevan procedencia, versión y permiso de uso; no se incorporó un banco de fotografías de terceros.
+
+El panel permite identidad con logo, recetas JSON, filtros propios con LUT `.cube`, comparación antes/después, texturas, fotogramas clave, ondas y ajuste de pistas, edición por frases, búsqueda semántica multilingüe local, segmentación de personas con corrección de máscara, adaptación a cuatro formatos y paquete social ZIP. Motion añade foto animada, audiograma con audio propio y barras 3D a partir de cifras reales: ocho plantillas en total.
+
+Cloudflare tiene catálogo público D1 y recursos curados R2 separados del R2 privado de revisión. Los enlaces de revisión comparten solamente un archivo seleccionado, caducan a las 72 horas y admiten comentarios temporizados y revocación. Su creación y administración requieren la credencial del propietario; no se implementó sincronización de proyectos de múltiples usuarios ni coedición.
+
+La búsqueda semántica y eliminación de fondos descargan modelos locales. Se probaron inferencia multilingüe y PNG de persona; el vídeo segmentado se exportó como VP9/Opus con audio y duración verificables. Vídeo limitado a 30 segundos, lado mayor 720 y fondo sólido, con hasta 24 FPS variables. El soporte del navegador puede cambiar el resultado y rendimiento.
+
+El diseño generativo crea gráficos procedurales por palabras clave. No hay generación fotográfica mediante un proveedor de IA de pago ni consumo facturable de Workers AI activado. Tener permiso de despliegue AI no implica contratar un servicio ni habilitar cuotas ilimitadas. La transcripción, selección por frases y catálogo no garantizan viralidad ni sustituyen revisión humana.

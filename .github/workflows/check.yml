@@ -17,5 +17,5 @@ jobs:
 
 
       - run: npm ci --prefix cloudflare
-      - run: node --test cloudflare/worker.test.mjs cloudflare/billing.test.mjs cloudflare/studio.test.mjs
+      - run: node --test cloudflare/worker.test.mjs cloudflare/billing.test.mjs cloudflare/studio.test.mjs cloudflare/catalog.test.mjs cloudflare/review-service.test.mjs
 

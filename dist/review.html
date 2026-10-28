@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://fleremahias-studio.analista-datos-pro.workers.dev blob: data:; media-src 'self' https://fleremahias-studio.analista-datos-pro.workers.dev blob:; connect-src 'self' https://fleremahias-studio.analista-datos-pro.workers.dev; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Fleremahias · Revisión compartida</title>
+    <link rel="stylesheet" href="review.css" />
+    <script src="review.js" defer></script>
+  </head>
+  <body>
+    <header class="review-header">
+      <a class="review-brand" href="./" aria-label="Fleremahias Studio"
+        >✦ <span>FLEREMAHIAS <small>STUDIO / REVIEW</small></span></a
+      >
+      <nav aria-label="Language">
+        <button type="button" data-language="es">ES</button
+        ><button type="button" data-language="en">EN</button>
+      </nav>
+    </header>
+    <main>
+      <div id="review-status" role="status" aria-live="polite"></div>
+      <button type="button" id="review-retry" data-label="retry" hidden>Volver a intentar</button>
+      <section id="review-intro">
+        <p class="review-eyebrow" data-label="eyebrow">REVISIÓN COMPARTIDA</p>
+        <h1 id="review-title" data-label="loading">Cargando revisión…</h1>
+        <p id="review-description" data-label="description">
+          Revisa el contenido y deja comentarios en el segundo exacto.
+        </p>
+        <p class="review-privacy" data-label="privacy">
+          Cualquier persona con este enlace puede ver estos archivos y comentar. El enlace caduca en
+          un máximo de 72 horas. No necesitas una clave del propietario.
+        </p>
+        <p id="review-expiry"></p>
+      </section>
+      <div id="review-workspace" class="review-workspace" hidden>
+        <section class="review-content" aria-label="Media">
+          <div id="review-media"></div>
+          <div class="review-caption">
+            <h2 data-label="caption">Descripción de publicación</h2>
+            <p id="review-caption"></p>
+          </div>
+        </section>
+        <aside class="review-feedback">
+          <div class="review-feedback-head">
+            <h2 data-label="feedback">Comentarios</h2>
+            <button id="review-refresh" type="button" data-label="refresh">Actualizar</button>
+          </div>
+          <form id="review-form">
+            <label
+              ><span data-label="author">Tu nombre</span
+              ><input id="review-author" maxlength="80" autocomplete="nickname" required
+            /></label>
+            <div class="review-time-row">
+              <label
+                ><span data-label="time">Segundo del vídeo</span
+                ><input
+                  id="review-time"
+                  type="number"
+                  min="0"
+                  max="120"
+                  step="0.1"
+                  value="0"
+                  required /></label
+              ><button id="review-use-time" type="button" data-label="useTime">
+                Usar reproducción
+              </button>
+            </div>
+            <label
+              ><span data-label="comment">Tu comentario</span
+              ><textarea id="review-comment" maxlength="2000" rows="4" required></textarea></label
+            ><button id="review-submit" class="review-primary" type="submit" data-label="submit">
+              Enviar comentario
+            </button>
+            <p class="review-note" data-label="limit">
+              Hasta 20 comentarios al día por enlace. Tu nombre y comentario serán visibles para las
+              demás personas con acceso.
+            </p>
+          </form>
+          <ol id="review-comments" aria-live="polite"></ol>
+        </aside>
+      </div>
+    </main>
+    <footer>
+      <span>Fleremahias Studio · by fleremiasflemin</span
+      ><a href="./" data-label="openStudio">Abrir el estudio ↗</a>
+    </footer>
+  </body>
+</html>

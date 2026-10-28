@@ -928,7 +928,7 @@ Deshace cambios del proyecto o cierra el panel para revisar el montaje completo.
 
 Crea composiciones originales con React, Remotion y geometría Three.js. Previsualiza, exporta y reutiliza el resultado en tus montajes.
 
-1. Abre Motion 2D / 3D y elige una de las seis plantillas.
+1. Abre Motion 2D / 3D y elige una de las ocho plantillas.
 2. Escribe el título, subtítulo y llamada a la acción; ajusta colores, formato, resolución, duración y FPS.
 3. Pulsa Aplicar y previsualizar después de editar. Usa reproducir y el control de fotograma para revisar.
 4. Exporta PNG, MP4 o WebM según la compatibilidad de tu navegador. Espera a que termine y descarga el resultado.
@@ -945,3 +945,25 @@ Detiene el render activo. Un archivo incompleto no reemplaza el último resultad
 ### Calidad y licencia
 
 El 3D requiere WebGL. Las opciones 2160 y 60 FPS dependen del dispositivo y no garantizan tiempo real. La licencia de Remotion es gratuita para empresas de hasta tres personas; equipos mayores deben revisar sus condiciones.
+
+## Biblioteca original y recetas creativas
+
+Recursos propios, identidad, filtros, movimiento y revisión en un panel conectado al proyecto.
+
+1. Abre Biblioteca original en la navegación o Biblioteca y recetas en el editor. Busca, previsualiza, marca favoritos e inserta recursos.
+2. Mi identidad guarda colores, tipografía y logo. Aplicar cambia el proyecto completo; Añadir cierre crea una escena.
+3. Recetas guarda ajustes y capas reutilizables, permite importación JSON y ofrece doce flujos editables.
+4. Filtros propios permite comparar, ajustar color, textura y movimiento, importar LUT .cube y guardar filtros personales.
+5. Tiempo y movimiento permite analizar ondas y picos, ajustar pistas y guardar fotogramas clave de capas.
+6. Editar por texto usa una transcripción con tiempos: selecciona y reordena frases para crear una copia. La búsqueda semántica descarga un modelo multilingüe y procesa texto localmente. La similitud no predice viralidad.
+7. Quitar fondo segmenta personas. Fotos: PNG hasta 2048 px y pincel para corregir la máscara. Vídeo: hasta 30 segundos, lado mayor 720 y fondo sólido, con audio si el navegador lo permite.
+8. Revisar y adaptar detecta problemas, distribuye capas, crea cuatro formatos y exporta un ZIP con vídeo, portada, subtítulos y descripción.
+9. Catálogo y revisión conecta D1 y R2. Administrar y crear enlaces requiere la credencial del propietario; los enlaces comparten solo el archivo elegido durante 72 horas y permiten comentarios. No es edición colaborativa ni sincronización multiusuario.
+
+### Cancelar proceso
+
+Cancela el modelo local o render activo; espera a que los controles se recuperen antes de cerrar.
+
+### Privacidad y recursos
+
+Los 248 recursos originales son públicos; tus proyectos permanecen locales. Un enlace de revisión permite acceso a quien lo tenga. Puedes revocarlo. El diseño generativo local crea gráficos por código, no fotografías con IA.

@@ -192,8 +192,18 @@
     'filterStrength',
     'adjust',
     'background',
+    'customFilter',
   ];
-  const layerKeys = ['style', 'startAt', 'endAt', 'animationDuration', 'shape', 'progress'];
+  const layerKeys = [
+    'style',
+    'startAt',
+    'endAt',
+    'animationDuration',
+    'shape',
+    'progress',
+    'autoFit',
+    'keyframes',
+  ];
   function clipCaptions(text, start, end) {
     return base
       .parseSRT(text || '')
@@ -216,6 +226,21 @@
         if (b <= start || a >= end) return null;
         return {
           ...l,
+          keyframes: !l.keyframes?.length
+            ? []
+            : (() => {
+                const kit = root.FleremahiasEditorKit;
+                if (!kit) return [];
+                const from = Math.max(0, start - a),
+                  to = Math.min(end, b) - a;
+                return kit.normalizeKeyframes([
+                  { ...kit.interpolateKeyframes(l.keyframes, from, l), t: 0 },
+                  ...l.keyframes
+                    .filter((k) => k.t > from && k.t < to)
+                    .map((k) => ({ ...k, t: k.t - from })),
+                  { ...kit.interpolateKeyframes(l.keyframes, to, l), t: to - from },
+                ]);
+              })(),
           sourceStart: (l.sourceStart || 0) + Math.max(0, start - a) * (l.speed || 1),
           startAt: Math.max(0, a - start),
           endAt: Math.min(end, b) - start,
@@ -241,6 +266,9 @@
     const right = creator.scene({
       ...scene,
       name: scene.name + ' · B',
+      customFilter: scene.customFilter
+        ? { ...scene.customFilter, timeOffset: (scene.customFilter.timeOffset || 0) + at }
+        : null,
       start: isVideo ? splitSource : 0,
       duration: isVideo ? scene.duration : total - at,
       subtitles: clipCaptions(scene.subtitles, at, total),

@@ -27,7 +27,7 @@
     },
   ],
   "vars": {
-    "LUMA_ORIGINS": "https://fleremiasflemin20-maker.github.io,https://luma-social-studio-251026.keenox19.chatgpt.site",
+    "LUMA_ORIGINS": "https://fleremiasflemin20-maker.github.io,https://luma-social-studio-251026.keenox19.chatgpt.site,https://fleremahias-studio.analista-datos-pro.workers.dev,http://127.0.0.1:4182,http://127.0.0.1:4183",
     "MAX_UPLOAD_MB": "64",
   },
   "observability": {

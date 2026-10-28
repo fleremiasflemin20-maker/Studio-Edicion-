@@ -1,5 +1,8 @@
 /* Fleremahias Creator: original implementation of scene composition and creator workflows. */
 (function (root) {
+  const editorKit =
+    root.FleremahiasEditorKit ||
+    (typeof require === 'function' ? require('./editor-kit-core.js') : null);
   const n = (v, a, b, d) => (Number.isFinite(Number(v)) ? Math.max(a, Math.min(b, Number(v))) : d);
   const str = (s, max = 10000) => String(s ?? '').slice(0, max),
     color = (s, d) => (/^#[a-f0-9]{6}$/i.test(s) ? s : d);
@@ -74,6 +77,8 @@
     'cropX',
     'cropY',
     'transition',
+    'transitionPreset',
+    'transitionDuration',
     'layers',
     'font',
     'subtitleStyle',
@@ -92,6 +97,7 @@
     'facePath',
     'safePlatform',
     'words',
+    'customFilter',
   ];
 
   const styleIds = [
@@ -163,6 +169,8 @@
       speed: n(v.speed, 0.25, 3, 1),
       group: str(v.group, 80),
       progress: n(v.progress, 0, 100, 100),
+      autoFit: !!v.autoFit,
+      keyframes: editorKit ? editorKit.normalizeKeyframes(v.keyframes) : [],
     };
   }
   function scene(v = {}) {
@@ -181,6 +189,7 @@
         ? v.facePath.slice(0, 600).map((k) => ({ t: n(k.t, 0, 120, 0), x: n(k.x, 0, 100, 50) }))
         : [],
       name: str(v.name || 'Escena', 80),
+      customFilter: v.customFilter && editorKit ? editorKit.normalizeFilter(v.customFilter) : null,
       asset: typeof v.asset === 'string' ? v.asset : null,
       text: str(v.text ?? ''),
       bg: color(v.bg, '#222033'),
@@ -200,6 +209,8 @@
       fit: v.fit === 'contain' ? 'contain' : 'cover',
       cropX: n(v.cropX, 0, 100, 50),
       cropY: n(v.cropY, 0, 100, 50),
+      transitionPreset: /^tr-[a-z-]{1,40}$/.test(v.transitionPreset) ? v.transitionPreset : '',
+      transitionDuration: n(v.transitionDuration, 0.1, 2, 0.35),
       transition: ['cut', 'fade', 'slide', 'zoom'].includes(v.transition) ? v.transition : 'fade',
       font: ['sans-serif', 'serif', 'monospace'].includes(v.font) ? v.font : 'sans-serif',
       subtitleStyle: [

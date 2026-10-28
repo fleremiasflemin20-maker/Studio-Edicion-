@@ -31,6 +31,7 @@ let nonce = '',
   audioURL,
   renderAbort,
   activeRender = null;
+let hasAudio = false;
 const player = React.createRef(),
   root = createRoot(document.getElementById('root'));
 const send = (type, data = {}, id) =>
@@ -116,14 +117,21 @@ async function load(message) {
   draft = Core.normalize(message.draft);
   videoConfig = Core.config(draft);
   const Component = draft.code ? compile(draft.code) : components[draft.preset];
-  if (audioURL) URL.revokeObjectURL(audioURL);
+  const media = Core.validateMedia(message.media);
+  if (!draft.code && draft.preset === 'photo-motion' && !media.imageData)
+    throw Error('Select an image from the studio library.');
+  if (!draft.code && draft.preset === 'audiogram' && !media.audioData)
+    throw Error('Select audio from the studio library.');
+  if (audioURL?.startsWith('blob:')) URL.revokeObjectURL(audioURL);
   audioURL =
-    draft.sound === 'off'
+    media.audioData ||
+    (draft.sound === 'off'
       ? null
       : URL.createObjectURL(
           new Blob([Core.score(draft.duration, draft.sound)], { type: 'audio/wav' }),
-        );
-  Scene = withAudio(Component, draft, audioURL);
+        ));
+  hasAudio = !!audioURL;
+  Scene = withAudio(Component, { ...draft, ...media }, audioURL);
   root.render(
     <Boundary key={message.id} requestId={message.id}>
       <Player
@@ -143,20 +151,20 @@ async function load(message) {
   const videoOptions = {
     width: videoConfig.width,
     height: videoConfig.height,
-    muted: draft.sound === 'off',
+    muted: !hasAudio,
   };
   const [mp4, webm] = await Promise.all([
     canRenderMediaOnWeb({
       ...videoOptions,
       container: 'mp4',
       videoCodec: 'h264',
-      audioCodec: draft.sound === 'off' ? null : 'aac',
+      audioCodec: !hasAudio ? null : 'aac',
     }),
     canRenderMediaOnWeb({
       ...videoOptions,
       container: 'webm',
       videoCodec: 'vp8',
-      audioCodec: draft.sound === 'off' ? null : 'opus',
+      audioCodec: !hasAudio ? null : 'opus',
     }),
   ]);
   send(
@@ -200,8 +208,8 @@ async function render(message) {
         ...common,
         container: message.container,
         videoCodec: message.container === 'mp4' ? 'h264' : 'vp8',
-        audioCodec: draft.sound === 'off' ? null : message.container === 'mp4' ? 'aac' : 'opus',
-        muted: draft.sound === 'off',
+        audioCodec: !hasAudio ? null : message.container === 'mp4' ? 'aac' : 'opus',
+        muted: !hasAudio,
         videoBitrate: videoConfig.width * videoConfig.height > 2200000 ? 16000000 : 6000000,
         pageResponsiveness: 'high',
         onProgress: ({ progress, encodedFrames }) =>
