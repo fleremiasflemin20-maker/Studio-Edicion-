@@ -201,7 +201,45 @@
       created: Number.isFinite(date.getTime()) ? date.toISOString() : new Date(0).toISOString(),
     };
   }
+
+  function editWords(words, edits = []) {
+    if (!Array.isArray(words) || words.length > 20000) throw Error('Invalid timed words');
+    const ranges = [];
+    let active = null;
+    words.forEach((word, index) => {
+      const edit = edits[index] || {},
+        keep = edit.keep !== false && String(edit.text ?? word.text).trim();
+      if (!keep) {
+        active = null;
+        return;
+      }
+      const start = +word.start,
+        end = +word.end;
+      if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start)
+        throw Error('Invalid word timing');
+      const tokens = String(edit.text ?? word.text)
+        .trim()
+        .split(/\s+/)
+        .slice(0, 20);
+      if (!active || start - active.end > 0.8) {
+        active = { start, end, words: [], text: '' };
+        ranges.push(active);
+      }
+      tokens.forEach((text, n) =>
+        active.words.push({
+          text: text.slice(0, 100),
+          start: start + ((end - start) * n) / tokens.length,
+          end: start + ((end - start) * (n + 1)) / tokens.length,
+        }),
+      );
+      active.end = end;
+      active.text = active.words.map((w) => w.text).join(' ');
+    });
+    return ranges;
+  }
+
   return {
+    editWords,
     brand,
     recipe,
     normalizeRecipe,

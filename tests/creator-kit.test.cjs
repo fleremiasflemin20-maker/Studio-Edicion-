@@ -195,3 +195,28 @@ test('package manifests use editor durations and are deterministic for the same 
   assert.equal(K.manifest({ ...project, created: 'invalid' }).created, manifest.created);
   assert.ok(!JSON.stringify(manifest).includes('source'));
 });
+test('word editing cuts removed speech ranges and redistributes corrected caption tokens without fabricating audio time', () => {
+  const words = [
+    { text: 'Hello', start: 0, end: 0.5 },
+    { text: 'um', start: 0.5, end: 0.7 },
+    { text: 'world', start: 0.7, end: 1.2 },
+  ];
+  const out = K.editWords(words, [
+    { text: 'Hola', keep: true },
+    { keep: false },
+    { text: 'gran mundo', keep: true },
+  ]);
+  assert.equal(out.length, 2);
+  assert.equal(out[0].end, 0.5);
+  assert.equal(out[1].start, 0.7);
+  assert.equal(out[1].words.length, 2);
+  assert.equal(out[1].words[1].end, 1.2);
+  assert.equal(words[1].text, 'um');
+  assert.deepEqual(
+    K.editWords(
+      words,
+      words.map(() => ({ keep: false })),
+    ),
+    [],
+  );
+});

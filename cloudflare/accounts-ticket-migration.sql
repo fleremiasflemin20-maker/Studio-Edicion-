@@ -1,0 +1,1 @@
+-- Session binding is included in accounts-schema.sql. No extra migration is needed.

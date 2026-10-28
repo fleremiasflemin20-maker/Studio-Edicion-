@@ -1,0 +1,140 @@
+.cloud-dialog {
+  width: min(1000px, 95vw);
+  max-width: 95vw;
+  height: 88vh;
+  max-height: 92vh;
+  background: #0c141d;
+  color: #e7f7f0;
+  border: 1px solid #35514f;
+  border-radius: 20px;
+  padding: 24px;
+  color-scheme: dark;
+}
+.cloud-dialog::backdrop {
+  background: #000b;
+}
+.cloud-dialog header {
+  position: static;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  height: auto;
+  align-items: center;
+  gap: 20px;
+  border: 0;
+  padding: 0 0 20px;
+  box-shadow: none;
+}
+.cloud-dialog header div {
+  flex: 1;
+}
+.cloud-dialog h2 {
+  font-size: 26px;
+  margin: 8px 0;
+}
+.cloud-dialog small {
+  display: block;
+  color: #a2c6bd;
+  font-size: 12px;
+}
+.cloud-dialog nav {
+  display: flex;
+  gap: 9px;
+  overflow: auto;
+  margin-bottom: 18px;
+}
+.cloud-dialog button,
+.cloud-dialog a {
+  padding: 10px 14px;
+  background: #19352f;
+  color: #d6fff0;
+  border: 1px solid #41685d;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.cloud-dialog nav .active {
+  background: #27654f;
+}
+.cloud-dialog #cloud-body {
+  height: calc(100% - 160px);
+  overflow: auto;
+  padding-right: 10px;
+}
+.cloud-dialog footer {
+  padding-top: 13px;
+  white-space: pre-wrap;
+  font-size: 12px;
+}
+.cloud-dialog p {
+  color: #abc4c1;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.cloud-dialog input,
+.cloud-dialog textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  background: #14222c;
+  color: #e8f8f1;
+  border: 1px solid #39564f;
+  border-radius: 10px;
+  margin: 8px 0;
+  font-size: 14px;
+}
+.cloud-dialog label {
+  display: grid;
+  margin: 14px 0;
+  font-size: 13px;
+  color: #bad1c7;
+}
+.cloud-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.cloud-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.cloud-list article {
+  background: #12212b;
+  border: 1px solid #2f4a48;
+  border-radius: 13px;
+  padding: 16px;
+}
+.cloud-list article strong {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+.cloud-list img {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+.cloud-list button {
+  margin-top: 12px;
+}
+.cloud-editor-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #18372f;
+  border: 1px solid #356b58;
+  border-radius: 10px;
+  margin: 10px 0;
+  font-size: 12px;
+}
+.cloud-editor-bar button {
+  border: 1px solid #669d88;
+  background: transparent;
+  color: #d6ffeb;
+  padding: 7px;
+  border-radius: 8px;
+}

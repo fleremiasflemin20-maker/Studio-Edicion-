@@ -44,8 +44,8 @@ Proteger margen: exportación local sin coste de cómputo servidor, cuotas mensu
 
 Antes de activar ventas:
 
-1. Identidad por usuario con sesiones verificadas en Worker. Nunca repartir el token de propietario actual a clientes.
-2. Separar Durable Objects, R2, proyectos, jobs y cuentas OAuth por usuario; probar que un cliente no puede leer ni descargar datos de otro. Preservar el editor público local.
+1. Implementado: identidad WebAuthn y sesiones verificadas/revocables por usuario. Nunca repartir el token de propietario a clientes.
+2. Implementado para proyectos, medios, coedición y trabajos fotográficos: aislamiento por cuenta y membresía, con pruebas en producción. Las cuentas OAuth del servicio administrativo todavía deben integrarse por usuario antes de vender publicación social. Se preserva el editor público local.
 3. Crear planes/variantes en modo test de una tienda aprobada, guardar IDs permitidos y secretos sólo en Worker. El servidor debe vincular checkout a usuario autenticado y plan permitido; no aceptar precio, plan ni userId arbitrarios del navegador.
 4. Webhook con HMAC sobre bytes originales, límite de cuerpo, modo test separado, verificación contra API del proveedor y validación de tienda/variante/propietario. Guardar eventos con deduplicación, rechazar regresiones de estado y reconciliar periódicamente. El helper de HMAC no proporciona por sí solo idempotencia ni protección ante eventos antiguos.
 5. Guardar permisos en servidor; nunca en localStorage. Reservar cuotas en transacción y liberar reservas cuando falle el trabajo, midiendo consumo real para evitar abuso de reintentos. El helper de cuotas no proporciona atomicidad: necesita almacenamiento transaccional.

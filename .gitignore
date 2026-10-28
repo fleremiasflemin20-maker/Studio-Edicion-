@@ -12,3 +12,5 @@ backend/.test-data-*/
 .wrangler/
 cloudflare/.dev.vars
 
+
+cf-*-build/

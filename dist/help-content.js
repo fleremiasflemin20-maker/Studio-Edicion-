@@ -1005,7 +1005,7 @@
       'Editar por texto usa una transcripción con tiempos: selecciona y reordena frases para crear una copia. La búsqueda semántica descarga un modelo multilingüe y procesa texto localmente. La similitud no predice viralidad.',
       'Quitar fondo segmenta personas. Fotos: PNG hasta 2048 px y pincel para corregir la máscara. Vídeo: hasta 30 segundos, lado mayor 720 y fondo sólido, con audio si el navegador lo permite.',
       'Revisar y adaptar detecta problemas, distribuye capas, crea cuatro formatos y exporta un ZIP con vídeo, portada, subtítulos y descripción.',
-      'Catálogo y revisión conecta D1 y R2. Administrar y crear enlaces requiere la credencial del propietario; los enlaces comparten solo el archivo elegido durante 72 horas y permiten comentarios. No es edición colaborativa ni sincronización multiusuario.',
+      'Catálogo y revisión comparte exportaciones seleccionadas durante 72 horas. Para guardar proyectos y editar con otras personas usa Cuenta y nube, una función independiente.',
     ],
     controls: [
       [
@@ -1014,7 +1014,42 @@
       ],
       [
         'Privacidad y recursos',
-        'Los 248 recursos originales son públicos; tus proyectos permanecen locales. Un enlace de revisión permite acceso a quien lo tenga. Puedes revocarlo. El diseño generativo local crea gráficos por código, no fotografías con IA.',
+        'Los recursos originales son públicos. Los proyectos locales permanecen en el navegador; las copias de nube requieren cuenta y permisos. Los enlaces de revisión dan acceso a su exportación a quien los tenga. El diseño local crea gráficos por código; Imágenes con IA genera fotografías en Cloudflare.',
+      ],
+    ],
+  });
+  chapters.push({
+    id: 'accounts-cloud',
+    title: 'Cuenta, nube, coedición e imágenes con IA',
+    intro:
+      'Edita localmente sin cuenta o inicia sesión para guardar copias privadas, colaborar y generar fotografías con Cloudflare Workers AI.',
+    steps: [
+      'Abre Cuenta y nube en la cabecera del estudio de Cloudflare. Las otras versiones enlazan a este dominio para mantener la misma passkey.',
+      'Escribe un nombre y pulsa Crear cuenta con passkey. Completa personalmente el diálogo de seguridad de tu dispositivo. Para volver, pulsa Entrar con passkey.',
+      'En Mi cuenta, añade otra passkey y crea códigos de recuperación. Guarda los ocho códigos fuera del estudio: se muestran una vez y cada uno se usa una vez. No hay recuperación por correo.',
+      'En Proyectos privados, Subir proyecto abierto crea una copia en nube y sube sus archivos. La copia local original permanece en tu navegador. Abrir y sincronizar descarga una copia de trabajo privada en memoria.',
+      'Mantén la pestaña abierta y conectada hasta ver Guardado en nube. Los nuevos archivos también se suben antes de compartir sus cambios. Si pierdes conexión, conserva la pestaña y descarga tu copia.',
+      'En Coedición, el propietario crea una invitación de editor o lector. El enlace caduca a las 24 horas y solo admite una aceptación. La persona invitada inicia sesión y acepta el código.',
+      'Los editores comparten cambios en directo. Los lectores pueden consultar y descargar archivos autorizados; el servidor impide guardar sus ediciones en el proyecto compartido. El propietario puede quitar acceso o revocar invitaciones pendientes.',
+      'Los cambios en campos distintos se combinan. Si dos personas cambian el mismo campo, descarga tu copia y elige Usar versión de nube o Guardar mi versión como proyecto nuevo. Esta última opción conserva una copia independiente.',
+      'En Imágenes con IA, describe la fotografía con 8–1000 caracteres y pulsa Generar fotografía. El texto se envía a Cloudflare. Al terminar, guarda la imagen en Medios o descárgala. Los trabajos y sus archivos son privados.',
+    ],
+    controls: [
+      [
+        'Límites iniciales',
+        'Hasta 30 proyectos, 256 MB por cuenta, 20 MB por archivo y 10 miembros por proyecto. Admite PNG, JPEG, WebP, WAV, MP3, MP4 y WebM validados; convierte otros formatos antes de subirlos.',
+      ],
+      [
+        'Cuotas de IA y cancelación',
+        'FLUX.1 Schnell usa cuatro pasos fijos: tres intentos diarios por cuenta, veinte diarios globales y cien mensuales globales. Los fallos y cancelaciones consumen su reserva para evitar reintentos con costes inesperados. Las cuotas son compartidas por todo el estudio.',
+      ],
+      [
+        'Cerrar sesión y copias',
+        'Cerrar sesión retira de esta pestaña las copias privadas en memoria y revoca la sesión. Cerrar todas las sesiones invalida los accesos de la cuenta. Las exportaciones o copias locales que guardaste explícitamente permanecen en tu equipo.',
+      ],
+      [
+        'Edición por palabras',
+        'En Editar por texto, desmarca una palabra para recortar su intervalo del vídeo y edita su campo para corregir el subtítulo. Cambiar el texto no regenera la voz. Reordena frases y crea una copia; se conservan los tiempos de origen.',
       ],
     ],
   });

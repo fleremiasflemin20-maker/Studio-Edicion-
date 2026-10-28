@@ -52,7 +52,7 @@ function toast(s) {
 }
 function save() {
   try {
-    localStorage.setItem('luma-projects', JSON.stringify(projects));
+    localStorage.setItem('luma-projects', JSON.stringify(projects.filter((x) => !x.cloud)));
   } catch {
     toast('No hay espacio para guardar. Exporta tu proyecto.');
   }

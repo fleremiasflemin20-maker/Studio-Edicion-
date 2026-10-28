@@ -46,3 +46,7 @@ La dependencia oficial @cloudflare/puppeteer arrastra avisos npm en herramientas
 Se mantienen las cuotas y condiciones de la cuenta del propietario. Browser Run Free incluye 10 minutos diarios; R2 Standard incluye 10 GB-mes y cuotas de operaciones, con cobro por exceso según la suscripción activada por el propietario. Los límites internos de Fleremahias no sustituyen los de Cloudflare ni garantizan que toda la cuenta esté dentro de su cuota.
 
 Fuentes consultadas el 26/10/2026: [Browser Run](https://developers.cloudflare.com/browser-run/pricing/), [R2](https://developers.cloudflare.com/r2/pricing/), [Durable Objects](https://developers.cloudflare.com/durable-objects/platform/pricing/), [alarmas](https://developers.cloudflare.com/durable-objects/api/alarms/).
+
+## Cuentas, nube y Workers AI
+
+Aplica accounts-schema.sql a LIBRARY_DB antes del primer despliegue. USER_MEDIA apunta a fleremahias-user-media (privado). PROJECT_ROOMS usa ProjectRoom y la migración cloud-v1. AI es el binding oficial Workers AI; AI_ENABLED activa generación con cupos internos. No reutilices la credencial administrativa legacy como sesión de usuario. Las sesiones y códigos se almacenan por hash, las claves públicas WebAuthn verifican firmas y cada archivo exige propiedad o membresía vigente. Consulta README raíz para cuotas, recuperación, costes y límites de coedición.

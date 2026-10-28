@@ -30,7 +30,10 @@
     cutout,
     brushes = [],
     recipeId = 'recipe-product',
-    waves = new Map();
+    waves = new Map(),
+    wordEdits = new Map(),
+    checkedSentences = new Map(),
+    textProject = null;
   const name = (i) => (StudioI18n.locale() === 'en' ? i.nameEn : i.name),
     persist = () => localStorage.setItem(key, JSON.stringify(state));
   const b = (label, action, value = '', extra = '') =>
@@ -531,7 +534,24 @@
     s.customFilter = readFilter();
     LumaCompositor.paint(after.getContext('2d'), s, media, previewSeconds || 0, assetImages);
   }
+  function rememberText() {
+    if (!modal) return;
+    modal.querySelectorAll('[data-word-text]').forEach((el) => {
+      const id = el.dataset.wordText,
+        check = modal.querySelector('[data-word-keep="' + id + '"]');
+      wordEdits.set(id, { text: el.value, keep: check?.checked !== false });
+    });
+    modal
+      .querySelectorAll('[data-sentence]')
+      .forEach((el) => checkedSentences.set(+el.dataset.sentence, el.checked));
+  }
   function textRows() {
+    if (textProject !== p()?.id) {
+      wordEdits.clear();
+      checkedSentences.clear();
+      order = [];
+      textProject = p()?.id;
+    } else rememberText();
     groups = K.sentences(p()?.transcript || []);
     if (!order.length || order.some((id) => !groups.some((g) => g.id === id)))
       order = groups.map((g) => g.id);
@@ -539,7 +559,42 @@
       order
         .map((id, index) => {
           const g = groups.find((g) => g.id === id);
-          return `<article><label><input type="checkbox" data-sentence="${id}" checked>${g.start.toFixed(1)}–${g.end.toFixed(1)} s</label><textarea data-sentence-text="${id}">${esc(g.text)}</textarea>${b('↑', 'sentence-up', index)}${b('↓', 'sentence-down', index)}</article>`;
+          return (
+            '<article><label><input type="checkbox" data-sentence="' +
+            id +
+            '" ' +
+            (checkedSentences.get(id) !== false ? 'checked' : '') +
+            '>' +
+            g.start.toFixed(1) +
+            '–' +
+            g.end.toFixed(1) +
+            ' s</label><div class="kit-word-editor">' +
+            g.words
+              .map((word, wi) => {
+                const key = id + ':' + wi,
+                  e = wordEdits.get(key) || { text: word.text, keep: true };
+                return (
+                  '<label><input type="checkbox" aria-label="' +
+                  esc(t('Conservar palabra', 'Keep word') + ' ' + word.text) +
+                  '" data-word-keep="' +
+                  key +
+                  '" ' +
+                  (e.keep ? 'checked' : '') +
+                  '><input aria-label="' +
+                  esc(t('Editar palabra', 'Edit word') + ' ' + word.text) +
+                  '" data-word-text="' +
+                  key +
+                  '" value="' +
+                  esc(e.text) +
+                  '"></label>'
+                );
+              })
+              .join('') +
+            '</div>' +
+            b('↑', 'sentence-up', index) +
+            b('↓', 'sentence-down', index) +
+            '</article>'
+          );
         })
         .join('') || t('Transcribe primero.', 'Transcribe first.');
   }
@@ -1000,27 +1055,32 @@
         if (next >= 0 && next < order.length) [order[i], order[next]] = [order[next], order[i]];
         textRows();
       }
-      if (action === 'fillers')
-        modal.querySelectorAll('[data-sentence]').forEach((el) => {
-          const g = groups.find((g) => g.id === +el.dataset.sentence);
-          el.checked = !/\b(eh|em|mmm|um|uh|you know)\b/i.test(g.text);
-        });
-      if (action === 'text-montage') {
-        const x = project(),
-          ids = [...modal.querySelectorAll('[data-sentence]:checked')].map(
-            (el) => +el.dataset.sentence,
-          ),
-          scenes = K.reorder(groups, ids).map((g) => {
-            const s = wordScene(x, g);
-            s.subtitles = LumaProCore.timedCaptions(
-              modal.querySelector(`[data-sentence-text="${g.id}"]`).value,
-              P.length(s),
-              5,
-            );
-            s.words = [];
-            return s;
+      if (action === 'fillers') {
+        rememberText();
+        for (const g of groups)
+          g.words.forEach((word, i) => {
+            const key = g.id + ':' + i,
+              edit = wordEdits.get(key) || { text: word.text, keep: true };
+            if (/^(?:eh|em|mmm|um|uh)[,.!?]*$/i.test(word.text)) edit.keep = false;
+            wordEdits.set(key, edit);
           });
-        make(scenes, x.name + ' · ' + t('edición por texto', 'text edit'), x.format, x.caption);
+        modal
+          .querySelectorAll('[data-word-keep]')
+          .forEach((el) => (el.checked = wordEdits.get(el.dataset.wordKeep)?.keep !== false));
+      }
+      if (action === 'text-montage') {
+        rememberText();
+        const x = project(),
+          scenes = [];
+        for (const id of order) {
+          if (checkedSentences.get(id) === false) continue;
+          const g = groups.find((g) => g.id === id),
+            edits = g.words.map(
+              (w, i) => wordEdits.get(id + ':' + i) || { text: w.text, keep: true },
+            );
+          for (const range of K.editWords(g.words, edits)) scenes.push(wordScene(x, range));
+        }
+        make(scenes, x.name + ' · ' + t('edición por palabras', 'word edit'), x.format, x.caption);
         close();
       }
       if (action === 'cutout')

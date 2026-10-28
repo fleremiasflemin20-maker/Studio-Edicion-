@@ -5,16 +5,18 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server.cjs",
-    "test": "node --test tests/core.test.cjs tests/board.test.cjs tests/design.test.cjs tests/i18n.test.cjs tests/creator-core.test.cjs tests/pro-core.test.cjs tests/flow.test.cjs backend/service.test.cjs tests/runtime.test.cjs tests/motion.test.cjs tests/library.test.cjs tests/editor-kit.test.cjs tests/smart-media.test.cjs tests/creator-kit.test.cjs",
+    "test": "node --test tests/core.test.cjs tests/board.test.cjs tests/design.test.cjs tests/i18n.test.cjs tests/creator-core.test.cjs tests/pro-core.test.cjs tests/flow.test.cjs backend/service.test.cjs tests/runtime.test.cjs tests/motion.test.cjs tests/library.test.cjs tests/editor-kit.test.cjs tests/smart-media.test.cjs tests/creator-kit.test.cjs tests/cloud-core.test.cjs",
     "check": "node scripts/check.cjs",
-    "format": "prettier --write \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" \"src/**/*.jsx\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\"",
-    "format:check": "prettier --check \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" \"src/**/*.jsx\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\"",
+    "format": "prettier --write \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" \"src/**/*.{js,jsx}\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\"",
+    "format:check": "prettier --check \"dist/**/*.{js,css,html}\" \"tests/**/*.cjs\" \"scripts/**/*.cjs\" \"src/**/*.{js,jsx}\" server.cjs README.md package.json \"backend/**/*.{cjs,json,md}\" \"cloudflare/*.{mjs,json,jsonc,md}\"",
     "build:motion": "node scripts/build-motion.cjs",
-    "build": "npm run build:library && npm run build:motion",
-    "build:library": "node scripts/build-library.cjs && node scripts/catalog-seed.cjs"
+    "build": "npm run build:library && npm run build:motion && npm run build:accounts",
+    "build:library": "node scripts/build-library.cjs && node scripts/catalog-seed.cjs",
+    "build:accounts": "node scripts/build-accounts.cjs",
+    "test:cloud": "node --test cloudflare/worker.test.mjs cloudflare/billing.test.mjs cloudflare/studio.test.mjs cloudflare/catalog.test.mjs cloudflare/review-service.test.mjs cloudflare/accounts.test.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   },
   "devDependencies": {
     "esbuild": "0.28.2",
@@ -26,6 +28,7 @@
     "@remotion/player": "4.0.539",
     "@remotion/three": "4.0.539",
     "@remotion/web-renderer": "4.0.539",
+    "@simplewebauthn/browser": "14.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "remotion": "4.0.539",

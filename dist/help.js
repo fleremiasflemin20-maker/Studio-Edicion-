@@ -266,6 +266,8 @@
     'favorite-remove': 'Quita este favorito de Mis elementos; revisa antes de confirmar.',
   };
   function currentChapter(el) {
+    if (el?.closest('.cloud-dialog') || el?.dataset.cloud || el?.id === 'cloud-account-open')
+      return 'accounts-cloud';
     if (el?.closest('.creator-kit')) return 'creative-library';
     if (el?.closest('.motion-lab')) return 'motion';
     if (el?.closest('.design-dialog')) return 'design-pro';
@@ -576,6 +578,7 @@
     )
       return toast('Espera a que termine la exportación antes de cambiar de sección.');
     manual.close();
+    if (c.id === 'accounts-cloud') root.FleremahiasAccounts.open();
     if (c.id === 'creative-library') root.FleremahiasCreative.open();
     else if (c.id === 'motion') root.FleremahiasMotion.open();
     else if (c.flow) root.LumaFlow.open(c.flow);

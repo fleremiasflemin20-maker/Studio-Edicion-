@@ -171,7 +171,7 @@ Marca pública: **Fleremahias Studio**, firma **by fleremiasflemin**. Incluye mo
 
 ## Guía viva para creadores
 
-En la primera visita se abre una bienvenida con manual y recorrido. El botón **Guía y ayuda** está siempre en la cabecera; los paneles de creación, estilos y formularios incluyen **Ayuda de esta sección**. El manual tiene 29 capítulos, buscador, instrucciones paso a paso y explicación de controles. El recorrido resalta los elementos reales y permite avanzar, volver y consultar su capítulo. **Explicar controles** intercepta el clic para explicar el control sin ejecutar su acción; Escape permite salir. Las animaciones respetan la preferencia de movimiento reducido.
+En la primera visita se abre una bienvenida con manual y recorrido. El botón **Guía y ayuda** está siempre en la cabecera; los paneles de creación, estilos y formularios incluyen **Ayuda de esta sección**. El manual tiene 32 capítulos, buscador, instrucciones paso a paso y explicación de controles. El recorrido resalta los elementos reales y permite avanzar, volver y consultar su capítulo. **Explicar controles** intercepta el clic para explicar el control sin ejecutar su acción; Escape permite salir. Las animaciones respetan la preferencia de movimiento reducido.
 
 La bienvenida se recuerda por navegador mediante una clave independiente de los proyectos. Borrar los datos del navegador o usar otro dispositivo vuelve a mostrarla. El recorrido no crea proyectos ni inicia grabaciones, exportaciones o publicaciones. La documentación distingue exportación local, acceso privado al servicio, OAuth y planes aún en preparación. Se mantiene en `dist/help-content.js`; el controlador está en `dist/help.js` y su diseño en `dist/help.css`.
 
@@ -181,13 +181,13 @@ La barra de modos abre un tablero local de hasta 120 tarjetas o la edición ampl
 
 Los archivos soltados desde el equipo o importados estando en el tablero se guardan como recursos, sin reemplazar la escena del proyecto abierto. Arrastrar un medio sobre una tarjeta de proyecto lo añade como escena o música. Las zonas mueven también las tarjetas completamente contenidas. Hay botones equivalentes al arrastre y movimiento de tarjetas con flechas. El respaldo completo incluye organización, proyectos y medios; restaurar remapea sus referencias y agrega las tarjetas al tablero actual.
 
-La guía incluye ahora 29 capítulos con las instrucciones del tablero. La implementación independiente y las referencias están documentadas en [TABLERO-ARQUITECTURA.md](TABLERO-ARQUITECTURA.md). Encaja se consultó únicamente como referencia; no se modificó ni se incorporó su código privado.
+La guía incluye ahora 32 capítulos con las instrucciones del tablero. La implementación independiente y las referencias están documentadas en [TABLERO-ARQUITECTURA.md](TABLERO-ARQUITECTURA.md). Encaja se consultó únicamente como referencia; no se modificó ni se incorporó su código privado.
 
 ## Composición Pro
 
 El editor incorpora **Composición Pro**: alineación por bordes/centros con referencia a lienzo o selección, distribución de espacios, organización en fila/columna/cuadrícula, copiar y pegar formato visual, biblioteca de bloques personales multicapa, copias adaptadas a formatos sociales y numeración editable de carruseles. Se abre desde la barra del editor o Ctrl/⌘ + K fuera de campos de texto.
 
-Las operaciones trabajan sobre el modelo exportado y respetan capas bloqueadas u ocultas. Auto organizar es una acción puntual, sin reglas permanentes de Auto Layout. Los bloques son copias independientes, no componentes vinculados. La adaptación conserva el original y requiere revisar textos y recorte; no se anuncia como reencuadre semántico por IA. Los bloques y sus medios se incluyen en los respaldos completos. La guía incluye ahora 29 capítulos.
+Las operaciones trabajan sobre el modelo exportado y respetan capas bloqueadas u ocultas. Auto organizar es una acción puntual, sin reglas permanentes de Auto Layout. Los bloques son copias independientes, no componentes vinculados. La adaptación conserva el original y requiere revisar textos y recorte; no se anuncia como reencuadre semántico por IA. Los bloques y sus medios se incluyen en los respaldos completos. La guía incluye ahora 32 capítulos.
 
 La investigación y decisiones están en [COMPOSICION-PRO.md](COMPOSICION-PRO.md). La lógica pura está en `dist/design-core.js`; el controlador y la vista previa comparten el compositor existente. No se incluyen código, plantillas, iconos ni recursos descargados de Figma o Canva.
 
@@ -195,7 +195,7 @@ La investigación y decisiones están en [COMPOSICION-PRO.md](COMPOSICION-PRO.md
 
 Al entrar por primera vez aparece la elección **Español / English**. El botón permanente **ES / EN** permite cambiar de idioma. La elección se conserva en este navegador, sin necesidad de cuenta.
 
-La interfaz, los paneles, la guía completa de 29 capítulos, los recorridos, las instrucciones de controles y los mensajes disponen de inglés. La búsqueda de ayuda reconoce términos ingleses. Los nombres y textos del creador, los medios y las claves de CSV/código se conservan. Las plantillas nuevas y los guiones de estructura usan el idioma elegido; cambiar el idioma no reescribe proyectos existentes.
+La interfaz, los paneles, la guía completa de 32 capítulos, los recorridos, las instrucciones de controles y los mensajes disponen de inglés. La búsqueda de ayuda reconoce términos ingleses. Los nombres y textos del creador, los medios y las claves de CSV/código se conservan. Las plantillas nuevas y los guiones de estructura usan el idioma elegido; cambiar el idioma no reescribe proyectos existentes.
 
 La localización se resuelve localmente mediante `dist/i18n-catalog.js`, sin servicios de traducción ni dependencias nuevas. `dist/i18n-core.js` contiene traducción pura y formatos dinámicos; `dist/i18n.js` adapta los elementos de interfaz que generan los módulos existentes. Los valores de opciones, IDs, eventos y estados internos permanecen estables. Añade textos nuevos al catálogo y ejecuta `npm test`, que comprueba también la cobertura de todos los capítulos de ayuda.
 
@@ -220,8 +220,22 @@ La navegación ofrece **Biblioteca original**, y el editor incorpora **Bibliotec
 
 El panel permite identidad con logo, recetas JSON, filtros propios con LUT `.cube`, comparación antes/después, texturas, fotogramas clave, ondas y ajuste de pistas, edición por frases, búsqueda semántica multilingüe local, segmentación de personas con corrección de máscara, adaptación a cuatro formatos y paquete social ZIP. Motion añade foto animada, audiograma con audio propio y barras 3D a partir de cifras reales: ocho plantillas en total.
 
-Cloudflare tiene catálogo público D1 y recursos curados R2 separados del R2 privado de revisión. Los enlaces de revisión comparten solamente un archivo seleccionado, caducan a las 72 horas y admiten comentarios temporizados y revocación. Su creación y administración requieren la credencial del propietario; no se implementó sincronización de proyectos de múltiples usuarios ni coedición.
+Cloudflare tiene catálogo público D1 y recursos curados R2 separados del R2 privado de revisión. Los enlaces de revisión comparten solamente un archivo seleccionado, caducan a las 72 horas y admiten comentarios temporizados y revocación. Su creación y administración requieren la credencial del propietario; la sincronización y coedición de proyectos se implementan por separado en Cuenta y nube.
 
 La búsqueda semántica y eliminación de fondos descargan modelos locales. Se probaron inferencia multilingüe y PNG de persona; el vídeo segmentado se exportó como VP9/Opus con audio y duración verificables. Vídeo limitado a 30 segundos, lado mayor 720 y fondo sólido, con hasta 24 FPS variables. El soporte del navegador puede cambiar el resultado y rendimiento.
 
-El diseño generativo crea gráficos procedurales por palabras clave. No hay generación fotográfica mediante un proveedor de IA de pago ni consumo facturable de Workers AI activado. Tener permiso de despliegue AI no implica contratar un servicio ni habilitar cuotas ilimitadas. La transcripción, selección por frases y catálogo no garantizan viralidad ni sustituyen revisión humana.
+El diseño generativo crea gráficos procedurales por palabras clave. La generación fotográfica de Cuenta y nube usa Workers AI con autorización expresa del propietario y cupos estrictos. La transcripción, selección por frases y catálogo no garantizan viralidad ni sustituyen revisión humana.
+
+## Cuentas privadas, coedición e IA fotográfica · 28 octubre 2026
+
+El editor local sigue siendo público. **Cuenta y nube** añade registro e inicio con passkeys WebAuthn verificadas en el servidor, sesiones revocables de siete días, otra passkey y ocho códigos de recuperación de un solo uso. No hay contraseñas ni recuperación por correo. Las cuentas se crean en el dominio canónico de Cloudflare; Pages y Sites enlazan allí.
+
+Los proyectos se guardan en D1 y sus archivos en R2 privado, con acceso comprobado por usuario y proyecto. Subir crea una copia privada; el original local permanece. Las copias de trabajo de nube y medios privados viven en memoria, no se escriben en la biblioteca pública del navegador. Cerrar sesión las retira; las descargas o copias que guardaste explícitamente permanecen. Cuotas: 30 proyectos, 256 MB por usuario, 20 MB por archivo, 10 miembros por proyecto. Los formatos subidos se validan; SVG no se acepta en la nube.
+
+La coedición usa WebSockets y Durable Objects: invitaciones de editor o lector de un solo uso y 24 horas, cambios por identificadores estables, comparación del valor anterior, revisiones atómicas y revocación de miembros. Campos independientes se combinan; un conflicto conserva el trabajo local y ofrece descargar, recuperar nube o bifurcar. No es un procesador CRDT de escritura simultánea dentro de una misma palabra. Mantén la pestaña conectada hasta confirmar guardado; no hay sincronización offline en segundo plano.
+
+**Imágenes con IA** ejecuta FLUX.1 Schnell en Cloudflare Workers AI, cuatro pasos fijos, salidas privadas, guardar en Medios y descargar. Los prompts salen hacia Cloudflare. Límites conservadores: 3 intentos diarios por cuenta, 20 globales diarios y 100 globales mensuales; fallos y cancelaciones mantienen su reserva. El propietario autorizó hasta USD 1/mes sin plan nuevo. A la tarifa publicada al 28/10/2026, 100 salidas estándar quedan por debajo de ese importe; es un tope de aplicación, no un límite de facturación de toda la cuenta Cloudflare. Fuente: https://developers.cloudflare.com/workers-ai/platform/pricing/.
+
+Editar por texto ahora permite corregir o excluir palabras temporizadas. Excluir recorta el intervalo real del archivo; corregir cambia el subtítulo, no genera una nueva voz. Se conserva el montaje por frases y el límite de escenas.
+
+Pruebas: npm test, npm run test:cloud y verificación de producción con credenciales de software efímeras, dos sockets, conflictos, permisos y una imagen real. La creación nativa de passkey requiere el diálogo del dispositivo del usuario; esa parte no se automatiza ni se sustituye por un acceso ficticio. Cobros y aplicaciones sociales siguen pendientes de las cuentas que configurará el propietario.

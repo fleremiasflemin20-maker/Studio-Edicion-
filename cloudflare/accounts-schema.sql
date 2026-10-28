@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS studio_users(id TEXT PRIMARY KEY,name TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS studio_credentials(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,public_key TEXT NOT NULL,counter INTEGER NOT NULL DEFAULT 0,transports TEXT NOT NULL DEFAULT '[]',created INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS studio_credentials_user ON studio_credentials(user_id);
+CREATE TABLE IF NOT EXISTS studio_challenges(id TEXT PRIMARY KEY,kind TEXT NOT NULL,challenge TEXT NOT NULL,user_id TEXT,name TEXT,origin TEXT NOT NULL,expires INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS studio_sessions(hash TEXT PRIMARY KEY,user_id TEXT NOT NULL,created INTEGER NOT NULL,expires INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS studio_sessions_user ON studio_sessions(user_id);
+CREATE TABLE IF NOT EXISTS studio_limits(key TEXT PRIMARY KEY,count INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS studio_recovery(hash TEXT PRIMARY KEY,user_id TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS cloud_projects(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,name TEXT NOT NULL,document TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 1,stamp TEXT,updated INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS cloud_members(project_id TEXT NOT NULL,user_id TEXT NOT NULL,role TEXT NOT NULL,PRIMARY KEY(project_id,user_id));
+CREATE INDEX IF NOT EXISTS cloud_members_user ON cloud_members(user_id);
+CREATE TABLE IF NOT EXISTS cloud_assets(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,key TEXT NOT NULL,name TEXT NOT NULL,mime TEXT NOT NULL,size INTEGER NOT NULL,created INTEGER NOT NULL,state TEXT NOT NULL DEFAULT 'reserved');
+CREATE INDEX IF NOT EXISTS cloud_assets_owner ON cloud_assets(owner_id,state);
+CREATE TABLE IF NOT EXISTS cloud_project_assets(project_id TEXT NOT NULL,asset_id TEXT NOT NULL,PRIMARY KEY(project_id,asset_id));
+CREATE TABLE IF NOT EXISTS cloud_invites(hash TEXT PRIMARY KEY,project_id TEXT NOT NULL,role TEXT NOT NULL,expires INTEGER NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS cloud_tickets(hash TEXT PRIMARY KEY,project_id TEXT NOT NULL,user_id TEXT NOT NULL,session_hash TEXT,expires INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS studio_ai_jobs(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,prompt TEXT NOT NULL,status TEXT NOT NULL,asset_id TEXT,error TEXT,created INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS studio_ai_jobs_user ON studio_ai_jobs(user_id,created);

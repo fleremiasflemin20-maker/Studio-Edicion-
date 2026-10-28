@@ -2554,3 +2554,43 @@ window.FleremahiasEnglish = {
   '2D · Foto en movimiento': '2D · Photo motion',
   '2D · Audio visual': '2D · Audiogram',
 };
+
+Object.assign(window.FleremahiasEnglish, {
+  'Cuenta, nube, coedición e imágenes con IA': 'Accounts, cloud projects, coediting and AI images',
+  'Edita localmente sin cuenta o inicia sesión para guardar copias privadas, colaborar y generar fotografías con Cloudflare Workers AI.':
+    'Edit locally without an account, or sign in to save private copies, collaborate and generate photographs with Cloudflare Workers AI.',
+  'Abre Cuenta y nube en la cabecera del estudio de Cloudflare. Las otras versiones enlazan a este dominio para mantener la misma passkey.':
+    'Open Account and cloud in the Cloudflare studio header. Other versions link to this domain so you can use the same passkey.',
+  'Escribe un nombre y pulsa Crear cuenta con passkey. Completa personalmente el diálogo de seguridad de tu dispositivo. Para volver, pulsa Entrar con passkey.':
+    'Enter a display name and select Create account with passkey. Complete your device security prompt yourself. Next time, select Sign in with passkey.',
+  'En Mi cuenta, añade otra passkey y crea códigos de recuperación. Guarda los ocho códigos fuera del estudio: se muestran una vez y cada uno se usa una vez. No hay recuperación por correo.':
+    'Under My account, add another passkey and create recovery codes. Store the eight codes outside the studio: they are displayed once and each works once. Email recovery is not available.',
+  'En Proyectos privados, Subir proyecto abierto crea una copia en nube y sube sus archivos. La copia local original permanece en tu navegador. Abrir y sincronizar descarga una copia de trabajo privada en memoria.':
+    'Under Private projects, Upload open project creates a cloud copy and uploads its media. Your original local project stays in your browser. Open and sync loads a private working copy into memory.',
+  'Mantén la pestaña abierta y conectada hasta ver Guardado en nube. Los nuevos archivos también se suben antes de compartir sus cambios. Si pierdes conexión, conserva la pestaña y descarga tu copia.':
+    'Keep the tab open and connected until Saved to cloud appears. New media uploads before its edits are shared. If you go offline, keep the tab open and download a copy.',
+  'En Coedición, el propietario crea una invitación de editor o lector. El enlace caduca a las 24 horas y solo admite una aceptación. La persona invitada inicia sesión y acepta el código.':
+    'Under Coediting, the owner creates an editor or viewer invitation. Each link expires after 24 hours and can be accepted once. The invited person signs in and accepts the code.',
+  'Los editores comparten cambios en directo. Los lectores pueden consultar y descargar archivos autorizados; el servidor impide guardar sus ediciones en el proyecto compartido. El propietario puede quitar acceso o revocar invitaciones pendientes.':
+    'Editors share live changes. Viewers can inspect and download authorized files; the server prevents them from saving edits to the shared project. The owner can remove members or revoke pending invitations.',
+  'Los cambios en campos distintos se combinan. Si dos personas cambian el mismo campo, descarga tu copia y elige Usar versión de nube o Guardar mi versión como proyecto nuevo. Esta última opción conserva una copia independiente.':
+    'Edits to different fields merge. If two people change the same field, download your copy and choose Use cloud version or Save my version as a new project. The latter preserves an independent copy.',
+  'En Imágenes con IA, describe la fotografía con 8–1000 caracteres y pulsa Generar fotografía. El texto se envía a Cloudflare. Al terminar, guarda la imagen en Medios o descárgala. Los trabajos y sus archivos son privados.':
+    'Under AI images, describe a photograph in 8–1,000 characters and select Generate photograph. Your prompt is sent to Cloudflare. When ready, save the image to Media or download it. Jobs and output files are private.',
+  'Límites iniciales': 'Initial limits',
+  'Hasta 30 proyectos, 256 MB por cuenta, 20 MB por archivo y 10 miembros por proyecto. Admite PNG, JPEG, WebP, WAV, MP3, MP4 y WebM validados; convierte otros formatos antes de subirlos.':
+    'Up to 30 projects, 256 MB per account, 20 MB per file and 10 members per project. Validated PNG, JPEG, WebP, WAV, MP3, MP4 and WebM files are supported; convert other formats before uploading.',
+  'Cuotas de IA y cancelación': 'AI quotas and cancellation',
+  'FLUX.1 Schnell usa cuatro pasos fijos: tres intentos diarios por cuenta, veinte diarios globales y cien mensuales globales. Los fallos y cancelaciones consumen su reserva para evitar reintentos con costes inesperados. Las cuotas son compartidas por todo el estudio.':
+    'FLUX.1 Schnell uses four fixed steps: three attempts per account per day, twenty per day across the studio and one hundred per month across the studio. Failed and canceled attempts keep their reservation to prevent unexpected retry costs. Global quotas are shared by the whole studio.',
+  'Cerrar sesión y copias': 'Signing out and copies',
+  'Cerrar sesión retira de esta pestaña las copias privadas en memoria y revoca la sesión. Cerrar todas las sesiones invalida los accesos de la cuenta. Las exportaciones o copias locales que guardaste explícitamente permanecen en tu equipo.':
+    'Sign out removes private in-memory working copies from this tab and revokes the session. Sign out everywhere invalidates all account sessions. Exports or local copies you explicitly saved remain on your device.',
+  'Edición por palabras': 'Word-level editing',
+  'En Editar por texto, desmarca una palabra para recortar su intervalo del vídeo y edita su campo para corregir el subtítulo. Cambiar el texto no regenera la voz. Reordena frases y crea una copia; se conservan los tiempos de origen.':
+    'Under Edit by text, clear a word to cut its time range from the video, or edit its field to correct the caption. Changing text does not regenerate speech. Reorder phrases and create a copy; source timestamps are preserved.',
+  'Catálogo y revisión comparte exportaciones seleccionadas durante 72 horas. Para guardar proyectos y editar con otras personas usa Cuenta y nube, una función independiente.':
+    'Catalog and review shares selected exports for 72 hours. Use Account and cloud to save projects and edit with other people; it is a separate feature.',
+  'Los recursos originales son públicos. Los proyectos locales permanecen en el navegador; las copias de nube requieren cuenta y permisos. Los enlaces de revisión dan acceso a su exportación a quien los tenga. El diseño local crea gráficos por código; Imágenes con IA genera fotografías en Cloudflare.':
+    'Original resources are public. Local projects stay in your browser; cloud copies require an account and access permissions. Review links grant access to their export to anyone holding the link. Local generative design creates code-based graphics; AI images generates photographs on Cloudflare.',
+});

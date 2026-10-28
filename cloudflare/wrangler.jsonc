@@ -2,6 +2,10 @@
   "name": "fleremahias-studio",
   "main": "studio.mjs",
   "compatibility_date": "2026-10-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "ai": { "binding": "AI" },
+  "durable_objects": { "bindings": [{ "name": "PROJECT_ROOMS", "class_name": "ProjectRoom" }] },
+  "migrations": [{ "tag": "cloud-v1", "new_sqlite_classes": ["ProjectRoom"] }],
   "assets": {
     "directory": "../dist",
     "binding": "ASSETS",
@@ -16,10 +20,13 @@
     },
   ],
   "r2_buckets": [
+    { "binding": "USER_MEDIA", "bucket_name": "fleremahias-user-media" },
     { "binding": "LIBRARY_MEDIA", "bucket_name": "fleremahias-library" },
     { "binding": "REVIEW_MEDIA", "bucket_name": "fleremahias-reviews" },
   ],
   "vars": {
+    "AI_ENABLED": "true",
+    "ACCOUNT_ORIGINS": "",
     "CATALOG_ADMIN_ORIGINS": "https://fleremahias-studio.analista-datos-pro.workers.dev,https://fleremiasflemin20-maker.github.io,https://luma-social-studio-251026.keenox19.chatgpt.site,http://127.0.0.1:4182,http://127.0.0.1:4183",
   },
   "services": [{ "binding": "PRIVATE_SERVICE", "service": "luma-studio-service" }],
