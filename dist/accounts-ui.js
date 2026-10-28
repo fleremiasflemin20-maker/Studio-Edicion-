@@ -117,6 +117,8 @@
   }
   function paint() {
     if (!modal) return;
+    modal.querySelector('h2').textContent = t('Tu estudio, conectado.', 'Your studio, connected.');
+    modal.querySelector('[data-cloud=close]').textContent = t('Cerrar', 'Close');
     modal.querySelector('nav').innerHTML = [
       ['account', 'Mi cuenta', 'My account'],
       ['projects', 'Proyectos privados', 'Private projects'],
