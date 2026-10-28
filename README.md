@@ -239,3 +239,5 @@ La coedición usa WebSockets y Durable Objects: invitaciones de editor o lector 
 Editar por texto ahora permite corregir o excluir palabras temporizadas. Excluir recorta el intervalo real del archivo; corregir cambia el subtítulo, no genera una nueva voz. Se conserva el montaje por frases y el límite de escenas.
 
 Pruebas: npm test, npm run test:cloud y verificación de producción con credenciales de software efímeras, dos sockets, conflictos, permisos y una imagen real. La creación nativa de passkey requiere el diálogo del dispositivo del usuario; esa parte no se automatiza ni se sustituye por un acceso ficticio. Cobros y aplicaciones sociales siguen pendientes de las cuentas que configurará el propietario.
+
+En proyectos conectados, **Duplicar** crea un proyecto nuevo de nube y copia sus archivos. **Cerrar copia** retira la copia de trabajo de la pestaña; el proyecto permanece en la cuenta para abrirlo otra vez. La eliminación permanente de proyectos o cuentas no se ofrece en esta versión.

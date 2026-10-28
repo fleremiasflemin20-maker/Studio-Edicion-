@@ -809,10 +809,48 @@
     saveBase();
     if (!applying && session && connected()) schedule();
   };
+  const duplicateLocal = duplicate,
+    deleteLocal = deleteProject;
+  duplicate = function () {
+    if (!p()?.cloud) return duplicateLocal();
+    perform(() => uploadProject(true));
+  };
+  deleteProject = function () {
+    if (!p()?.cloud) return deleteLocal();
+    if (dirty() || sending) {
+      open('team');
+      stateText(
+        t(
+          'Guarda o descarga tus cambios antes de cerrar la copia.',
+          'Save or download your changes before closing the copy.',
+        ),
+      );
+      return;
+    }
+    const id = p().id;
+    if (activeCloud === p().cloud.id) {
+      disconnect();
+      activeCloud = null;
+      base = null;
+      conflict = false;
+    }
+    projects = projects.filter((x) => x.id !== id);
+    current = null;
+    save();
+    go('projects');
+    toast(
+      t(
+        'Copia cerrada. El proyecto sigue disponible en tu cuenta.',
+        'Copy closed. The project remains available in your account.',
+      ),
+    );
+  };
   const editorBase = renderEditor;
   renderEditor = function () {
     editorBase();
     if (p()?.cloud) {
+      const closeCopy = document.querySelector('[onclick="deleteProject()"]');
+      if (closeCopy) closeCopy.textContent = t('Cerrar copia', 'Close working copy');
       const bar = document.createElement('div');
       bar.className = 'cloud-editor-bar';
       bar.innerHTML = `<span id="cloud-save-state">☁ ${esc(p().cloud.role)} · ${t('Proyecto privado', 'Private project')}</span>${b(t('Coedición y conflictos', 'Coediting and conflicts'), 'open-team')}`;
