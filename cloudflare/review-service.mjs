@@ -94,7 +94,7 @@ async function authorize(request, env, origin) {
   const token = request.headers.get('Authorization');
   if (!/^Bearer [^\s]{8,500}$/.test(token || '')) fail(401, 'Owner authorization required.');
   if (!env.PRIVATE_SERVICE?.fetch) fail(503, 'Owner authentication service is unavailable.');
-  const health = new URL('/api/health', request.url),
+  const health = new URL('/api/status', request.url),
     response = await env.PRIVATE_SERVICE.fetch(
       new Request(health, {
         headers: { Authorization: token, Origin: origin },

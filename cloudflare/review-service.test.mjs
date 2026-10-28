@@ -147,7 +147,7 @@ test('review authoring refuses missing/invalid owner credentials and unapproved 
   assert.equal(f.sqlite.prepare('SELECT COUNT(*) AS count FROM review_shares').get().count, 0);
   const made = await create(f);
   assert.match(made.token, /^[A-Za-z0-9_-]{32}$/);
-  assert.ok(f.calls.every((request) => new URL(request.url).pathname === '/api/health'));
+  assert.ok(f.calls.every((request) => new URL(request.url).pathname === '/api/status'));
   assert.ok(
     !JSON.stringify(f.sqlite.prepare('SELECT * FROM review_shares').get()).includes(made.token),
   );

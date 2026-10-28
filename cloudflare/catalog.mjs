@@ -347,7 +347,7 @@ async function authorize(request, env) {
     return {
       response: json({ error: 'Owner authentication service is unavailable.' }, 503, false),
     };
-  const healthURL = new URL('/api/health', url);
+  const healthURL = new URL('/api/status', url);
   const check = await env.PRIVATE_SERVICE.fetch(
     new Request(healthURL, { headers: { Authorization: token, Origin: origin } }),
   );
